@@ -1,0 +1,36 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x0e\x00b\x00u\x00i\x00l\x00d\x00e\x00r)
+
+[CMake]
+BuildDirs[$e]=/mnt/share/home/michal/projects/usr/src/builder/build
+CMakeDir=/usr/share/cmake/Modules
+Current CMake Binary=file:///usr/bin/cmake
+CurrentBuildDir=file:///mnt/share/home/michal/projects/usr/src/builder/build
+CurrentBuildType=Debug
+CurrentInstallDir=file:///home/michal/projects/usr
+Extra Arguments=
+ProjectRootRelative=./
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=builder
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x02\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x0e\x00l\x00i\x00b\x00r\x00a\x00r\x00y\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x0e\x00b\x00u\x00i\x00l\x00d\x00e\x00r\x00\x00\x00\x0e\x00b\x00u\x00i\x00l\x00d\x00e\x00r)
+Dependency Action=Install
+EnvironmentGroup=default
+Executable=
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=builder,builder
+Use External Terminal=false
+Working Directory=
+isExecutable=false
+
+[MakeBuilder]
+Number Of Jobs=1

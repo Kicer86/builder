@@ -1,0 +1,39 @@
+%define         version
+
+Name:
+Summary:        
+Version:        %{version}
+Release:        %mkrel 1
+Source0:
+URL:            
+Group:          
+License:        
+Requires:       
+BuildRequires:  
+
+
+%description
+
+%prep 
+%setup -q
+%configure
+
+%build
+%make
+%makeinstall
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+	%defattr(0644,root,root,0755)
+		%attr(0755,-,-) %{_bindir}/*
+
+		%{_mandir}/man8/*
+
+
+%changelog
+* Sun Mar 13 2011 Michal Walenciak <kicer86@gmail.com> 
+- first spec
