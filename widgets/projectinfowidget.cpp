@@ -153,20 +153,20 @@ void ProjectInfoWidget::refresh(int type)
       {
         if (state==ReleaseInfo::Downloading )
           ui->progressBar->setFormat(tr("%5: %p% %1/%2 (%3/%4)")
-                                 .arg(sizeToString(d),
-                                      sizeToString(t),
-                                      releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
-                                      releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
-                                      releaseInfo->getDownloadedPkg()
-                                     )
-                                );
+                                     .arg(sizeToString(d),
+                                          sizeToString(t),
+                                          releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
+                                          releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
+                                          releaseInfo->getDownloadedPkg()
+                                         )
+                                    );
         else if (state==ReleaseInfo::Building)
           ui->progressBar->setFormat(tr("%p% (%1/%2)")
-                                 .arg(
-                                   releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
-                                   releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
-                                 )
-                                );
+                                     .arg(
+                                       releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
+                                       releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
+                                     )
+                                    );
       }
     }
 
@@ -249,7 +249,7 @@ void ProjectInfoWidget::specButtonPressed()
     dst.open(QIODevice::WriteOnly);
 
     QString projName=releaseInfo->getProjectInfo()->getName();
-    
+
     while (src.atEnd()==false)
     {
       QString line=src.readLine();
