@@ -52,10 +52,10 @@ static int searchForPkg(lua_State *state)
     return 0;
   }
 
-  QByteArray rawUrl(lua_tostring(state, 1));        //gdzie szukać
-  QRegExp searchRegEx(lua_tostring(state, 2));      //czego szukać
+  QByteArray rawUrl(lua_tostring(state, 1));        //gdzie szukać  (url do ftp lub http)
+  QRegExp searchRegEx(lua_tostring(state, 2));      //czego szukać  (wyrażenie regularne)
 
-  bool matchExt=false;                              //dopasowywać rozszerzenia? (czasem się przydaje)
+  bool matchExt=false;                              //dopasowywać rozszerzenia? (czasem się przydaje - odfiltruje tylko te paczki które rozumiemy)
   if (c==3)
     matchExt=lua_toboolean(state, 3);
 

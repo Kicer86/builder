@@ -20,7 +20,7 @@
 #include "builder.hpp"
 
 builder::builder()
-{  
+{    
   WidgetListView *projectList=new WidgetListView(this);
   projectList->setModel(ProjectsManager::instance()->getModel());
 

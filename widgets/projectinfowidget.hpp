@@ -22,44 +22,30 @@
 
 #include <QWidget>
 
-class QLabel;
-class QPlainTextEdit;
-class QProgressBar;
+#include "ui_projectinfowidget.h"
+
 class QListView;
 class QStringListModel;
-class QPushButton;
-class QToolButton;
+class QPlainTextEdit;
 
-class WidgetListItem;
 class ReleaseInfo;
 
 class ProjectInfoWidget:public QWidget
 {
     Q_OBJECT
 
+    Ui_ProjectInfoForm *ui;
     ReleaseInfo *releaseInfo;
-    QPushButton *luaButton;
-    QPushButton *specButton;
-    QPushButton *luaDebugButton;
-    QPushButton *showMacrosButton;
-    QPushButton *updateButton;
-    QToolButton *downloadButton;
-    QPushButton *buildButton;
-    QPushButton *fastBuildButton;
-    QLabel *projectName;
-
-    QProgressBar *progressBar;
 
     //info o projekcie
     QListView *localInfoView;
     QListView *currentInfoView;
     QStringListModel *localInfoModel;
     QStringListModel *currentInfoModel;
-    QPlainTextEdit *buildMessages;
 
   private slots:
     void refresh(int type);
-    void luaButtonPressed();
+    void editDowloadScriptButtonPressed();
     void specButtonPressed();
     void showMacrosButtonPressed();
     void updateButtonPressed();

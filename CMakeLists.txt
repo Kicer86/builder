@@ -52,7 +52,7 @@ set(builder_MOC
   widgets/widgetlist/widgetlist.hpp
 )
 
-set(builder_UIS dialogs/configdialog.ui)
+set(builder_UIS dialogs/configdialog.ui widgets/projectinfowidget.ui)
 
 qt4_wrap_ui(builder_UIFILES ${builder_UIS})
 qt4_automoc(${builder_SRCS})
@@ -67,11 +67,8 @@ target_link_libraries(builder
       ${LUA_LIBRARIES}
       htmlParser)
 
-#template
-install(FILES data_files/spec_template
-  DESTINATION ${BUILDER_DATADIR})
+#templates
+install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
     
-install (TARGETS builder
-  RUNTIME DESTINATION ${BUILDER_BINDIR}
-  )
 #target
+install (TARGETS builder RUNTIME DESTINATION ${BUILDER_BINDIR})

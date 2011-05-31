@@ -16,19 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QBoxLayout>
 #include <QPlainTextEdit>
-#include <QPushButton>
-#include <QToolButton>
-#include <QLabel>
-#include <QProgressBar>
-#include <QGroupBox>
 #include <QDebug>
 #include <QListView>
 #include <QStringListModel>
 #include <QTemporaryFile>
 #include <QProcess>
-#include <QGridLayout>
 #include <QStyledItemDelegate>
 #include <QPainter>
 #include <QApplication>
@@ -71,25 +64,16 @@ static class HtmlDelegate:public QStyledItemDelegate
 ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     QWidget(p,f),releaseInfo(0)
 {
-  //1. zakładka
-  luaButton=new QPushButton(tr("Edit lua script"));
-  specButton=new QPushButton(tr("Edit spec file"));
-  luaDebugButton=new QPushButton(tr("Debug Lua script"));
-  showMacrosButton=new QPushButton(tr("show rpm macros"));
+  ui =new Ui_ProjectInfoForm();
+  ui->setupUi(this);
 
-  luaButton->setDisabled(true);
-  specButton->setDisabled(true);
-  luaDebugButton->setDisabled(true);
-  showMacrosButton->setDisabled(true);
+  //disable buttons by default
+  ui->editDowloadScriptButton->setDisabled(true);
+  ui->specButton->setDisabled(true);
+  ui->luaDebugButton->setDisabled(true);
+  ui->showMacrosButton->setDisabled(true);
 
-  QGridLayout *editButtonsLayout=new QGridLayout;
-  editButtonsLayout->addWidget(luaButton,0,0);
-  editButtonsLayout->addWidget(specButton,0,1);
-  editButtonsLayout->addWidget(luaDebugButton,1,0);
-  editButtonsLayout->addWidget(showMacrosButton,1,1);
-
-  projectName=new QLabel;
-
+  //fill up local and remote boxes
   localInfoModel=new QStringListModel(this);
   currentInfoModel=new QStringListModel(this);
 
@@ -105,71 +89,26 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
   localVersionLayout->addWidget(localInfoView);
   currentVersionLayout->addWidget(currentInfoView);
 
-  QGroupBox *localVersionBox=new QGroupBox(tr("local version"));
-  QGroupBox *currentVersionBox=new QGroupBox(tr("current version"));
-  localVersionBox->setLayout(localVersionLayout);
-  currentVersionBox->setLayout(currentVersionLayout);
+  ui->localVersionBox->setLayout(localVersionLayout);
+  ui->remoteVersionBox->setLayout(currentVersionLayout);
 
-  QHBoxLayout *versionsLayout=new QHBoxLayout();
-  versionsLayout->addWidget(localVersionBox);
-  versionsLayout->addWidget(currentVersionBox);
+  //progress bar
+  ui->progressBar->setDisabled(true);
 
-  updateButton=new QPushButton(tr("Update"));
-  downloadButton=new QToolButton();
-  buildButton=new QPushButton();
-  fastBuildButton=new QPushButton();
-
-  updateButton->setDisabled(true);
-  downloadButton->setDisabled(true);
-  buildButton->setDisabled(true);
-  fastBuildButton->setDisabled(true);
-
-  downloadButton->setText(tr("Download"));
-  downloadButton->setPopupMode(QToolButton::MenuButtonPopup);
-
-
-  QHBoxLayout *buttonsLayout=new QHBoxLayout;
-  buttonsLayout->addWidget(updateButton);
-  buttonsLayout->addWidget(downloadButton);
-  buttonsLayout->addWidget(buildButton);
-  buttonsLayout->addWidget(fastBuildButton);
-
-  progressBar=new QProgressBar;
-  progressBar->setMinimum(0);
-  progressBar->setDisabled(true);
-
-  QWidget *mainPage=new QWidget;
-  QVBoxLayout *mainPageLayout=new QVBoxLayout(mainPage);
-  mainPageLayout->addWidget(projectName);
-  mainPageLayout->addLayout(editButtonsLayout);
-  mainPageLayout->addLayout(versionsLayout);
-  mainPageLayout->addLayout(buttonsLayout);
-
-  connect(luaButton, SIGNAL(pressed()), this, SLOT(luaButtonPressed()));
-  connect(specButton, SIGNAL(pressed()), this, SLOT(specButtonPressed()));
-  connect(showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
-  connect(updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
-  connect(downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
-  connect(buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
-  connect(fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
-
-  //2. zakładka
-  buildMessages=new QPlainTextEdit;
-  buildMessages->setReadOnly(true);
-
-  //połącz cudowanie zakładki
-  QTabWidget *tabs=new QTabWidget;
-  tabs->addTab(mainPage, tr("control"));
-  tabs->addTab(buildMessages, tr("build log"));
-
-  QVBoxLayout *mainLayout=new QVBoxLayout(this);
-  mainLayout->addWidget(tabs);
-  mainLayout->addWidget(progressBar);
+  connect(ui->editDowloadScriptButton, SIGNAL(pressed()), this, SLOT(editDowloadScriptButtonPressed()));
+  connect(ui->specButton, SIGNAL(pressed()), this, SLOT(specButtonPressed()));
+  connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
+  connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
+  connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
+  connect(ui->buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
+  connect(ui->fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
 }
 
 
 ProjectInfoWidget::~ProjectInfoWidget()
-{}
+{
+  delete ui;
+}
 
 
 void ProjectInfoWidget::setProjectRelease(ReleaseInfo* ri)
@@ -178,21 +117,21 @@ void ProjectInfoWidget::setProjectRelease(ReleaseInfo* ri)
     disconnect(releaseInfo);  //rozłącz połączenia poprzedniego projektu
   else  //pierwszy projekt
   {
-    luaButton->setEnabled(true);
-    specButton->setEnabled(true);
-    luaDebugButton->setEnabled(true);
-    showMacrosButton->setEnabled(true);
+    ui->editDowloadScriptButton->setEnabled(true);
+    ui->specButton->setEnabled(true);
+    ui->luaDebugButton->setEnabled(true);
+    ui->showMacrosButton->setEnabled(true);
 
-    updateButton->setEnabled(true);
-    downloadButton->setEnabled(true);
-    buildButton->setEnabled(true);
-    fastBuildButton->setEnabled(true);
+    ui->updateButton->setEnabled(true);
+    ui->downloadButton->setEnabled(true);
+    ui->buildButton->setEnabled(true);
+    ui->fastBuildButton->setEnabled(true);
   }
 
   releaseInfo=ri;
   connect(releaseInfo, SIGNAL(changed(int)), this, SLOT(refresh(int)));
 
-  buildMessages->setDocument(releaseInfo->getBuildMesages());
+  ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
   refresh(ReleaseInfo::AllChanged);
 }
 
@@ -203,8 +142,8 @@ void ProjectInfoWidget::refresh(int type)
   {
     if (type & ReleaseInfo::ProgressChange) //zmiana progressBara
     {
-      progressBar->setMaximum(releaseInfo->getProgressTotal());
-      progressBar->setValue(releaseInfo->getProgressDone());
+      ui->progressBar->setMaximum(releaseInfo->getProgressTotal());
+      ui->progressBar->setValue(releaseInfo->getProgressDone());
 
       //dodatkowe iformacje progressBara
       ReleaseInfo::State state=releaseInfo->getState();
@@ -213,7 +152,7 @@ void ProjectInfoWidget::refresh(int type)
       if (t>0)
       {
         if (state==ReleaseInfo::Downloading )
-          progressBar->setFormat(tr("%5: %p% %1/%2 (%3/%4)")
+          ui->progressBar->setFormat(tr("%5: %p% %1/%2 (%3/%4)")
                                  .arg(sizeToString(d),
                                       sizeToString(t),
                                       releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
@@ -222,7 +161,7 @@ void ProjectInfoWidget::refresh(int type)
                                      )
                                 );
         else if (state==ReleaseInfo::Building)
-          progressBar->setFormat(tr("%p% (%1/%2)")
+          ui->progressBar->setFormat(tr("%p% (%1/%2)")
                                  .arg(
                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
@@ -234,21 +173,21 @@ void ProjectInfoWidget::refresh(int type)
     if (type & ReleaseInfo::StateChange)
     {
       ReleaseInfo::State state=releaseInfo->getState();
-      updateButton->setEnabled(state==ReleaseInfo::Nothing);
-      progressBar->setEnabled(state!=ReleaseInfo::Nothing);
+      ui->updateButton->setEnabled(state==ReleaseInfo::Nothing);
+      ui->progressBar->setEnabled(state!=ReleaseInfo::Nothing);
 
       if (state==ReleaseInfo::Building)
       {
-        buildButton->setText(tr("Stop"));
-        fastBuildButton->setText(tr("Stop"));
+        ui->buildButton->setText(tr("Stop"));
+        ui->fastBuildButton->setText(tr("Stop"));
       }
       else
       {
-        buildButton->setText(tr("Build"));
-        fastBuildButton->setText(tr("Install check"));
+        ui->buildButton->setText(tr("Build"));
+        ui->fastBuildButton->setText(tr("Install check"));
       }
 
-      projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
+      ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
 
       const ReleaseInfo::VersionList localVersion=*releaseInfo->getLocalVersions();
       const ReleaseInfo::VersionList currentVersion=*releaseInfo->getCurrentVersions();
@@ -280,16 +219,16 @@ void ProjectInfoWidget::refresh(int type)
         list <<element;
       }
       currentInfoModel->setStringList(list);
-      downloadButton->setEnabled(state==ReleaseInfo::Nothing && releaseInfo->getCurrentVersions()->isEmpty()==false && *(releaseInfo->getCurrentVersions())!=*(releaseInfo->getLocalVersions()) );
+      ui->downloadButton->setEnabled(state==ReleaseInfo::Nothing && releaseInfo->getCurrentVersions()->isEmpty()==false && *(releaseInfo->getCurrentVersions())!=*(releaseInfo->getLocalVersions()) );
 
       if (state==ReleaseInfo::Nothing)
-        progressBar->reset();
+        ui->progressBar->reset();
     }
   }
 }
 
 
-void ProjectInfoWidget::luaButtonPressed()
+void ProjectInfoWidget::editDowloadScriptButtonPressed()
 {
   EditorsManager::instance()->editFile(releaseInfo->getDownloadScriptFile());
 }

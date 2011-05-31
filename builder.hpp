@@ -8,6 +8,7 @@ class ProjectInfoWidget;
 class builder : public QMainWindow
 {
     Q_OBJECT
+    
     ProjectInfoWidget *projectInfoWidget;
 
   private slots:
