@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>294</height>
+    <width>392</width>
+    <height>292</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,6 +41,12 @@
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QPushButton" name="editDowloadScriptButton">
+           <property name="toolTip">
+            <string>Shows the Lua script used for checking current version of project on it's page.</string>
+           </property>
+           <property name="whatsThis">
+            <string>Shows the Lua script used for checking current version of project on it's page.</string>
+           </property>
            <property name="text">
             <string>Edit download script</string>
            </property>
@@ -48,6 +54,12 @@
          </item>
          <item row="1" column="0">
           <widget class="QPushButton" name="luaDebugButton">
+           <property name="toolTip">
+            <string>Not implemented yet.</string>
+           </property>
+           <property name="whatsThis">
+            <string>Not implemented yet.</string>
+           </property>
            <property name="text">
             <string>lua debug mode</string>
            </property>
@@ -55,6 +67,12 @@
          </item>
          <item row="0" column="1">
           <widget class="QPushButton" name="specButton">
+           <property name="toolTip">
+            <string>Allows to edit the project .spec file.</string>
+           </property>
+           <property name="whatsThis">
+            <string>Allows to edit the project .spec file.</string>
+           </property>
            <property name="text">
             <string>Edit spec file</string>
            </property>
@@ -62,6 +80,12 @@
          </item>
          <item row="1" column="1">
           <widget class="QPushButton" name="showMacrosButton">
+           <property name="toolTip">
+            <string>Shows result of rpm --showrc.</string>
+           </property>
+           <property name="whatsThis">
+            <string>Shows result of rpm --showrc.</string>
+           </property>
            <property name="text">
             <string>Show rpm's macros</string>
            </property>
@@ -76,6 +100,12 @@
          </property>
          <item>
           <widget class="QGroupBox" name="localVersionBox">
+           <property name="toolTip">
+            <string>List of downloaded packages with it's versions.</string>
+           </property>
+           <property name="whatsThis">
+            <string>List of downloaded packages with it's versions.</string>
+           </property>
            <property name="title">
             <string>Local version</string>
            </property>
@@ -83,6 +113,12 @@
          </item>
          <item>
           <widget class="QGroupBox" name="remoteVersionBox">
+           <property name="toolTip">
+            <string>List of the available (to download) packages with it's versions.</string>
+           </property>
+           <property name="whatsThis">
+            <string>List of the available (to download) packages with it's versions.</string>
+           </property>
            <property name="title">
             <string>Remote version</string>
            </property>
@@ -94,6 +130,12 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QPushButton" name="updateButton">
+           <property name="toolTip">
+            <string>Check current version of project on it's page.</string>
+           </property>
+           <property name="whatsThis">
+            <string>Check current version of project on it's page.</string>
+           </property>
            <property name="text">
             <string>Check</string>
            </property>
@@ -101,6 +143,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="downloadButton">
+           <property name="toolTip">
+            <string>Downloads new packages from project's page.</string>
+           </property>
+           <property name="whatsThis">
+            <string>Downloads new packages from project's page.</string>
+           </property>
            <property name="text">
             <string>Download</string>
            </property>
@@ -108,6 +156,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="buildButton">
+           <property name="toolTip">
+            <string>Builds the project. Same as running rpmbuild -ba SPEC/(...).spec</string>
+           </property>
+           <property name="whatsThis">
+            <string>Builds the project. Same as running rpmbuild -ba SPEC/(...).spec</string>
+           </property>
            <property name="text">
             <string>Build</string>
            </property>
@@ -115,6 +169,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="fastBuildButton">
+           <property name="toolTip">
+            <string>Runs rpmbuild -bi --short-circuit</string>
+           </property>
+           <property name="whatsThis">
+            <string>Runs rpmbuild -bi --short-circuit</string>
+           </property>
            <property name="text">
             <string>Fast Build</string>
            </property>
@@ -142,6 +202,20 @@
    </item>
    <item>
     <widget class="QProgressBar" name="progressBar">
+     <property name="toolTip">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Progress of downloading/building.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Progress of downloading/building.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="maximum">
       <number>100</number>
      </property>
