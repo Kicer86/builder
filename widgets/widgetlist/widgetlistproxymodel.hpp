@@ -1,5 +1,5 @@
 /*
-    Klasa pozwalająca na szacowanie czasu trwania operacji.
+    <one line to give the program's name and a brief idea of what it does.>
     Copyright (C) 2011  Michał Walenciak <Kicer86@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
@@ -17,30 +17,19 @@
 */
 
 
-#ifndef ESTIMATOR_HPP
-#define ESTIMATOR_HPP
+#ifndef WIDGETLISTPROXYMODEL_HPP
+#define WIDGETLISTPROXYMODEL_HPP
 
-#include <QTime>
-#include <QObject>
+#include <QSortFilterProxyModel>
 
-class ReleaseInfo;
-
-class Estimator :QObject
+class WidgetListProxyModel: public QSortFilterProxyModel
 {
-    Q_OBJECT
-
-    QTime *time;
-    ReleaseInfo *releaseInfo;
-
-  private slots:
-    void update(int change);
+  protected:
+    virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
 
   public:
-    explicit Estimator(ReleaseInfo* ri);
-    virtual ~Estimator();
-    QTime estimate() const;
-    QTime elapsed() const;
+    WidgetListProxyModel(QObject* parent = 0);
+    virtual ~WidgetListProxyModel();
 };
 
-#endif // ESTIMATOR_HPP
-
+#endif // WIDGETLISTPROXYMODEL_HPP

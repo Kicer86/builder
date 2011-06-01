@@ -33,8 +33,6 @@ ProjectsManager::ProjectsManager(): id(0)
 ProjectsManager::~ProjectsManager()
 {
   delete model;
-//   while (projectsList.empty()==false)
-//     delete projectsList.takeFirst();
 }
 
 

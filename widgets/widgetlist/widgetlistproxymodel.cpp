@@ -1,5 +1,5 @@
 /*
-    Klasa pozwalająca na szacowanie czasu trwania operacji.
+    <one line to give the program's name and a brief idea of what it does.>
     Copyright (C) 2011  Michał Walenciak <Kicer86@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
@@ -17,30 +17,25 @@
 */
 
 
-#ifndef ESTIMATOR_HPP
-#define ESTIMATOR_HPP
+#include "widgetlistproxymodel.hpp"
+#include "data_containers/projectsmanager.hpp"
 
-#include <QTime>
-#include <QObject>
-
-class ReleaseInfo;
-
-class Estimator :QObject
+WidgetListProxyModel::WidgetListProxyModel(QObject* p): QSortFilterProxyModel(p)
 {
-    Q_OBJECT
 
-    QTime *time;
-    ReleaseInfo *releaseInfo;
+}
 
-  private slots:
-    void update(int change);
 
-  public:
-    explicit Estimator(ReleaseInfo* ri);
-    virtual ~Estimator();
-    QTime estimate() const;
-    QTime elapsed() const;
-};
+WidgetListProxyModel::~WidgetListProxyModel()
+{
 
-#endif // ESTIMATOR_HPP
+}
 
+//http://doc.qt.nokia.com/latest/qsortfilterproxymodel.html#details
+bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
+{
+  int lid=left.data(Qt::UserRole).toInt();
+  int rid=right.data(Qt::UserRole).toInt();
+  
+  //bla bla bla porównać status
+}

@@ -61,7 +61,7 @@ void WidgetListView::rowsAboutToBeRemoved(const QModelIndex& p, int start, int e
 void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
 {
   //stwórz dla nowych wierszy widgety które będą wyświetlane w liście
-  for (int i=start; i<=end; i++)
+  for(int i=start; i<=end; i++)
   {
     QStandardItemModel *m=dynamic_cast<QStandardItemModel*>(model());
     int id=m->item(i)->data().toInt();
@@ -70,10 +70,10 @@ void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
     if (widgets->contains(id)==false)  // nie ma takiego elementu w bazie widgetów?
     {
       //znajdź projekt o zadanym id
-      ProjectInfo *pI=ProjectsManager::instance()->findProject(id);
+      ProjectInfo *pi=ProjectsManager::instance()->findProject(id);
 
       //stwórz na jego podstawie widget
-      WidgetListItem *piw=new WidgetListItem(pI);
+      WidgetListItem *piw=new WidgetListItem(pi);
 
       //zapisz widget w bazie
       widgets->insert(id, piw);

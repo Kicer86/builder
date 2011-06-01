@@ -1,5 +1,5 @@
 /*
-    <one line to give the program's name and a brief idea of what it does.>
+    Klasa uruchamiająca edytor dla wskazanego pliku.
     Copyright (C) 2011  Michał Walenciak <Kicer86@gmail.com>
 
     This program is free software: you can redistribute it and/or modify

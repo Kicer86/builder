@@ -39,9 +39,9 @@ class ProjectInfoWidget:public QWidget
 
     //info o projekcie
     QListView *localInfoView;
-    QListView *currentInfoView;
+    QListView *remoteInfoView;
     QStringListModel *localInfoModel;
-    QStringListModel *currentInfoModel;
+    QStringListModel *remoteInfoModel;
 
   private slots:
     void refresh(int type);

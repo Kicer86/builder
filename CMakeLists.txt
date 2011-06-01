@@ -21,7 +21,7 @@ set(builder_SRCS
   builder.cpp
   main.cpp
   data_containers/editorsmanager.cpp
-  data_containers/projectinfo.cpp
+  data_containers/projectinfo.cpp 
   data_containers/projectsmanager.cpp
   data_containers/projectversion.cpp
   data_containers/releaseinfo.cpp
@@ -37,6 +37,7 @@ set(builder_SRCS
   widgets/widgetlist/widgetlist.cpp
   widgets/widgetlist/widgetdelegate.cpp
   widgets/widgetlist/widgetlistitem.cpp
+  widgets/widgetlist/widgetlistproxymodel.cpp
 )
 
 set(builder_MOC

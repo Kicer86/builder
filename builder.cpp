@@ -41,12 +41,7 @@ builder::builder()
 
   foreach(QString item, dirs)
   {
-//     ProjectWidget *projectWidget=new ProjectWidget(item);
-
     ProjectInfo *projectInfo=new ProjectInfo(item);
-
-    //connect things
-//     projectList->addWidget(projectWidget);
     ProjectsManager::instance()->registerProject(projectInfo);
   }
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>292</height>
+    <width>420</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,11 +25,11 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="controlTab">
       <attribute name="title">
        <string>Control</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1,0">
        <item>
         <widget class="QLabel" name="projectName">
          <property name="text">
@@ -184,7 +184,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="buildLogTab">
       <attribute name="title">
        <string>Build log</string>
       </attribute>

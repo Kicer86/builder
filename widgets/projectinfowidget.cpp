@@ -75,19 +75,19 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
 
   //fill up local and remote boxes
   localInfoModel=new QStringListModel(this);
-  currentInfoModel=new QStringListModel(this);
+  remoteInfoModel=new QStringListModel(this);
 
   localInfoView=new QListView;
   localInfoView->setModel(localInfoModel);
-  currentInfoView=new QListView;
-  currentInfoView->setModel(currentInfoModel);
-  currentInfoView->setItemDelegate(&htmlDelegate);
+  remoteInfoView=new QListView;
+  remoteInfoView->setModel(remoteInfoModel);
+  remoteInfoView->setItemDelegate(&htmlDelegate);
 
   QVBoxLayout *localVersionLayout=new QVBoxLayout;
   QVBoxLayout *currentVersionLayout=new QVBoxLayout;
 
   localVersionLayout->addWidget(localInfoView);
-  currentVersionLayout->addWidget(currentInfoView);
+  currentVersionLayout->addWidget(remoteInfoView);
 
   ui->localVersionBox->setLayout(localVersionLayout);
   ui->remoteVersionBox->setLayout(currentVersionLayout);
@@ -203,7 +203,7 @@ void ProjectInfoWidget::refresh(int type)
       localInfoModel->setStringList(list);
 
       list.clear();
-      currentInfoModel->removeRows(0, currentInfoModel->rowCount());
+      remoteInfoModel->removeRows(0, remoteInfoModel->rowCount());
       foreach(ProjectVersion pV, currentVersion)
       {
         QString pkgName=pV.getName();
@@ -218,7 +218,7 @@ void ProjectInfoWidget::refresh(int type)
 
         list <<element;
       }
-      currentInfoModel->setStringList(list);
+      remoteInfoModel->setStringList(list);
       ui->downloadButton->setEnabled(state==ReleaseInfo::Nothing && releaseInfo->getCurrentVersions()->isEmpty()==false && *(releaseInfo->getCurrentVersions())!=*(releaseInfo->getLocalVersions()) );
 
       if (state==ReleaseInfo::Nothing)
