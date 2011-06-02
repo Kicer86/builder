@@ -19,17 +19,15 @@
 
 #include "widgetlistproxymodel.hpp"
 #include "data_containers/projectsmanager.hpp"
+#include "data_containers/projectsmanager.hpp"
+#include "data_containers/projectinfo.hpp"
 
 WidgetListProxyModel::WidgetListProxyModel(QObject* p): QSortFilterProxyModel(p)
-{
-
-}
+{}
 
 
 WidgetListProxyModel::~WidgetListProxyModel()
-{
-
-}
+{}
 
 //http://doc.qt.nokia.com/latest/qsortfilterproxymodel.html#details
 bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
@@ -37,5 +35,8 @@ bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& 
   int lid=left.data(Qt::UserRole).toInt();
   int rid=right.data(Qt::UserRole).toInt();
   
-  //bla bla bla porównać status
+  ProjectInfo *lpi=ProjectsManager::instance()->findProject(lid);
+  ProjectInfo *rpi=ProjectsManager::instance()->findProject(rid);
+  
+  return lpi->getStatus()<rpi->getStatus();
 }

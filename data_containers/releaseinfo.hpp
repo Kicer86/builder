@@ -81,8 +81,8 @@ class ReleaseInfo:public QObject
     void setState(State st);
 
   private slots:
-    void downloadCheck(int);
-    void buildCheck(int state);
+    void downloadCheck(int);         //używane przez WidgetListItem
+    void buildCheck(int);            //używane przez WidgetListItem
     void updateProgress(int, int);
     void updateProgress(qint64, qint64);
     void buildMessages();
@@ -106,8 +106,8 @@ class ReleaseInfo:public QObject
     const VersionList *getCurrentVersions() const;  //zwraca wskaźnik na wersję projektu sprawdzoną w internecie
     qint64 getProgressTotal() const;
     qint64 getProgressDone() const;
-    void update();        //sprawdź jakie jest bieżąca wersja
-    void downloadPkg();   //pobierz paczkę z bieżącą wersją
+    void update();                                  //sprawdź jakie jest bieżąca wersja
+    void downloadPkg();                             //pobierz paczkę z bieżącą wersją
     void buildPkg(BuildMode);      //zbuduj paczkę RPM (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
     const Estimator *getEstimator() const;
 

@@ -77,15 +77,16 @@ void WidgetListItem::construct()
     }
     else  //view
     {
-      download=new QLabel();
-      build=new QLabel();
-      updateValues();
+      download.append(new QLabel());        //nowo dodany QLabel będzie mial index i (jak odpowiadający mu release)
+      build.append(new QLabel());           //jw
 
-      projectLayout->addWidget(download, i, 1);
-      projectLayout->addWidget(build, i, 2);
-      
+      projectLayout->addWidget(download[i], i, 1);
+      projectLayout->addWidget(build[i], i, 2);
     }
   }
+  
+  if (editor==false)
+      updateValues();   //zaktualizuj widok
 }
 
 
@@ -100,22 +101,24 @@ void WidgetListItem::updateValues()
     bool dwl=release->getDownloadFlag();
     bool bld=release->getBuildFlag();
 
-    download->setText(QString(tr("download: %1")
-                              .arg(dwl?
+    download[i]->setText(QString(tr("download: %1")
+                                 .arg(dwl?
+                                      setColour(tr("yes"), Qt::darkGreen):
+                                      setColour(tr("no"),  Qt::red)
+                                     )
+                                )
+                        );
+
+    build[i]->setText(QString(tr("build: %1")
+                              .arg(bld?
                                    setColour(tr("yes"), Qt::darkGreen):
                                    setColour(tr("no"),  Qt::red)
                                   )
                              )
                      );
-
-    build->setText(QString(tr("build: %1")
-                           .arg(bld?
-                                setColour(tr("yes"), Qt::darkGreen):
-                                setColour(tr("no"),  Qt::red)
-                               )
-                          )
-                  );
   }
+  
+  projectInfo->updateStatus();
 }
 
 
@@ -123,7 +126,7 @@ WidgetListItem::~WidgetListItem()
 {
   assert(editor == (origins>0));   //jesli origins to editor (i vice versa)
   if (origins)
-    origins->updateValues();   //niech się widget wizualny zaktualizuje
+    origins->updateValues();       //niech się widget wizualny zaktualizuje
 }
 
 

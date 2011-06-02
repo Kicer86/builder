@@ -76,3 +76,29 @@ int ProjectInfo::getId() const
 {
   return id;
 }
+
+
+void ProjectInfo::updateStatus() const
+{
+  Status st=Nothing;
+  //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
+  foreach(ReleaseInfo *ri, releasesList)
+  {
+    bool dwl=ri->getDownloadFlag();
+    bool bld=ri->getBuildFlag();
+   
+    if (dwl && st<Check)
+      st=Check;
+    
+    if (bld && st<Build)
+      st=Build;
+  }
+  
+  status=st;
+}
+
+
+ProjectInfo::Status ProjectInfo::getStatus() const
+{
+  return status;
+}

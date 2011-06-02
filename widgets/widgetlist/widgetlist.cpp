@@ -30,6 +30,7 @@
 #include "widgetlistitem.hpp"
 #include "widgetdelegate.hpp"
 #include "widgetlist.hpp"
+#include "widgetlistproxymodel.hpp"
 
 
 WidgetListView::WidgetListView(QWidget* p): QListView(p) //, activeItem(0)
@@ -63,7 +64,8 @@ void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
   //stwórz dla nowych wierszy widgety które będą wyświetlane w liście
   for(int i=start; i<=end; i++)
   {
-    QStandardItemModel *m=dynamic_cast<QStandardItemModel*>(model());
+    WidgetListProxyModel *m=dynamic_cast<WidgetListProxyModel*>(model());
+//     QAbstractItemModel *m=model();
     int id=m->item(i)->data().toInt();
     QString name=m->item(i)->data(Qt::DisplayRole).toString();
     qDebug() << QString("inserting row in view for project %1 with id %2").arg(name).arg(id);

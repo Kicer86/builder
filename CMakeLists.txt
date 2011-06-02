@@ -4,6 +4,7 @@ find_package(Qt4 4.6 REQUIRED core gui new)
 find_package(Lua51 REQUIRED)
 
 include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
+add_definitions(-std=c++0x)
 
 if (NOT BUILDER_DATADIR)
 	set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)

@@ -27,18 +27,30 @@
 class ReleaseInfo;
 
 class ProjectInfo
-{
-    const int id;         //id projektu
-    const QString name;
-    QList <ReleaseInfo *> releasesList;
+{  
   public:
     ProjectInfo(QString n);
     virtual ~ProjectInfo();
+    
+    enum Status
+    {
+      Nothing, 
+      Check,
+      Build,
+      All
+    };
 
     const QList<ReleaseInfo*> *getReleasesList() const;
     QString getName() const;
     int getId() const;
-
+    void updateStatus() const; 
+    Status getStatus() const;
+    
+  private:
+    const int id;         //id projektu
+    const QString name;
+    QList <ReleaseInfo *> releasesList;
+    mutable Status status;
 };
 
 #endif // PROJECTINFO_HPP

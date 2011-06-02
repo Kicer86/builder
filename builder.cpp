@@ -16,13 +16,17 @@
 #include "misc/settings.hpp"
 #include "widgets/projectinfowidget.hpp"
 #include "widgets/widgetlist/widgetlist.hpp"
+#include "widgets/widgetlist/widgetlistproxymodel.hpp"
 
 #include "builder.hpp"
 
 builder::builder()
 {    
   WidgetListView *projectList=new WidgetListView(this);
-  projectList->setModel(ProjectsManager::instance()->getModel());
+  WidgetListProxyModel *proxy=new WidgetListProxyModel(this);
+  
+  proxy->setSourceModel(ProjectsManager::instance()->getModel());
+  projectList->setModel(proxy);
 
   projectInfoWidget=new ProjectInfoWidget();
   QDockWidget *projectInfoWidgetDock=new QDockWidget(tr("project info"));

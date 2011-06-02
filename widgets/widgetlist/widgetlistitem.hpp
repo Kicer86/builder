@@ -28,9 +28,9 @@ class QGridLayout;
 
 class WidgetListItem:public QGroupBox
 {
-    const bool editor;
-    WidgetListItem *origins;
-    QLabel *download, *build;
+    const bool editor; 
+    WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
+    QList<QLabel *> download, build;
     
     const ProjectInfo *projectInfo;
     QGridLayout *projectLayout;
