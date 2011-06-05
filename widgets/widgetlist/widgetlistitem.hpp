@@ -20,25 +20,27 @@
 #ifndef PROJECTWIDGET_HPP
 #define PROJECTWIDGET_HPP
 
-#include <QGroupBox>
+#include <QWidget>
 
 class QLabel;
 class ProjectInfo;
 class QGridLayout;
+class QGroupBox;
 
-class WidgetListItem:public QGroupBox
+class WidgetListItem:public QWidget
 {
+    QGroupBox *groupBox;
     const bool editor; 
     WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
     QList<QLabel *> download, build;
+    QLabel *pixmap;
     
     const ProjectInfo *projectInfo;
     QGridLayout *projectLayout;
     
     void construct();
     void updateValues();
-    
-    
+        
   public:
     WidgetListItem(const ProjectInfo* pI);
     WidgetListItem(WidgetListItem* w);

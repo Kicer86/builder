@@ -4,12 +4,14 @@
 #include <QtGui/QMainWindow>
 
 class ProjectInfoWidget;
+class WidgetListProxyModel;
 
 class builder : public QMainWindow
 {
     Q_OBJECT
     
     ProjectInfoWidget *projectInfoWidget;
+    WidgetListProxyModel *proxy;
 
   private slots:
     void optionsDialog();

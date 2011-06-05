@@ -35,8 +35,8 @@ class ProjectsManager
 {
     int id;                                 //id nadawane kolejnym projektom
     ProjectInfoWidget *projectInfoWidget;
-    QList<ProjectInfo *> projectsList;
-    QStandardItemModel *model;
+    QList<ProjectInfo *> projectsList;      //lista projektów. Powiązana z modelem za pomocą id
+    QStandardItemModel *model;              //model zawierający projekty
 
     ProjectsManager();
 

@@ -22,9 +22,9 @@
 #include <QApplication>
 #include <QPainter>
 
-#include "widgetlistitem.hpp"
-#include "widgetlist.hpp"
 #include "widgetdelegate.hpp"
+#include "widgetlistitem.hpp"
+#include "widgetlistview.hpp"
 
 WidgetDelegate::WidgetDelegate(WidgetListView* p): QStyledItemDelegate(p), view(p)
 {}
@@ -90,6 +90,7 @@ QWidget* WidgetDelegate::createEditor(QWidget* p, const QStyleOptionViewItem& , 
 {
   WidgetListItem *editor=new WidgetListItem(getProjectWidget(index)); //stwórz klona
   editor->setParent(p);
+  connect(editor, SIGNAL(destroyed(QObject*)), view, SLOT(itemEdited()));  //zniszczenie edytora - odświeżenie (przesortowanie) modelu
   return editor;
 }
 

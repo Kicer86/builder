@@ -34,7 +34,7 @@
 #include "projectinfo.hpp"
 
 
-ProjectInfo::ProjectInfo(QString n):id(ProjectsManager::instance()->getId()), name(n)
+ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), name(n)
 {
   qDebug() << QString("crating project %1 with id %2").arg(name).arg(id);
   QSettings setting;
@@ -78,7 +78,7 @@ int ProjectInfo::getId() const
 }
 
 
-void ProjectInfo::updateStatus() const
+ProjectInfo::Status ProjectInfo::updateStatus() const
 {
   Status st=Nothing;
   //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
@@ -94,7 +94,7 @@ void ProjectInfo::updateStatus() const
       st=Build;
   }
   
-  status=st;
+  return status=st;
 }
 
 

@@ -50,6 +50,7 @@ void ProjectsManager::registerProject(ProjectInfo* project)
   
   //zaktualizuj model
   QStandardItem *projectItem=new QStandardItem(project->getName());
+  
   //zapisz id projektu
   projectItem->setData(project->getId());   
   

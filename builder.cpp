@@ -15,15 +15,15 @@
 #include "dialogs/configdialog.hpp"
 #include "misc/settings.hpp"
 #include "widgets/projectinfowidget.hpp"
-#include "widgets/widgetlist/widgetlist.hpp"
 #include "widgets/widgetlist/widgetlistproxymodel.hpp"
+#include "widgets/widgetlist/widgetlistview.hpp"
 
 #include "builder.hpp"
 
 builder::builder()
 {    
   WidgetListView *projectList=new WidgetListView(this);
-  WidgetListProxyModel *proxy=new WidgetListProxyModel(this);
+  proxy=new WidgetListProxyModel(this);
   
   proxy->setSourceModel(ProjectsManager::instance()->getModel());
   projectList->setModel(proxy);

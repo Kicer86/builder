@@ -29,20 +29,16 @@
 #include "data_containers/projectsmanager.hpp"
 #include "widgetlistitem.hpp"
 #include "widgetdelegate.hpp"
-#include "widgetlist.hpp"
 #include "widgetlistproxymodel.hpp"
+#include "widgetlistview.hpp"
 
 
-WidgetListView::WidgetListView(QWidget* p): QListView(p) //, activeItem(0)
+WidgetListView::WidgetListView(QWidget* p): QListView(p)
 {
   WidgetDelegate *delegate=new WidgetDelegate(this);
   setItemDelegate(delegate);
 
   widgets=new QHash<int, WidgetListItem *>;
-
-//   backgroundWidget=new QWidget;
-//   setViewport(backgroundWidget);
-
   connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
 }
 
@@ -64,10 +60,10 @@ void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
   //stwórz dla nowych wierszy widgety które będą wyświetlane w liście
   for(int i=start; i<=end; i++)
   {
-    WidgetListProxyModel *m=dynamic_cast<WidgetListProxyModel*>(model());
-//     QAbstractItemModel *m=model();
-    int id=m->item(i)->data().toInt();
-    QString name=m->item(i)->data(Qt::DisplayRole).toString();
+    QAbstractItemModel *m=model();
+    const QModelIndex ch=m->index(i,0);
+    int id=ch.data(Qt::UserRole+1).toInt();  //rola: void ProjectsManager::registerProject(ProjectInfo* project)
+    QString name=ch.data(Qt::DisplayRole).toString();
     qDebug() << QString("inserting row in view for project %1 with id %2").arg(name).arg(id);
     if (widgets->contains(id)==false)  // nie ma takiego elementu w bazie widgetów?
     {
@@ -82,13 +78,14 @@ void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
     }
   }
   QAbstractItemView::rowsInserted(p, start, end);
+  itemEdited();              //potraktuj to także jako edycję elementu -> odświeżymy widok
 
 //   qDebug() << "mark";
 //   dumpModel(model()->index(0,0));
 }
 
 
-const QHash< int, WidgetListItem* > *WidgetListView::getWidgets() const
+const QHash<int, WidgetListItem*> *WidgetListView::getWidgets() const
 {
   return widgets;
 }
@@ -130,6 +127,12 @@ void WidgetListView::itemClicked(const QModelIndex& index) const
     ReleaseInfo *rI=pI->getReleasesList()->at(0);
     ProjectsManager::instance()->showInfo(rI);
   }
+}
+
+
+void WidgetListView::itemEdited()
+{
+  model()->sort(0, Qt::AscendingOrder);
 }
 
 

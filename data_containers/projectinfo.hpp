@@ -27,14 +27,14 @@
 class ReleaseInfo;
 
 class ProjectInfo
-{  
+{
   public:
     ProjectInfo(QString n);
     virtual ~ProjectInfo();
-    
+
     enum Status
     {
-      Nothing, 
+      Nothing,
       Check,
       Build,
       All
@@ -43,9 +43,9 @@ class ProjectInfo
     const QList<ReleaseInfo*> *getReleasesList() const;
     QString getName() const;
     int getId() const;
-    void updateStatus() const; 
+    Status updateStatus() const;
     Status getStatus() const;
-    
+
   private:
     const int id;         //id projektu
     const QString name;

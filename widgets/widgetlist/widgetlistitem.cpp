@@ -20,6 +20,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QGridLayout>
+#include <QGroupBox>
 
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -28,8 +29,11 @@
 
 #include "widgetlistitem.hpp"
 
-WidgetListItem::WidgetListItem(const ProjectInfo* pI)
-    :QGroupBox(pI->getName()), editor(false), origins(0), projectInfo(pI)
+WidgetListItem::WidgetListItem(const ProjectInfo* pI):
+    QWidget(),
+    editor(false),
+    origins(0),
+    projectInfo(pI)
 {
   construct();
   setAttribute(Qt::WA_NoSystemBackground, true);
@@ -37,8 +41,10 @@ WidgetListItem::WidgetListItem(const ProjectInfo* pI)
 
 
 //konstruktor kopiujący (czyli tworzymy widget edytujący)
-WidgetListItem::WidgetListItem(WidgetListItem* w)
-    :QGroupBox(w->getProjectInfo()->getName()), editor(true), origins(w),
+WidgetListItem::WidgetListItem(WidgetListItem* w):
+    QWidget(),
+    editor(true),
+    origins(w),
     projectInfo(w->getProjectInfo())
 {
   construct();
@@ -50,7 +56,9 @@ WidgetListItem::WidgetListItem(WidgetListItem* w)
 
 void WidgetListItem::construct()
 {
-  projectLayout=new QGridLayout(this);
+  groupBox=new QGroupBox(projectInfo->getName());
+  projectLayout=new QGridLayout(groupBox);
+
   for (int i=0; i<projectInfo->getReleasesList()->size(); i++)
   {
     ReleaseInfo *release=projectInfo->getReleasesList()->at(i);
@@ -84,9 +92,16 @@ void WidgetListItem::construct()
       projectLayout->addWidget(build[i], i, 2);
     }
   }
+
+  pixmap=new QLabel(this);
+
+  //główny layout
+  QHBoxLayout *mainLayout=new QHBoxLayout(this);
+  mainLayout->addWidget(pixmap);
+  mainLayout->addWidget(groupBox,1);
   
   if (editor==false)
-      updateValues();   //zaktualizuj widok
+    updateValues();   //zaktualizuj widok
 }
 
 
@@ -117,8 +132,19 @@ void WidgetListItem::updateValues()
                              )
                      );
   }
-  
+
   projectInfo->updateStatus();
+
+  ///\TODO: bardzo tymczasowe rozwiązanie (wyciek)
+  QPixmap *ico;
+  if (projectInfo->getStatus()==ProjectInfo::Build || projectInfo->getStatus()==ProjectInfo::All)
+    ico=new QPixmap(dataPath("icons/48x48/build.png"));
+  else if (projectInfo->getStatus()==ProjectInfo::Check)
+    ico=new QPixmap(dataPath("icons/48x48/download.png"));
+  else
+    ico=new QPixmap(dataPath("icons/48x48/off.png"));
+
+  pixmap->setPixmap(*ico);
 }
 
 

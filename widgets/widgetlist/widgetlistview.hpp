@@ -37,6 +37,7 @@ class WidgetListView: public QListView
 
   private slots:
     void itemClicked(const QModelIndex &index) const;
+    void itemEdited();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
 
   protected:
 //     virtual QRect visualRect(const QModelIndex& index) const;
@@ -59,6 +60,7 @@ class WidgetListView: public QListView
 
     WidgetListItem* getProjectWidget(const QModelIndex& idx) const;
     const QHash< int, WidgetListItem* >* getWidgets() const;
+
 };
 
 #endif // WIDGETLIST_HPP

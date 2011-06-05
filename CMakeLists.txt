@@ -2,6 +2,8 @@ project(builder)
 cmake_minimum_required(VERSION 2.6)
 find_package(Qt4 4.6 REQUIRED core gui new)
 find_package(Lua51 REQUIRED)
+find_program(CONVERT convert)
+find_program(INKSCAPE inkscape)
 
 include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 add_definitions(-std=c++0x)
@@ -35,10 +37,10 @@ set(builder_SRCS
   misc/settings.cpp
   misc/wgetwrapper.cpp
   widgets/projectinfowidget.cpp
-  widgets/widgetlist/widgetlist.cpp
   widgets/widgetlist/widgetdelegate.cpp
   widgets/widgetlist/widgetlistitem.cpp
   widgets/widgetlist/widgetlistproxymodel.cpp
+  widgets/widgetlist/widgetlistview.cpp
 )
 
 set(builder_MOC
@@ -51,14 +53,43 @@ set(builder_MOC
   misc/estimator.hpp
   misc/wgetwrapper.hpp
   widgets/projectinfowidget.hpp
-  widgets/widgetlist/widgetlist.hpp
+  widgets/widgetlist/widgetlistview.hpp
 )
 
 set(builder_UIS dialogs/configdialog.ui widgets/projectinfowidget.ui)
 
+set(builder_IMGS icons/build.svg icons/download.svg icons/off.svg)
+
 qt4_wrap_ui(builder_UIFILES ${builder_UIS})
 qt4_automoc(${builder_SRCS})
 qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
+
+unset(PROCESSED_IMAGES)
+foreach(IMG ${builder_IMGS})
+  foreach(RES 16 32 48 64 96 128)
+  
+    get_filename_component(IMAGE_NAME_WE ${IMG} NAME_WE)
+    
+    set(IMAGE_DIR icons/${RES}x${RES})
+    set(IMAGE_NAME ${IMAGE_DIR}/${IMAGE_NAME_WE}.png)
+    
+    if (NOT EXISTS ${IMAGE_DIR})
+      message ("Creating directory ${IMAGE_DIR} for file ${IMG}")
+      execute_process(COMMAND mkdir -p ${IMAGE_DIR})
+    endif (NOT EXISTS ${IMAGE_DIR})
+    
+    add_custom_command(
+        OUTPUT ${IMAGE_NAME}
+        COMMAND ${INKSCAPE} 
+        ARGS --without-gui --file=${CMAKE_SOURCE_DIR}/${IMG} --export-png=${PROJECT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png
+        COMMAND ${CONVERT}
+        ARGS -resize ${RES}x${RES} ${PROJECT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png ${PROJECT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png
+      )
+     
+    set (PROCESSED_IMAGES ${PROCESSED_IMAGES} ${PROJECT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png)
+      
+  endforeach(RES)
+endforeach(IMG)
 
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
 
@@ -68,9 +99,15 @@ target_link_libraries(builder
       ${QT_QTNETWORK_LIBRARY} 
       ${LUA_LIBRARIES}
       htmlParser)
+      
+add_custom_target(images ALL DEPENDS ${PROCESSED_IMAGES})
 
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
-    
+
+#icons
+install(DIRECTORY ${PROJECT_BINARY_DIR}/icons DESTINATION ${BUILDER_DATADIR})
+
 #target
-install (TARGETS builder RUNTIME DESTINATION ${BUILDER_BINDIR})
+install(TARGETS builder RUNTIME DESTINATION ${BUILDER_BINDIR})
+
