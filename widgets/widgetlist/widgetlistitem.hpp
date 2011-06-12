@@ -23,6 +23,7 @@
 #include <QWidget>
 
 class QLabel;
+class ImageWidget;
 class ProjectInfo;
 class QGridLayout;
 class QGroupBox;
@@ -33,7 +34,7 @@ class WidgetListItem:public QWidget
     const bool editor; 
     WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
     QList<QLabel *> download, build;
-    QLabel *pixmap;
+    ImageWidget *pixmap;
     
     const ProjectInfo *projectInfo;
     QGridLayout *projectLayout;

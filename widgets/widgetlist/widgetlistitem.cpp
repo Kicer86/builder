@@ -28,6 +28,9 @@
 #include "misc/functions.hpp"
 
 #include "widgetlistitem.hpp"
+#include "widgets/imagewidget.hpp"
+#include "data_containers/imagesmanager.hpp"
+#include <QTimer>
 
 WidgetListItem::WidgetListItem(const ProjectInfo* pI):
     QWidget(),
@@ -93,7 +96,7 @@ void WidgetListItem::construct()
     }
   }
 
-  pixmap=new QLabel(this);
+  pixmap=new ImageWidget(this);
 
   //główny layout
   QHBoxLayout *mainLayout=new QHBoxLayout(this);
@@ -102,6 +105,10 @@ void WidgetListItem::construct()
   
   if (editor==false)
     updateValues();   //zaktualizuj widok
+    
+    QTimer *timer=new QTimer(this);
+  connect (timer, SIGNAL(timeout()), this, SLOT(update()));
+  timer->start(50);
 }
 
 
@@ -135,16 +142,16 @@ void WidgetListItem::updateValues()
 
   projectInfo->updateStatus();
 
-  ///\TODO: bardzo tymczasowe rozwiązanie (wyciek)
-  QPixmap *ico;
+  pixmap->clear();
   if (projectInfo->getStatus()==ProjectInfo::Build || projectInfo->getStatus()==ProjectInfo::All)
-    ico=new QPixmap(dataPath("icons/48x48/build.png"));
+  {
+    pixmap->appendLayer(ImagesManager::instance()->getImage("build.png",48));
+    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg",48));
+  }
   else if (projectInfo->getStatus()==ProjectInfo::Check)
-    ico=new QPixmap(dataPath("icons/48x48/download.png"));
+    pixmap->appendLayer(ImagesManager::instance()->getImage("download.png",48));
   else
-    ico=new QPixmap(dataPath("icons/48x48/off.png"));
-
-  pixmap->setPixmap(*ico);
+    pixmap->appendLayer(ImagesManager::instance()->getImage("off.png",48));
 }
 
 
