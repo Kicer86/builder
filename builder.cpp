@@ -19,6 +19,7 @@
 #include "widgets/widgetlist/widgetlistview.hpp"
 
 #include "builder.hpp"
+#include "dialogs/newprojectwizard.hpp"
 
 builder::builder()
 {    
@@ -83,7 +84,9 @@ void builder::optionsDialog()
 
 void builder::projectsDialog()
 {
-
+  NewProjectWizard wizard;
+  wizard.setModal(true);
+  wizard.exec();
 }
 
 void builder::closeEvent(QCloseEvent* e)

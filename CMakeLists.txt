@@ -29,6 +29,7 @@ set(builder_SRCS
   data_containers/projectversion.cpp
   data_containers/releaseinfo.cpp
   dialogs/configdialog.cpp
+  dialogs/newprojectwizard.cpp
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
@@ -48,6 +49,7 @@ set(builder_MOC
   data_containers/editorsmanager.hpp
   data_containers/releaseinfo.hpp
   dialogs/configdialog.hpp
+  dialogs/newprojectwizard.hpp
   misc/downloader.hpp
   misc/editfile.hpp
   misc/estimator.hpp
@@ -56,9 +58,17 @@ set(builder_MOC
   widgets/widgetlist/widgetlistview.hpp
 )
 
-set(builder_UIS dialogs/configdialog.ui widgets/projectinfowidget.ui)
+set(builder_UIS 
+  dialogs/configdialog.ui
+  dialogs/newprojectwizard.ui
+  widgets/projectinfowidget.ui
+)
 
-set(builder_IMGS icons/build.svg icons/download.svg icons/off.svg)
+set(builder_IMGS 
+  icons/build.svg
+  icons/download.svg
+  icons/off.svg
+)
 
 qt4_wrap_ui(builder_UIFILES ${builder_UIS})
 qt4_automoc(${builder_SRCS})
