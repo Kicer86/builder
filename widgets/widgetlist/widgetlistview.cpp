@@ -72,6 +72,7 @@ void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
 
       //stwórz na jego podstawie widget
       WidgetListItem *piw=new WidgetListItem(pi);
+      piw->setAttribute(Qt::WA_PaintOnScreen);
 
       //zapisz widget w bazie
       widgets->insert(id, piw);

@@ -20,6 +20,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QGroupBox>
 
 #include "data_containers/releaseinfo.hpp"
@@ -30,7 +31,6 @@
 #include "widgetlistitem.hpp"
 #include "widgets/imagewidget.hpp"
 #include "data_containers/imagesmanager.hpp"
-#include <QTimer>
 
 WidgetListItem::WidgetListItem(const ProjectInfo* pI):
     QWidget(),
@@ -105,10 +105,6 @@ void WidgetListItem::construct()
   
   if (editor==false)
     updateValues();   //zaktualizuj widok
-    
-    QTimer *timer=new QTimer(this);
-  connect (timer, SIGNAL(timeout()), this, SLOT(update()));
-  timer->start(50);
 }
 
 

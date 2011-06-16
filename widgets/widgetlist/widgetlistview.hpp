@@ -29,7 +29,7 @@ class WidgetListView: public QListView
 {
     Q_OBJECT
 
-    QHash<int, WidgetListItem *> *widgets;
+    QHash<int, WidgetListItem *> *widgets;   //lista wydgetów które są wyświetlane na liście
     QWidget *backgroundWidget;
 
     QRect itemSize(const QModelIndex &index) const;
