@@ -3,20 +3,28 @@
 
 #include <QWizard>
 
-namespace Ui {
-    class NewProjectWizard;
+class QLineEdit;
+namespace Ui
+{
+  class NewProjectWizard;
 }
 
 class NewProjectWizard : public QWizard
 {
     Q_OBJECT
 
-public:
+    Ui::NewProjectWizard *ui;
+    QList<QLineEdit *> edits;
+    
+    void addReleseLineEdit();
+    
+  private slots:
+    void textChanged(const QString &);
+    
+  public:
     explicit NewProjectWizard(QWidget *parent = 0);
     ~NewProjectWizard();
 
-private:
-    Ui::NewProjectWizard *ui;
 };
 
 #endif // NEWPROJECTWIZARD_HPP
