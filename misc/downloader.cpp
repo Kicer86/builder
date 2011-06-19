@@ -32,6 +32,7 @@ extern "C"
 #include <QEventLoop>
 #include <QRegExp>
 #include <QStringList>
+#include <QDir>
 
 #include <htmlparser.hpp>
 #include <std_macros.hpp>
@@ -70,6 +71,9 @@ static int searchForPkg(lua_State *state)
     if (url.host()=="sourceforge.net" || url.host()=="www.sourceforge.net")  //SF?
       type=DownloaderHelper::SourceForge;
 
+    if (url.host()=="code.google.com" || url.host()=="code.google.com")      //CG?
+      type=DownloaderHelper::CodeGoogle;
+
     //... jakieś inne
   }
 
@@ -83,7 +87,8 @@ static int searchForPkg(lua_State *state)
     {
       case DownloaderHelper::Index:       toMatch=entry.url;  break;
       case DownloaderHelper::SourceForge: toMatch=entry.name; break;
-      default: break;
+      case DownloaderHelper::CodeGoogle:  toMatch=entry.name; break;
+      case DownloaderHelper::None: break;
     }
 
     if (searchRegEx.exactMatch(toMatch))  //przeszukaj wpisy pod kątem tych, pasujących do wzorca
@@ -95,7 +100,7 @@ static int searchForPkg(lua_State *state)
       switch (type)
       {
         case DownloaderHelper::Index:
-          version=ProjectVersion(entry.url);    //jeśli element spasował, to dodaj go do listy
+          version=ProjectVersion(entry.url);     //jeśli element spasował, to dodaj go do listy
           break;
 
         case DownloaderHelper::SourceForge:
@@ -103,7 +108,11 @@ static int searchForPkg(lua_State *state)
           version.setPkgUrl(QUrl(entry.url));    //zapisz element docelowy (w przypadku linków - href)
           break;
 
-        default:
+        case DownloaderHelper::CodeGoogle:
+          version=ProjectVersion(entry.name);    //name of package is enought
+          break;
+
+        case DownloaderHelper::None:
           break;
       }
 
@@ -121,8 +130,17 @@ static int searchForPkg(lua_State *state)
     }
   }
 
-  QByteArray ret=maxVersion.text().toUtf8();
-  qDebug() << "current version:" << ret;
+  QByteArray ret;
+  if (maxVersion.isEmpty()==false)
+  {
+    ret=maxVersion.text().toUtf8();
+    qDebug() << "current version:" << ret;
+  }
+  else
+  {
+    qWarning() << "current version: could not find any matching file :(";
+    ret="";
+  }
 
   lua_pushstring(state, ret.data());
   return 1;
@@ -157,6 +175,11 @@ DownloaderHelper::DownloaderHelper(const QUrl& url, Mode m, DownloaderHelper::Se
     case Download:
       assert(downloader!=0);
       qDebug() << QString ("Downloading: %1\n\t\tto: %2").arg(url.toString()).arg(localFile);
+      
+      //check if local directory exists
+      QDir directory(QFileInfo(localFile).absoluteDir());
+      if (directory.exists()==false)   //no?
+        directory.mkpath(".");        //create it then
 
       wget=new WgetWrapper(url, localFile);
       connect(wget, SIGNAL(requestFinished(int,bool)), this, SLOT(commandFinished(int,bool)));
@@ -167,7 +190,7 @@ DownloaderHelper::DownloaderHelper(const QUrl& url, Mode m, DownloaderHelper::Se
 
   if (ftp)
     connect(ftp, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
-  else if(http)
+  else if (http)
     connect(http, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
 
   localLoop=new QEventLoop;  //lokalna pętla potrzebna do wyczekiwania na połączenie
@@ -203,7 +226,7 @@ void DownloaderHelper::commandFinished(int id, bool error)
       case Check:           //wyszukiwanie paczki
         if (ftp)
         {
-          //czekalismy na dany, przyszły, wiec koncz
+          //czekalismy na dane, przyszły, wiec koncz
           //(nic nie trzeba robić)
         }
         else if (http)
@@ -224,7 +247,10 @@ void DownloaderHelper::commandFinished(int id, bool error)
               links=parser.findAll("a[class=name][href]");
               break;
 
-            default:
+            case CodeGoogle:
+              links=parser.findAll("td[class='vt id col_0'] a");
+
+            case None:
               break;
           }
 
@@ -265,7 +291,7 @@ DownloaderHelper::~DownloaderHelper()
     disconnect(http);
     delete http;
   }
-  
+
   if (wget)
   {
     disconnect(wget);

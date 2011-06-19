@@ -48,7 +48,7 @@ ProjectVersion::ProjectVersion():
 void ProjectVersion::setValues(const QString& partialUrl)
 {
   empty=false;
-  rawVersion=partialUrl;             //p to częsciowy (wersja p + rozszerzenie]) lub cały url do pliku
+  rawVersion=partialUrl;             //partialUrl to częsciowy (wersja + rozszerzenie]) lub cały url do pliku
   QFileInfo fileInfo(partialUrl);
   //                major      minor         release     build
   QRegExp version(".*([0-9]+)[-.]([0-9]+)[-.]?([0-9]*)[-.]?([0-9]*).*");

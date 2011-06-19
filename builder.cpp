@@ -20,12 +20,13 @@
 
 #include "builder.hpp"
 #include "dialogs/newprojectwizard.hpp"
+#include <QMessageBox>
 
 builder::builder()
-{    
+{
   WidgetListView *projectList=new WidgetListView(this);
   proxy=new WidgetListProxyModel(this);
-  
+
   proxy->setSourceModel(ProjectsManager::instance()->getModel());
   projectList->setModel(proxy);
 
@@ -86,7 +87,42 @@ void builder::projectsDialog()
 {
   NewProjectWizard wizard;
   wizard.setModal(true);
-  wizard.exec();
+  if (wizard.exec()==QDialog::Accepted)  //accepted?
+  {
+    QString projsPath=Settings::instance()->getProjectsPath();
+    QString projectName=wizard.getProjectName();
+
+    QDir projDir(projsPath);
+    if (projDir.mkdir(wizard.getProjectName())==false)
+    {
+      QMessageBox::critical(this, tr("Error"), tr("Could not create project's directory (%1) in %2.")
+                            .arg(projectName, projsPath)
+                           );
+    }
+    else   //it's ok, add releases directories
+    {
+      bool ok=true;
+      foreach(QString relName, wizard.getReleasesNames())
+      {
+        QDir relDir(projsPath+"/"+projectName);
+        if (relDir.mkdir(relName)==false)
+        {
+          ok=false;
+          break;
+        }
+      }
+
+      if (ok)
+      {
+        ProjectInfo *projectInfo=new ProjectInfo(projectName);
+        ProjectsManager::instance()->registerProject(projectInfo);
+      }
+      else
+        QMessageBox::critical(this, tr("Error"), tr("Could not create one of project's releases directory in %1.")
+                              .arg(projsPath)
+                             );
+    }
+  }
 }
 
 void builder::closeEvent(QCloseEvent* e)

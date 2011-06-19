@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>298</height>
+    <width>396</width>
+    <height>296</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Wizard</string>
@@ -43,7 +49,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage2"/>
+  <widget class="QWizardPage" name="downloadScript">
+   <property name="title">
+    <string>Download script</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

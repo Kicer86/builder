@@ -24,7 +24,9 @@ class NewProjectWizard : public QWizard
   public:
     explicit NewProjectWizard(QWidget *parent = 0);
     ~NewProjectWizard();
-
+    
+    QString getProjectName() const;
+    QStringList getReleasesNames() const;
 };
 
 #endif // NEWPROJECTWIZARD_HPP

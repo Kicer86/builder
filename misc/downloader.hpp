@@ -52,7 +52,8 @@ class DownloaderHelper: public QObject
     {
       None,
       Index,
-      SourceForge
+      SourceForge,
+      CodeGoogle
     };
     
     struct DownloaderEntry
