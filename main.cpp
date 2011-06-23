@@ -1,12 +1,6 @@
-#include <QtGui/QApplication>
-#include <QTextCodec>
+#include "stdafx.h"
 
 #include "builder.hpp"
-
-
-#include <QRegExp>
-#include <QDebug>
-#include <QTime>
 
 int main(int argc, char** argv)
 {

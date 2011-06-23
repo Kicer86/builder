@@ -1,8 +1,7 @@
 
-#include <assert.h>
+#include "stdafx.h"
 
-#include <QLayout>
-#include <QLineEdit>
+#include <assert.h>
 
 #include "newprojectwizard.hpp"
 #include "ui_newprojectwizard.h"

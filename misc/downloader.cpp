@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "stdafx.h"
+
 #include <assert.h>
 
 extern "C"
@@ -24,15 +26,6 @@ extern "C"
 #include <lauxlib.h>
 #include <lualib.h>
 }
-
-#include <QDebug>
-#include <QFtp>
-#include <QHttp>
-#include <QFile>
-#include <QEventLoop>
-#include <QRegExp>
-#include <QStringList>
-#include <QDir>
 
 #include <htmlparser.hpp>
 #include <std_macros.hpp>

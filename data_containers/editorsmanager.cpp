@@ -16,9 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <assert.h>
+#include "stdafx.h"
 
-#include <QFile>
+#include <assert.h>
 
 #include "misc/editfile.hpp"
 #include "editorsmanager.hpp"

@@ -1,14 +1,5 @@
 
-#include <QDir>
-#include <QLayout>
-#include <QLabel>
-#include <QScrollArea>
-#include <QGroupBox>
-#include <QCheckBox>
-#include <QDockWidget>
-#include <QDebug>
-#include <QMenuBar>
-#include <QStandardItemModel>
+#include "stdafx.h"
 
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"

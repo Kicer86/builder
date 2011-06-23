@@ -15,13 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <assert.h>
 
-#include <QDir>
-#include <QDebug>
-#include <QPlainTextDocumentLayout>
-#include <QSettings>
-#include <QTextDocument>
+#include "stdafx.h"
+
+#include <assert.h>
 
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"

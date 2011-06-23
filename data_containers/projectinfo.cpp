@@ -16,14 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <assert.h>
+#include "stdafx.h"
 
-#include <QSettings>
-#include <QDir>
-#include <QDebug>
-#include <QTextCursor>
-#include <QTextDocument>
-#include <QPlainTextEdit>
+#include <assert.h>
 
 #include "misc/settings.hpp"
 #include "misc/downloader.hpp"

@@ -16,11 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <assert.h>
+#include "stdafx.h"
 
-#include <QDebug>
-#include <QApplication>
-#include <QPainter>
+#include <assert.h>
 
 #include "widgetdelegate.hpp"
 #include "widgetlistitem.hpp"

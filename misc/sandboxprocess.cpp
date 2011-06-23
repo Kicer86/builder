@@ -16,12 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <grp.h>
+#include "stdafx.h"
 
 #include "sandboxprocess.hpp"
 #include "settings.hpp"

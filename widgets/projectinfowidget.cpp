@@ -16,15 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QPlainTextEdit>
-#include <QDebug>
-#include <QListView>
-#include <QStringListModel>
-#include <QTemporaryFile>
-#include <QProcess>
-#include <QStyledItemDelegate>
-#include <QPainter>
-#include <QApplication>
+#include "stdafx.h"
 
 #include "projectinfowidget.hpp"
 #include "data_containers/editorsmanager.hpp"

@@ -16,9 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTimer>
-#include <QStandardItemModel>
-#include <QDebug>
+#include "stdafx.h"
 
 #include "projectinfo.hpp"
 #include "projectsmanager.hpp"

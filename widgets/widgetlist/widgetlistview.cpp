@@ -15,14 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <assert.h>
 
-#include <QBoxLayout>
-#include <QEvent>
-#include <QDebug>
-#include <QPainter>
-#include <QStandardItemModel>
-#include <QScrollBar>
+#include "stdafx.h"
+
+#include <assert.h>
 
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
