@@ -35,7 +35,7 @@ class ImageLayer: public QPixmap
     ImageLayer(const QString& imagePath);  //Fixed size images
     ImageLayer(const QString& imagePath, int w, int h);  //svg
     ImageLayer(const QByteArray &imageData);
-    ImageLayer(const QPixmap &image);  //QImage, QPixmap, QBitmap and QPicture
+    ImageLayer(const QPixmap &image);      //QImage, QPixmap, QBitmap and QPicture
     ImageLayer(const ImageLayer& il );
     virtual ~ImageLayer();
 

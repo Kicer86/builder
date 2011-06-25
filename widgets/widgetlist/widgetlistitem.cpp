@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
+#include <QModelIndex>
 
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -32,8 +33,9 @@
 #include "widgets/imagewidget.hpp"
 #include "data_containers/imagesmanager.hpp"
 
-WidgetListItem::WidgetListItem(const ProjectInfo* pI):
+WidgetListItem::WidgetListItem(const ProjectInfo* pI, const QModelIndex *mI):
     QWidget(),
+    modelIndex(mI),
     editor(false),
     origins(0),
     projectInfo(pI)
@@ -53,7 +55,7 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
   construct();
   resize(w->size());
   setAutoFillBackground(true);  //tło musi być!
-  setFocusPolicy(Qt::StrongFocus);
+//   setFocusPolicy(Qt::StrongFocus);
 }
 
 

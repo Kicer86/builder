@@ -27,11 +27,13 @@ class ImageWidget;
 class ProjectInfo;
 class QGridLayout;
 class QGroupBox;
+class QModelIndex;
 
 class WidgetListItem:public QWidget
 {
+    const QModelIndex *modelIndex;             //każdy WidgetListItem w trybie nieedytora jest powiązany z indexem w modelu/widoku
     QGroupBox *groupBox;
-    const bool editor; 
+    const bool editor;                         //widget moze trwać w jednym z dwóch stanów: edytor i nieedytor ;)
     WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
     QList<QLabel *> download, build;
     ImageWidget *pixmap;
@@ -43,7 +45,7 @@ class WidgetListItem:public QWidget
     void updateValues();
         
   public:
-    WidgetListItem(const ProjectInfo* pI);
+    WidgetListItem(const ProjectInfo* pI, const QModelIndex *);
     WidgetListItem(WidgetListItem* w);
     virtual ~WidgetListItem();
     
