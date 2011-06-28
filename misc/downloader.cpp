@@ -18,8 +18,6 @@
 
 #include "stdafx.h"
 
-#include <assert.h>
-
 extern "C"
 {
 #include <lua.h>
