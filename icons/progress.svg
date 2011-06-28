@@ -30,16 +30,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="-171.71428"
+     inkscape:cx="188.75394"
      inkscape:cy="228.89858"
      inkscape:document-units="px"
      inkscape:current-layer="svg2"
      showgrid="true"
-     inkscape:window-width="1280"
-     inkscape:window-height="978"
-     inkscape:window-x="-5"
+     inkscape:window-width="1670"
+     inkscape:window-height="973"
+     inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
        id="grid3803"
@@ -80,7 +80,7 @@
        repeatCount="indefinite"
        id="animateTransform3084" />
     <path
-       style="fill:#ffffff"
+       style="fill:none"
        d="M 5.0437786e-6,256 4.0569312e-6,3.2425905e-5 256,3.3100343e-5 512,3.377478e-5 512,256.00001 l 0,255.99997 -256,0 -255.9999939693739,0 L 5.0437786e-6,256 z"
        id="path3345"
        inkscape:connector-curvature="0" />

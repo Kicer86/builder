@@ -24,10 +24,11 @@ add_subdirectory(icons)
 
 configure_file (${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
 
-set(builder_SRCS
+set(builder_SRCS 
   builder.cpp
   main.cpp
   data_containers/editorsmanager.cpp
+  data_containers/imagesmanager.cpp
   data_containers/projectinfo.cpp 
   data_containers/projectsmanager.cpp
   data_containers/projectversion.cpp
@@ -41,6 +42,7 @@ set(builder_SRCS
   misc/sandboxprocess.cpp
   misc/settings.cpp
   misc/wgetwrapper.cpp
+  widgets/imagewidget.cpp
   widgets/projectinfowidget.cpp
   widgets/widgetlist/widgetdelegate.cpp
   widgets/widgetlist/widgetlistitem.cpp
@@ -58,6 +60,7 @@ set(builder_MOC
   misc/editfile.hpp
   misc/estimator.hpp
   misc/wgetwrapper.hpp
+  widgets/imagewidget.hpp
   widgets/projectinfowidget.hpp
   widgets/widgetlist/widgetlistview.hpp
 )
@@ -66,6 +69,13 @@ set(builder_UIS
   dialogs/configdialog.ui
   dialogs/newprojectwizard.ui
   widgets/projectinfowidget.ui
+)
+
+set(builder_IMGS 
+  icons/build.svg 
+  icons/download.svg 
+  icons/off.svg
+  icons/progress.svg
 )
 
 qt4_wrap_ui(builder_UIFILES ${builder_UIS})
@@ -79,6 +89,7 @@ target_link_libraries(builder
       ${QT_QTCORE_LIBRARY} 
       ${QT_QTGUI_LIBRARY} 
       ${QT_QTNETWORK_LIBRARY} 
+      ${QT_QTSVG_LIBRARY}
       ${LUA_LIBRARIES}
       htmlParser)
       

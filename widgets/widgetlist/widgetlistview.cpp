@@ -51,7 +51,7 @@ void WidgetListView::rowsAboutToBeRemoved(const QModelIndex& p, int start, int e
 }
 
 
-void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
+void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int end)
 {
   //stwórz dla nowych wierszy widgety które będą wyświetlane w liście
   for(int i=start; i<=end; i++)
@@ -67,13 +67,14 @@ void WidgetListView::rowsInserted(const QModelIndex& p, int start, int end)
       ProjectInfo *pi=ProjectsManager::instance()->findProject(id);
 
       //stwórz na jego podstawie widget
-      WidgetListItem *piw=new WidgetListItem(pi);
+      WidgetListItem *piw=new WidgetListItem(pi, &modelIndex);
+      piw->setAttribute(Qt::WA_PaintOnScreen);
 
       //zapisz widget w bazie
       widgets->insert(id, piw);
     }
   }
-  QAbstractItemView::rowsInserted(p, start, end);
+  QAbstractItemView::rowsInserted(modelIndex, start, end);
   itemEdited();              //potraktuj to także jako edycję elementu -> odświeżymy widok
 
 //   qDebug() << "mark";

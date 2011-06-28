@@ -18,17 +18,18 @@
 
 #include "stdafx.h"
 
-#include <assert.h>
-
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
 #include "misc/settings.hpp"
 #include "misc/functions.hpp"
 
 #include "widgetlistitem.hpp"
+#include "widgets/imagewidget.hpp"
+#include "data_containers/imagesmanager.hpp"
 
-WidgetListItem::WidgetListItem(const ProjectInfo* pI):
+WidgetListItem::WidgetListItem(const ProjectInfo* pI, const QModelIndex *mI):
     QWidget(),
+    modelIndex(mI),
     editor(false),
     origins(0),
     projectInfo(pI)
@@ -48,7 +49,7 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
   construct();
   resize(w->size());
   setAutoFillBackground(true);  //tło musi być!
-  setFocusPolicy(Qt::StrongFocus);
+//   setFocusPolicy(Qt::StrongFocus);
 }
 
 
@@ -91,7 +92,7 @@ void WidgetListItem::construct()
     }
   }
 
-  pixmap=new QLabel(this);
+  pixmap=new ImageWidget(this);
 
   //główny layout
   QHBoxLayout *mainLayout=new QHBoxLayout(this);
@@ -133,16 +134,16 @@ void WidgetListItem::updateValues()
 
   projectInfo->updateStatus();
 
-  ///\TODO: bardzo tymczasowe rozwiązanie (wyciek)
-  QPixmap *ico;
+  pixmap->clear();
   if (projectInfo->getStatus()==ProjectInfo::Build || projectInfo->getStatus()==ProjectInfo::All)
-    ico=new QPixmap(dataPath("icons/48x48/build.png"));
+  {
+    pixmap->appendLayer(ImagesManager::instance()->getImage("build.png",48));
+    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg",48));
+  }
   else if (projectInfo->getStatus()==ProjectInfo::Check)
-    ico=new QPixmap(dataPath("icons/48x48/download.png"));
+    pixmap->appendLayer(ImagesManager::instance()->getImage("download.png",48));
   else
-    ico=new QPixmap(dataPath("icons/48x48/off.png"));
-
-  pixmap->setPixmap(*ico);
+    pixmap->appendLayer(ImagesManager::instance()->getImage("off.png",48));
 }
 
 

@@ -3,6 +3,7 @@
 #define STDAFX_H
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
