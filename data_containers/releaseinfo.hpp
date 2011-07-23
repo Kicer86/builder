@@ -81,8 +81,8 @@ class ReleaseInfo:public QObject
     void setState(State st);
 
   private slots:
-    void downloadCheck(int);         //używane przez WidgetListItem
-    void buildCheck(int);            //używane przez WidgetListItem
+    void setDownloadOption(int);         //używane przez WidgetListItem
+    void setBuildOption(int);            //używane przez WidgetListItem
     void updateProgress(int, int);
     void updateProgress(qint64, qint64);
     void buildMessages();
@@ -108,13 +108,15 @@ class ReleaseInfo:public QObject
     qint64 getProgressDone() const;
     void update();                                  //sprawdź jakie jest bieżąca wersja
     void downloadPkg();                             //pobierz paczkę z bieżącą wersją
-    void buildPkg(BuildMode);      //zbuduj paczkę RPM (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
+    void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
     const Estimator *getEstimator() const;
 
     State getState() const;
 
   signals:
-    void changed(int);
+    void statusChanged(int);       //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
+    void optionsChanged();         //zmieniły się opcje releasea (budouj/nie buduj, ściągaj/nie ściągaj)
+    void logWillChange();          //log budowania zaraz zmieni swoją zawartość.
 };
 
 #endif // RELEASEINFO_HPP

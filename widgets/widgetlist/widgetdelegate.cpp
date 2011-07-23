@@ -16,9 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
 
 #include <assert.h>
+
+#include <QPainter>
+#include <QApplication>
 
 #include "widgetdelegate.hpp"
 #include "widgetlistitem.hpp"
@@ -88,7 +90,6 @@ QWidget* WidgetDelegate::createEditor(QWidget* p, const QStyleOptionViewItem& , 
 {
   WidgetListItem *editor=new WidgetListItem(getProjectWidget(index)); //stwórz klona
   editor->setParent(p);
-  connect(editor, SIGNAL(destroyed(QObject*)), view, SLOT(itemEdited()));  //zniszczenie edytora - odświeżenie (przesortowanie) modelu
   return editor;
 }
 

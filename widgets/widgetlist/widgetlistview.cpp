@@ -16,9 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
 
 #include <assert.h>
+
+#include <QDebug>
 
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
@@ -64,18 +65,19 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
     if (widgets->contains(id)==false)  // nie ma takiego elementu w bazie widgetów?
     {
       //znajdź projekt o zadanym id
-      ProjectInfo *pi=ProjectsManager::instance()->findProject(id);
+      ProjectInfo *projectInfo=ProjectsManager::instance()->findProject(id);
 
       //stwórz na jego podstawie widget
-      WidgetListItem *piw=new WidgetListItem(pi, &modelIndex);
-      piw->setAttribute(Qt::WA_PaintOnScreen);
+      WidgetListItem *widgetListItem=new WidgetListItem(projectInfo, ch);
+      connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
+      connect(projectInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
 
       //zapisz widget w bazie
-      widgets->insert(id, piw);
+      widgets->insert(id, widgetListItem);
     }
   }
   QAbstractItemView::rowsInserted(modelIndex, start, end);
-  itemEdited();              //potraktuj to także jako edycję elementu -> odświeżymy widok
+  itemChanged();              //potraktuj to także jako edycję elementu -> odświeżymy widok
 
 //   qDebug() << "mark";
 //   dumpModel(model()->index(0,0));
@@ -127,9 +129,16 @@ void WidgetListView::itemClicked(const QModelIndex& index) const
 }
 
 
-void WidgetListView::itemEdited()
+void WidgetListView::itemChanged()
 {
   model()->sort(0, Qt::AscendingOrder);
+}
+
+
+void WidgetListView::itemReload(const QModelIndex& index) 
+{
+  dataChanged(index,index);  //only this one works :/
+  //update(index);
 }
 
 

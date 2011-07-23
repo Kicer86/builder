@@ -16,7 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
+#include <QStyledItemDelegate>
+#include <QPainter>
+#include <QStringListModel>
+#include <QListView>
+#include <QScrollBar>
+#include <QDebug>
+#include <QTemporaryFile>
 
 #include "projectinfowidget.hpp"
 #include "data_containers/editorsmanager.hpp"
@@ -54,7 +60,7 @@ static class HtmlDelegate:public QStyledItemDelegate
 
 
 ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
-    QWidget(p,f),releaseInfo(0)
+    QWidget(p,f),releaseInfo(0), autoScrool(true)
 {
   ui =new Ui_ProjectInfoForm();
   ui->setupUi(this);
@@ -94,6 +100,7 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
   connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
   connect(ui->buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
   connect(ui->fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
+  connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 }
 
 
@@ -121,7 +128,8 @@ void ProjectInfoWidget::setProjectRelease(ReleaseInfo* ri)
   }
 
   releaseInfo=ri;
-  connect(releaseInfo, SIGNAL(changed(int)), this, SLOT(refresh(int)));
+  connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(refresh(int)));
+  connect(releaseInfo, SIGNAL(logWillChange()), this, SLOT(logWillChange()));
 
   ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
   refresh(ReleaseInfo::AllChanged);
@@ -217,6 +225,24 @@ void ProjectInfoWidget::refresh(int type)
         ui->progressBar->reset();
     }
   }
+}
+
+
+void ProjectInfoWidget::logWillChange()
+{
+  QScrollBar *bar=ui->buildMessages->verticalScrollBar();
+  
+  autoScrool=bar->value()==bar->maximum();
+}
+
+
+void ProjectInfoWidget::logChanged()
+{
+  if (autoScrool)
+  {
+    QScrollBar *bar=ui->buildMessages->verticalScrollBar();
+    bar->setValue(bar->maximum());
+  }    
 }
 
 

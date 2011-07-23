@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include <QApplication>
+#include <QTextCodec>
 
 #include "builder.hpp"
 
@@ -12,14 +13,6 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("Michał Walenciak");
   QCoreApplication::setOrganizationDomain("http://kicer.sileman.net.pl");
   QCoreApplication::setApplicationName("Builder");
-  
-//   QRegExp version("^\\[([0-9 ]{3})\\%\\].*");
-//   qDebug() << version.exactMatch("[  3%] hjhjkhjk");
-//   qDebug() << version.captureCount();
-//   qDebug() << version.capturedTexts();
-//   qDebug() << version.capturedTexts()[1].toInt();
-// 
-//   return 0;
 
   builder foo;
   foo.show();

@@ -24,10 +24,13 @@
 
 #include "projectversion.hpp"
 
+class QTimer;
 class ReleaseInfo;
 
-class ProjectInfo
+class ProjectInfo: public QObject
 {
+    Q_OBJECT
+  
   public:
     ProjectInfo(QString n);
     virtual ~ProjectInfo();
@@ -37,13 +40,15 @@ class ProjectInfo
       Nothing,
       Check,
       Build,
-      All
+      All,
+      CheckInProgress,
+      BuildInProgress,
+      AllInProgress
     };
 
     const QList<ReleaseInfo*> *getReleasesList() const;
     QString getName() const;
     int getId() const;
-    Status updateStatus() const;
     Status getStatus() const;
 
   private:
@@ -51,6 +56,14 @@ class ProjectInfo
     const QString name;
     QList <ReleaseInfo *> releasesList;
     mutable Status status;
+    QTimer *timer;
+    
+  private slots:
+    void releaseChanged();     //one of releases has changed
+    void updateStatus() const;
+    
+  signals:
+    void changed() const;      //emited when project's status has changed (build/update/off chamge or progress/no progress)
 };
 
 #endif // PROJECTINFO_HPP

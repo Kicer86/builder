@@ -44,8 +44,12 @@ class ImageLayer: public QPixmap
 
 class ImageWidget : public QWidget
 {  
+    Q_OBJECT
+  
     QList<ImageLayer*> layers;
     QSize size;
+    
+    int addLayer(ImageLayer *layer);
     
   protected:
     virtual void paintEvent(QPaintEvent* );
@@ -54,8 +58,13 @@ class ImageWidget : public QWidget
     explicit ImageWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ImageWidget();
 
+    int prependLayer(ImageLayer* layer);
     int appendLayer(ImageLayer* layer);
     void clear();
+    
+  signals:
+    //TODO: add some option to turn on automatic repaint
+    void rerender();             //signal emited when widget requires to be updated
 };
 
 #endif // IMAGEWIDGET_HPP

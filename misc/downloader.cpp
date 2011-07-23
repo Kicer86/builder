@@ -16,7 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
+#include <assert.h>
+
+#include <QDebug>
+#include <QFtp>
+#include <QHttp>
+#include <QDir>
+#include <QEventLoop>
 
 extern "C"
 {

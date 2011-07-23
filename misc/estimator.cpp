@@ -16,14 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
 
 #include "data_containers/releaseinfo.hpp"
 #include "estimator.hpp"
 
 Estimator::Estimator(ReleaseInfo *ri):QObject(ri), releaseInfo(ri)
 {
-  connect(releaseInfo, SIGNAL(changed(int)), this, SLOT(update(int)));
+  connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(update(int)));
   time=new QTime();
 }
 

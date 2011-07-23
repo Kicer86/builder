@@ -1,5 +1,9 @@
 
-#include "stdafx.h"
+#include <QDebug>
+#include <QDir>
+#include <QDockWidget>
+#include <QMenuBar>
+#include <QStandardItemModel>
 
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -22,9 +26,9 @@ builder::builder()
   projectList->setModel(proxy);
 
   projectInfoWidget=new ProjectInfoWidget();
-  QDockWidget *projectInfoWidgetDock=new QDockWidget(tr("project info"));
-  projectInfoWidgetDock->setWidget(projectInfoWidget);
-  projectInfoWidgetDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+  QDockWidget *projectListWidgetDock=new QDockWidget(tr("project info"));
+  projectListWidgetDock->setWidget(projectList);
+  projectListWidgetDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
   ProjectsManager::instance()->setProjectInfoWidget(projectInfoWidget);
 
@@ -33,8 +37,8 @@ builder::builder()
   qDebug() << QString("scanning %1 for projects").arg(Settings::instance()->getProjectsPath());
   QStringList dirs=directory.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase);
 
-  setCentralWidget(projectList);
-  addDockWidget(Qt::RightDockWidgetArea, projectInfoWidgetDock);
+  setCentralWidget(projectInfoWidget);
+  addDockWidget(Qt::LeftDockWidgetArea, projectListWidgetDock);
 
   foreach(QString item, dirs)
   {

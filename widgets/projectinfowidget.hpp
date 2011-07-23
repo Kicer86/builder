@@ -26,7 +26,6 @@
 
 class QListView;
 class QStringListModel;
-class QPlainTextEdit;
 
 class ReleaseInfo;
 
@@ -36,6 +35,8 @@ class ProjectInfoWidget:public QWidget
 
     Ui_ProjectInfoForm *ui;
     ReleaseInfo *releaseInfo;
+    
+    bool autoScrool;                 //this value is set to true if build log should scroll to bottom automatically
 
     //info o projekcie
     QListView *localInfoView;
@@ -52,6 +53,8 @@ class ProjectInfoWidget:public QWidget
     void downloadButtonPressed();
     void buildButtonPressed();
     void fastBuildButtonPressed();
+    void logWillChange();
+    void logChanged();
 
 //   void refreshProgress();
 

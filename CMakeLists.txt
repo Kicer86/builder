@@ -53,6 +53,7 @@ set(builder_SRCS
 set(builder_MOC
   builder.hpp
   data_containers/editorsmanager.hpp
+  data_containers/projectinfo.hpp
   data_containers/releaseinfo.hpp
   dialogs/configdialog.hpp
   dialogs/newprojectwizard.hpp
@@ -62,6 +63,7 @@ set(builder_MOC
   misc/wgetwrapper.hpp
   widgets/imagewidget.hpp
   widgets/projectinfowidget.hpp
+  widgets/widgetlist/widgetlistitem.hpp
   widgets/widgetlist/widgetlistview.hpp
 )
 
@@ -83,7 +85,7 @@ qt4_automoc(${builder_SRCS})
 qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
 
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
-ADD_PRECOMPILED_HEADER(builder stdafx.h)
+# ADD_PRECOMPILED_HEADER(builder stdafx.h)
 
 target_link_libraries(builder 
       ${QT_QTCORE_LIBRARY} 

@@ -16,9 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
-
 #include <assert.h>
+
+#include <QTextDocument>
+#include <QPlainTextDocumentLayout>
+#include <QDebug>
+#include <QSettings>
+#include <QDir>
 
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -92,7 +96,6 @@ ReleaseInfo::~ReleaseInfo()
     settings.setArrayIndex(i);
     if (localVersions[pkgName].save(&settings))
       i++;            //inkrementuj tylko jesli było coś do zapisania
-
   }
   settings.endArray();
 
@@ -110,15 +113,17 @@ QString ReleaseInfo::releasePath() const
 }
 
 
-void ReleaseInfo::buildCheck(int checkState)
+void ReleaseInfo::setBuildOption(int checkState)
 {
   build=checkState==Qt::Checked;
+  emit optionsChanged();
 }
 
 
-void ReleaseInfo::downloadCheck(int checkState)
+void ReleaseInfo::setDownloadOption(int checkState)
 {
   download=checkState==Qt::Checked;
+  emit optionsChanged();
 }
 
 
@@ -127,7 +132,7 @@ void ReleaseInfo::updateProgress(int d, int t)
   done=d;
   total=t;
 
-  emit changed(ProgressChange);
+  emit statusChanged(ProgressChange);
 }
 
 
@@ -136,7 +141,7 @@ void ReleaseInfo::updateProgress(qint64 d, qint64 t)
   done=d;
   total=t;
 
-  emit changed(ProgressChange);
+  emit statusChanged(ProgressChange);
 }
 
 
@@ -145,8 +150,10 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
   state=st;
   if (state==Nothing)
     updateProgress(0,100);
+  
+  //status has changed
 
-  emit changed(StateChange);
+  emit statusChanged(StateChange);
 }
 
 
@@ -172,7 +179,10 @@ void ReleaseInfo::appendTextToLog(const QString& msg)
 
 void ReleaseInfo::buildMessages()
 {
-  //dopisz text do logu
+  //emit signal
+  emit logWillChange();
+  
+  //append text to log
   appendTextToLog(buildProcess->readAll()); //dopisz wszystko co zostało wyplute przez proces
 }
 

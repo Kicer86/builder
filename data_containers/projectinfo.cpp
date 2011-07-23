@@ -16,9 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
-
 #include <assert.h>
+
+#include <QDebug>
+#include <QDir>
+#include <QSettings>
+#include <QTimer>
 
 #include "misc/settings.hpp"
 #include "misc/downloader.hpp"
@@ -42,7 +45,17 @@ ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), n
   {
     ReleaseInfo *releaseInfo=new ReleaseInfo(release, this);
     releasesList.append(releaseInfo);
+    
+    //update itself when release has changed
+    connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(releaseChanged()));
+    connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(releaseChanged()));
   }
+  
+  timer=new QTimer();
+  timer->setInterval(100);
+  connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
+  
+  updateStatus();   //set status 
 }
 
 
@@ -73,7 +86,15 @@ int ProjectInfo::getId() const
 }
 
 
-ProjectInfo::Status ProjectInfo::updateStatus() const
+void ProjectInfo::releaseChanged()
+{
+  //release has changed, it's possible that more changes were commit, so don't update on each of them. 
+  //Do it once
+  timer->start();   //start timer;
+}
+
+
+void ProjectInfo::updateStatus() const
 {
   Status st=Nothing;
   //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
@@ -81,15 +102,31 @@ ProjectInfo::Status ProjectInfo::updateStatus() const
   {
     bool dwl=ri->getDownloadFlag();
     bool bld=ri->getBuildFlag();
+    bool progress=ri->getState()!=Nothing;  //is there something goin' on ?
    
-    if (dwl && st<Check)
-      st=Check;
-    
-    if (bld && st<Build)
-      st=Build;
+   
+    if (progress)
+    {
+      if (dwl && st<CheckInProgress)
+        st=CheckInProgress;
+      
+      if (bld && st<BuildInProgress)
+        st=BuildInProgress;
+    }
+    else
+    {
+      if (dwl && st<Check)
+        st=Check;
+      
+      if (bld && st<Build)
+        st=Build;
+    }
   }
   
-  return status=st;
+  bool update=status!=st; //current status differs from new one ?
+  status=st;  
+  if (update)  
+    emit changed();  //tell the world that needs to update
 }
 
 

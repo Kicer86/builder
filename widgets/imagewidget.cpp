@@ -94,12 +94,11 @@ void ImageWidget::paintEvent(QPaintEvent*)
 }
 
 
-int ImageWidget::appendLayer(ImageLayer *layer)
+int ImageWidget::addLayer(ImageLayer* layer)
 {
   if (layer->getRenderer())
-    connect(layer->getRenderer(), SIGNAL(repaintNeeded()), this, SLOT(update()));
-
-  layers.append(layer);
+    connect(layer->getRenderer(), SIGNAL(repaintNeeded()), this, /*SLOT(update()*/ SIGNAL(rerender()) );
+  
   if (layer->size().width()<size.width())
     size.setWidth(layer->size().width());
 
@@ -108,6 +107,20 @@ int ImageWidget::appendLayer(ImageLayer *layer)
 
   setFixedSize(size);
   return layers.size();
+}
+
+
+int ImageWidget::prependLayer(ImageLayer *layer)
+{
+  layers.prepend(layer);
+  return addLayer(layer);
+}
+
+
+int ImageWidget::appendLayer(ImageLayer *layer)
+{
+  layers.append(layer);
+  return addLayer(layer);
 }
 
 

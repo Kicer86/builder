@@ -16,7 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
+#include <QRegExp>
+#include <QStringList>
+#include <QDebug>
+#include <QSettings>
 
 #include "projectversion.hpp"
 #include <misc/settings.hpp>

@@ -37,8 +37,9 @@ class WidgetListView: public QListView
 
   private slots:
     void itemClicked(const QModelIndex &index) const;
-    void itemEdited();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
-
+    void itemChanged();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
+    void itemReload(const QModelIndex &index);
+    
   protected:
 //     virtual QRect visualRect(const QModelIndex& index) const;
 //     virtual void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);

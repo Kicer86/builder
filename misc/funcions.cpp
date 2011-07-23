@@ -16,7 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
+#include <QString>
+#include <QColor>
 
 #include "builder-config.h"
 #include "functions.hpp"

@@ -21,17 +21,19 @@
 #define PROJECTWIDGET_HPP
 
 #include <QWidget>
+#include <QModelIndex>
 
 class QLabel;
 class ImageWidget;
 class ProjectInfo;
 class QGridLayout;
 class QGroupBox;
-class QModelIndex;
 
 class WidgetListItem:public QWidget
 {
-    const QModelIndex *modelIndex;             //każdy WidgetListItem w trybie nieedytora jest powiązany z indexem w modelu/widoku
+    Q_OBJECT
+  
+    const QModelIndex modelIndex;              //każdy WidgetListItem w trybie nieedytora jest powiązany z indexem w modelu/widoku
     QGroupBox *groupBox;
     const bool editor;                         //widget moze trwać w jednym z dwóch stanów: edytor i nieedytor ;)
     WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
@@ -42,15 +44,21 @@ class WidgetListItem:public QWidget
     QGridLayout *projectLayout;
     
     void construct();
+    
+  private slots:
     void updateValues();
+    void internalRepaint(); 
         
   public:
-    WidgetListItem(const ProjectInfo* pI, const QModelIndex *);
+    WidgetListItem(const ProjectInfo* pI, const QModelIndex &);
     WidgetListItem(WidgetListItem* w);
     virtual ~WidgetListItem();
     
     const ProjectInfo *getProjectInfo() const;
     QRect childPos(int);              //odnajduje pozycję wydania wewnątrz QGroupBoxu
+    
+  signals:
+    void rerender(const QModelIndex &);           //signal emited when widget needs to be repainted
 };
 
 #endif // PROJECTWIDGET_HPP

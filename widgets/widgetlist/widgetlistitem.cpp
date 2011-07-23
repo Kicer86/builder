@@ -16,7 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
+#include <assert.h>
+
+#include <QCheckBox>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
 
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -27,7 +32,7 @@
 #include "widgets/imagewidget.hpp"
 #include "data_containers/imagesmanager.hpp"
 
-WidgetListItem::WidgetListItem(const ProjectInfo* pI, const QModelIndex *mI):
+WidgetListItem::WidgetListItem(const ProjectInfo* pI, const QModelIndex &mI):
     QWidget(),
     modelIndex(mI),
     editor(false),
@@ -50,6 +55,14 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
   resize(w->size());
   setAutoFillBackground(true);  //tło musi być!
 //   setFocusPolicy(Qt::StrongFocus);
+}
+
+
+WidgetListItem::~WidgetListItem()
+{
+  assert(editor == (origins>0));   //jesli origins to editor (i vice versa)
+//   if (origins)
+//     origins->updateValues();       //niech się widget wizualny zaktualizuje
 }
 
 
@@ -76,8 +89,8 @@ void WidgetListItem::construct()
       downloadEditor->setCheckState(dwl? Qt::Checked : Qt::Unchecked);
       buildEditor->setCheckState(bld? Qt::Checked : Qt::Unchecked);
 
-      connect(downloadEditor, SIGNAL(stateChanged(int)), release, SLOT(downloadCheck(int)));
-      connect(buildEditor, SIGNAL(stateChanged(int)), release, SLOT(buildCheck(int)));
+      connect(downloadEditor, SIGNAL(stateChanged(int)), release, SLOT(setDownloadOption(int)));
+      connect(buildEditor, SIGNAL(stateChanged(int)), release, SLOT(setBuildOption(int)));
 
       projectLayout->addWidget(downloadEditor, i, 1);
       projectLayout->addWidget(buildEditor, i, 2);
@@ -89,10 +102,13 @@ void WidgetListItem::construct()
 
       projectLayout->addWidget(download[i], i, 1);
       projectLayout->addWidget(build[i], i, 2);
+      
+      connect(projectInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
     }
   }
 
   pixmap=new ImageWidget(this);
+  connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint())); 
 
   //główny layout
   QHBoxLayout *mainLayout=new QHBoxLayout(this);
@@ -107,7 +123,8 @@ void WidgetListItem::construct()
 void WidgetListItem::updateValues()
 {
   assert(editor==false); //funkcja wywoływana tylko w trybie view
-
+  
+  //print releases info
   for (int i=0; i<projectInfo->getReleasesList()->size(); i++)
   {
     ReleaseInfo *release=projectInfo->getReleasesList()->at(i);
@@ -132,26 +149,28 @@ void WidgetListItem::updateValues()
                      );
   }
 
-  projectInfo->updateStatus();
-
   pixmap->clear();
-  if (projectInfo->getStatus()==ProjectInfo::Build || projectInfo->getStatus()==ProjectInfo::All)
+    
+  switch (projectInfo->getStatus())
   {
-    pixmap->appendLayer(ImagesManager::instance()->getImage("build.png",48));
-    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg",48));
+    case ProjectInfo::Nothing:
+      pixmap->appendLayer(ImagesManager::instance()->getImage("off.png",48));
+      break;
+    
+    case ProjectInfo::BuildInProgress:
+    case ProjectInfo::AllInProgress:
+      pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg",48));
+    case ProjectInfo::Build:
+    case ProjectInfo::All:
+      pixmap->prependLayer(ImagesManager::instance()->getImage("build.png",48));
+      break;
+    
+    case ProjectInfo::CheckInProgress:
+      pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg",48));
+    case ProjectInfo::Check:
+      pixmap->prependLayer(ImagesManager::instance()->getImage("download.png",48));
+      break;
   }
-  else if (projectInfo->getStatus()==ProjectInfo::Check)
-    pixmap->appendLayer(ImagesManager::instance()->getImage("download.png",48));
-  else
-    pixmap->appendLayer(ImagesManager::instance()->getImage("off.png",48));
-}
-
-
-WidgetListItem::~WidgetListItem()
-{
-  assert(editor == (origins>0));   //jesli origins to editor (i vice versa)
-  if (origins)
-    origins->updateValues();       //niech się widget wizualny zaktualizuje
 }
 
 
@@ -169,4 +188,10 @@ QRect WidgetListItem::childPos(int position)
   ret.setSize(QSize(width(), w->height()));                        //szerokość QGroupBoxa, wysokość etykiety
 
   return ret;
+}
+
+
+void WidgetListItem::internalRepaint()
+{
+  emit rerender(modelIndex);
 }

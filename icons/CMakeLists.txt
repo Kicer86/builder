@@ -5,6 +5,7 @@ set(builder_IMGS
   icons/build.svg
   icons/download.svg
   icons/off.svg
+  icons/progress.svg
 )
 
 unset(PROCESSED_IMAGES)
@@ -31,10 +32,15 @@ foreach(IMG ${builder_IMGS})
      
     set (PROCESSED_IMAGES ${PROCESSED_IMAGES} ${IMAGE_DIR}/${IMAGE_NAME_WE}.png)
     
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png DESTINATION ${BUILDER_DATADIR}/icons/${IMAGE_DIR}/ )
-      
+    
+    #processed
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png DESTINATION ${BUILDER_DATADIR}/icons/${IMAGE_DIR}/ )   
   endforeach(RES)
+  
+  #raw
+  install(FILES ${CMAKE_SOURCE_DIR}/${IMG} DESTINATION ${BUILDER_DATADIR}/icons/svg/)
 endforeach(IMG)
+
 
 add_custom_target(images ALL DEPENDS ${PROCESSED_IMAGES})
 message(${PROJECT_BINARY_DIR})
