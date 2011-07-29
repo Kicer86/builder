@@ -45,6 +45,7 @@ ImageLayer::ImageLayer(const QByteArray& imageData): QPixmap(), renderer(0)
 {
 }
 
+
 ImageLayer::ImageLayer(const QPixmap& image): QPixmap(image), renderer(0)
 {
 }
@@ -73,7 +74,7 @@ QSvgRenderer* ImageLayer::getRenderer() const
 
 
 
-ImageWidget::ImageWidget(QWidget* p, Qt::WindowFlags f): QWidget(p, f), size(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX)
+ImageWidget::ImageWidget(QWidget* p, Qt::WindowFlags f): QWidget(p, f), size(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX)
 { }
 
 

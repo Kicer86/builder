@@ -104,7 +104,6 @@ void ProjectInfo::updateStatus() const
     bool bld=ri->getBuildFlag();
     bool progress=ri->getState()!=Nothing;  //is there something goin' on ?
    
-   
     if (progress)
     {
       if (dwl && st<CheckInProgress)
