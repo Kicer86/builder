@@ -16,13 +16,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdlib>
 
 #include "sandboxprocess.hpp"
 #include "settings.hpp"
 
 QString SandboxProcess::runProcess(const QString& prcs, const QStringList& args, QProcess* proc)
 {
-  QString homePath=getenv("HOME");
+  QString homePath=std::getenv("HOME");
   if (Settings::instance()->getEnvType()==Settings::External)
     homePath="/root";
 
@@ -42,10 +43,10 @@ QString SandboxProcess::runProcess(const QString& prcs, const QStringList& args,
   proc->setProcessEnvironment(environment);
   
   /*
-  + FFLAGS='-O2 -g -pipe -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4'
-+ export FFLAGS
-+ LDFLAGS='-Wl,--warn-common -flto -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,--enable-new-dtags'
-*/
+    + FFLAGS='-O2 -g -pipe -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4'
+    + export FFLAGS
+    + LDFLAGS='-Wl,--warn-common -flto -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,--enable-new-dtags'
+  */
   QStringList arguments;
   QString process;
   

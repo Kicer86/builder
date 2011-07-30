@@ -6,12 +6,14 @@
 class ProjectInfoWidget;
 class WidgetListProxyModel;
 
-class builder : public QMainWindow
+class Builder: public QMainWindow
 {
     Q_OBJECT
-    
+
     ProjectInfoWidget *projectInfoWidget;
     WidgetListProxyModel *proxy;
+
+    void loadPlugins();
 
   private slots:
     void optionsDialog();
@@ -21,8 +23,8 @@ class builder : public QMainWindow
     virtual void closeEvent(QCloseEvent* );
 
   public:
-    builder();
-    virtual ~builder();
+    Builder();
+    virtual ~Builder();
 };
 
 #endif // builder_H

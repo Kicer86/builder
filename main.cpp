@@ -14,7 +14,8 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationDomain("http://kicer.sileman.net.pl");
   QCoreApplication::setApplicationName("Builder");
 
-  builder foo;
-  foo.show();
+  Builder builder;
+  builder.show();
+  
   return app.exec();
 }

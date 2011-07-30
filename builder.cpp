@@ -4,20 +4,22 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QStandardItemModel>
+#include <QPluginLoader>
 
+#include "builder.hpp"
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
 #include "dialogs/configdialog.hpp"
+#include "dialogs/newprojectwizard.hpp"
+#include "misc/functions.hpp"
 #include "misc/settings.hpp"
 #include "widgets/projectinfowidget.hpp"
 #include "widgets/widgetlist/widgetlistproxymodel.hpp"
 #include "widgets/widgetlist/widgetlistview.hpp"
 
-#include "builder.hpp"
-#include "dialogs/newprojectwizard.hpp"
 #include <QMessageBox>
 
-builder::builder()
+Builder::Builder()
 {
   WidgetListView *projectList=new WidgetListView(this);
   proxy=new WidgetListProxyModel(this);
@@ -58,14 +60,30 @@ builder::builder()
 
   mainMenu->addMenu(projectsMenu);
   mainMenu->addMenu(optionsMenu);
+
+
+  //load plugins
+  QDir pluginsDir(dataPath("plugins"));
+  foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+  {
+    QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+    QObject *plugin = loader.instance();
+    if (plugin)
+    {
+//       populateMenus(plugin);
+//       pluginFileNames += fileName;
+    }
+  }
 }
 
 
-builder::~builder()
+Builder::~Builder()
 {}
 
 
-void builder::optionsDialog()
+
+
+void Builder::optionsDialog()
 {
   ConfigDialog *config = new ConfigDialog(this);
   if (config->exec()==QDialog::Accepted)
@@ -78,7 +96,7 @@ void builder::optionsDialog()
 }
 
 
-void builder::projectsDialog()
+void Builder::projectsDialog()
 {
   NewProjectWizard wizard;
   wizard.setModal(true);
@@ -120,7 +138,7 @@ void builder::projectsDialog()
   }
 }
 
-void builder::closeEvent(QCloseEvent* e)
+void Builder::closeEvent(QCloseEvent* e)
 {
   ProjectsManager::instance()->destroyProjects();
   QWidget::closeEvent(e);

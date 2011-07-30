@@ -7,7 +7,10 @@ find_program(INKSCAPE inkscape)
 include(pch.cmake)
 
 include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
-add_definitions(-std=c++0x)
+
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
+
+# ForceAddFlags(CMAKE_CXX_FLAGS -std=c++0x)
 
 if (NOT BUILDER_DATADIR)
 	set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)
@@ -19,12 +22,15 @@ if (NOT BUILDER_BINDIR)
 	set (BUILDER_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 endif (NOT BUILDER_BINDIR)
 
-#ikony po powyższym, ponieważ używają ścieżek
-add_subdirectory(icons)
+include (plugins/plugins.cmake)
+
+#pozostałe katalogi po powyższym, ponieważ używają ścieżek
+add_subdirectory(images)
+add_subdirectory(plugins/buildin)
 
 configure_file (${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
 
-set(builder_SRCS 
+set(builder_SRCS
   builder.cpp
   main.cpp
   data_containers/editorsmanager.cpp
@@ -34,7 +40,7 @@ set(builder_SRCS
   data_containers/projectversion.cpp
   data_containers/releaseinfo.cpp
   dialogs/configdialog.cpp
-  dialogs/newprojectwizard.cpp
+  dialogs/newprojectwizard.cpp 
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
@@ -42,6 +48,7 @@ set(builder_SRCS
   misc/sandboxprocess.cpp
   misc/settings.cpp
   misc/wgetwrapper.cpp
+  plugins/buildplugin.cpp
   widgets/imagewidget.cpp
   widgets/projectinfowidget.cpp
   widgets/widgetlist/widgetdelegate.cpp
