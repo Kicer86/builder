@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <assert.h>
+
 #include <QStyledItemDelegate>
 #include <QPainter>
 #include <QStringListModel>
@@ -62,6 +64,11 @@ static class HtmlDelegate:public QStyledItemDelegate
 ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     QWidget(p,f),releaseInfo(0), autoScrool(true)
 {
+  //nothing usefull -> just protector (to be sure that only one ProjectInfoWidget has been declared)
+  static bool declared;   
+  assert(declared==false);
+  declared=true;
+  
   ui =new Ui_ProjectInfoForm();
   ui->setupUi(this);
 
@@ -110,7 +117,13 @@ ProjectInfoWidget::~ProjectInfoWidget()
 }
 
 
-void ProjectInfoWidget::setProjectRelease(ReleaseInfo* ri)
+void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons)
+{
+  ui->buildPluginsLayout->addLayout(buttons);
+}
+
+
+void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 {
   if (releaseInfo)
     disconnect(releaseInfo);  //rozłącz połączenia poprzedniego projektu
@@ -133,6 +146,12 @@ void ProjectInfoWidget::setProjectRelease(ReleaseInfo* ri)
 
   ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
   refresh(ReleaseInfo::AllChanged);
+}
+
+
+ReleaseInfo* ProjectInfoWidget::getCurrentRelease() const
+{
+  return releaseInfo;
 }
 
 

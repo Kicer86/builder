@@ -74,7 +74,7 @@ void ProjectsManager::setProjectInfoWidget(ProjectInfoWidget* piW)
 void ProjectsManager::showInfo(ReleaseInfo* releaseInfo)
 {
   if (projectInfoWidget)
-    projectInfoWidget->setProjectRelease(releaseInfo);
+    projectInfoWidget->setRelease(releaseInfo);
 }
 
 
@@ -84,10 +84,20 @@ int ProjectsManager::getId()
 }
 
 
-QStandardItemModel* ProjectsManager::getModel()
+QStandardItemModel* ProjectsManager::getModel() const
 {
   return model;
 }
+
+
+ReleaseInfo* ProjectsManager::getCurrentRelease() const
+{
+  if (projectInfoWidget)
+    return projectInfoWidget->getCurrentRelease();
+  else
+    return nullptr;
+}
+
 
 
 ProjectInfo* ProjectsManager::findProject(int projectId)

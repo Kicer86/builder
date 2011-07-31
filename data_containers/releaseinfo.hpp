@@ -70,8 +70,8 @@ class ReleaseInfo:public QObject
 
     ProjectInfo *projectInfo;   //rodzic
     QString downloadScript;
-    QProcess *buildProcess;
-    QTextDocument *buildingLog;
+    //QProcess *buildProcess;     //process res
+    //QTextDocument *buildingLog; //build log
     Estimator *estimator;
     State state;
     QString downloadedPkg;      //paczka która wlasnie jest pobierania (ma sens tylko dla state==Downloading)
@@ -108,7 +108,7 @@ class ReleaseInfo:public QObject
     qint64 getProgressDone() const;
     void update();                                  //sprawdź jakie jest bieżąca wersja
     void downloadPkg();                             //pobierz paczkę z bieżącą wersją
-    void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
+    //void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
     const Estimator *getEstimator() const;
 
     State getState() const;

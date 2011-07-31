@@ -45,12 +45,13 @@ class ProjectsManager
 
     static ProjectsManager *instance();
     void registerProject(ProjectInfo *project);
+    void destroyProjects();    
     void setProjectInfoWidget(ProjectInfoWidget *piW);
+    ProjectInfo *findProject(int projectId);
     void showInfo(ReleaseInfo *releaseInfo);
     int getId();
-    QStandardItemModel *getModel();
-    ProjectInfo *findProject(int projectId);
-    void destroyProjects();    
+    QStandardItemModel *getModel() const ;
+    ReleaseInfo *getCurrentRelease() const;
 };
 
 #endif // PROJECTSMANAGER_HPP

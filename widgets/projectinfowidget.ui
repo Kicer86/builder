@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>320</height>
+    <width>418</width>
+    <height>318</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,7 @@
       <attribute name="title">
        <string>Control</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1,0">
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1,0,0">
        <item>
         <widget class="QLabel" name="projectName">
          <property name="text">
@@ -127,7 +127,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="mainButtonsLayout">
          <item>
           <widget class="QPushButton" name="updateButton">
            <property name="toolTip">
@@ -181,6 +181,9 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="buildPluginsLayout"/>
        </item>
       </layout>
      </widget>

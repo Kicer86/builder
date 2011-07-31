@@ -13,7 +13,8 @@ class Builder: public QMainWindow
     ProjectInfoWidget *projectInfoWidget;
     WidgetListProxyModel *proxy;
 
-    void loadPlugins();
+    void loadPlugins();    
+    void registerPlugin(QObject *);
 
   private slots:
     void optionsDialog();

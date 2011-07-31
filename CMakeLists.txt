@@ -11,6 +11,7 @@ include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DI
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
 
 # ForceAddFlags(CMAKE_CXX_FLAGS -std=c++0x)
+add_definitions(-DDEBUG_QSTRING_SUPPORT -std=c++0x)      #let debug functions from my library know QString
 
 if (NOT BUILDER_DATADIR)
 	set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)

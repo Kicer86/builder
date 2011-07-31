@@ -6,6 +6,8 @@
 #include <QStandardItemModel>
 #include <QPluginLoader>
 
+#include <debug.hpp>
+
 #include "builder.hpp"
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -13,6 +15,7 @@
 #include "dialogs/newprojectwizard.hpp"
 #include "misc/functions.hpp"
 #include "misc/settings.hpp"
+#include "plugins/buildplugin.hpp"
 #include "widgets/projectinfowidget.hpp"
 #include "widgets/widgetlist/widgetlistproxymodel.hpp"
 #include "widgets/widgetlist/widgetlistview.hpp"
@@ -61,19 +64,8 @@ Builder::Builder()
   mainMenu->addMenu(projectsMenu);
   mainMenu->addMenu(optionsMenu);
 
-
   //load plugins
-  QDir pluginsDir(dataPath("plugins"));
-  foreach (QString fileName, pluginsDir.entryList(QDir::Files))
-  {
-    QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-    QObject *plugin = loader.instance();
-    if (plugin)
-    {
-//       populateMenus(plugin);
-//       pluginFileNames += fileName;
-    }
-  }
+  loadPlugins();
 }
 
 
@@ -81,6 +73,33 @@ Builder::~Builder()
 {}
 
 
+void Builder::loadPlugins()
+{
+  QDir pluginsDir(dataPath("plugins"));
+  foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+  {
+    QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+    QObject *plugin = loader.instance();
+    if (plugin)
+    {
+      debug(DebugLevel::Info) << "Loaded plugin file: " << pluginsDir.absoluteFilePath(fileName);
+      
+      //register this plugin
+      registerPlugin(plugin);
+    }
+  }
+}
+
+
+void Builder::registerPlugin(QObject* plugin)
+{
+  //check plugin type
+  BuildPlugin *buildplugin=qobject_cast<BuildPlugin*>(plugin);
+  if (buildplugin) //add to ProjectInfoWidget some buttons
+  {
+    projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons());
+  }
+}
 
 
 void Builder::optionsDialog()

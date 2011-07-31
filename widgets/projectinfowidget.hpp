@@ -29,6 +29,7 @@ class QStringListModel;
 
 class ReleaseInfo;
 
+
 class ProjectInfoWidget:public QWidget
 {
     Q_OBJECT
@@ -42,7 +43,7 @@ class ProjectInfoWidget:public QWidget
     QListView *localInfoView;
     QListView *remoteInfoView;
     QStringListModel *localInfoModel;
-    QStringListModel *remoteInfoModel;
+    QStringListModel *remoteInfoModel;     
 
   private slots:
     void refresh(int type);
@@ -61,9 +62,12 @@ class ProjectInfoWidget:public QWidget
   public:
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ProjectInfoWidget();
+    
+    void addBuildPluginButtons(QLayout *);     //function which adds provided (by plugin) layout
+    ReleaseInfo *getCurrentRelease() const;
 
   public slots:
-    void setProjectRelease(ReleaseInfo* pw);
+    void setRelease(ReleaseInfo* pw);
 };
 
 #endif // PROJECTINFOWIDGET_HPP
