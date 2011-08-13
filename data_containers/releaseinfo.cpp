@@ -18,8 +18,6 @@
 
 #include <assert.h>
 
-#include <QTextDocument>
-#include <QPlainTextDocumentLayout>
 #include <QDebug>
 #include <QSettings>
 #include <QDir>
@@ -35,14 +33,12 @@
 
 ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
     QObject(0), id(ProjectsManager::instance()->getId()),
-    name(n), total(100), done(0), projectInfo(p), buildProcess(0), state(Nothing)
+    name(n), total(100), done(0), projectInfo(p), state(Nothing)
 {
   buildProcess=new QProcess(this);
   buildingLog=new QTextDocument(this);
   estimator=new Estimator(this);
 
-  QPlainTextDocumentLayout *documentLayout=new QPlainTextDocumentLayout(buildingLog);
-  buildingLog->setDocumentLayout(documentLayout);
 
   qDebug() << QString("adding release %1").arg(name);
   QSettings settings;
@@ -247,6 +243,12 @@ QString ReleaseInfo::getDownloadScriptFile() const
 QString ReleaseInfo::getSpecFile() const
 {
   return releasePath() + "/" + projectInfo->getName() + ".spec";
+}
+
+
+QString ReleaseInfo::getReleasePath() const
+{
+  return releasePath();
 }
 
 

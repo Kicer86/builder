@@ -76,7 +76,7 @@ class ReleaseInfo:public QObject
     State state;
     QString downloadedPkg;      //paczka która wlasnie jest pobierania (ma sens tylko dla state==Downloading)
 
-    QString releasePath() const;
+    QString releasePath() const;         //construct path to release
     void appendTextToLog(const QString &msg);
     void setState(State st);
 
@@ -100,6 +100,7 @@ class ReleaseInfo:public QObject
     QTextDocument *getBuildMesages();
     QString getDownloadScriptFile() const;         //zwraca scieżkę do pliku lua
     QString getSpecFile() const;
+    QString getReleasePath() const;                //rlease path (dir)
     const QString &getDownloadedPkg() const;
     const ProjectInfo *getProjectInfo() const;
     const VersionList *getLocalVersions() const;    //zwraca wskaźnik na wersję projektu na dysku
@@ -115,7 +116,7 @@ class ReleaseInfo:public QObject
 
   signals:
     void statusChanged(int);       //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
-    void optionsChanged();         //zmieniły się opcje releasea (budouj/nie buduj, ściągaj/nie ściągaj)
+    void optionsChanged();         //zmieniły się opcje releasea (buduj/nie buduj, ściągaj/nie ściągaj)
     void logWillChange();          //log budowania zaraz zmieni swoją zawartość.
 };
 

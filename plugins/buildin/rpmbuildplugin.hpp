@@ -26,7 +26,8 @@
 #include "plugins/buildplugin.hpp"
 
 class QPushButton;
-class QHBoxLayout;
+class QGridLayout;
+class QProgressBar;
 
 class RpmBuildPlugin: public BuildPlugin
 {
@@ -42,9 +43,10 @@ class RpmBuildPlugin: public BuildPlugin
       Fast
     };
 
-    QHBoxLayout *buttons;
-    QPushButton *buildButton;
-    QPushButton *fastBuildButton;
+    QGridLayout  *buttons;
+    QPushButton  *buildButton;
+    QPushButton  *fastBuildButton;
+    QProgressBar *progressBar;
     
     void build(Type);
 
@@ -57,6 +59,7 @@ class RpmBuildPlugin: public BuildPlugin
     virtual ~RpmBuildPlugin();
 
     virtual QLayout* getBuildButtons() const;
+    virtual void updateProgress(int);
 };
 
 #endif // RPMBUILDPLUGIN_HPP

@@ -23,6 +23,7 @@
 #include <QListView>
 #include <QHash>
 
+class ProjectInfo;
 class WidgetListItem;
 
 class WidgetListView: public QListView
@@ -61,7 +62,9 @@ class WidgetListView: public QListView
 
     WidgetListItem* getProjectWidget(const QModelIndex& idx) const;
     const QHash< int, WidgetListItem* >* getWidgets() const;
-
+    
+  signals:
+    void projectClicked(const ProjectInfo *);
 };
 
 #endif // WIDGETLIST_HPP

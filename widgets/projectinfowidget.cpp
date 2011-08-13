@@ -65,7 +65,7 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     QWidget(p,f),releaseInfo(0), autoScrool(true)
 {
   //nothing usefull -> just protector (to be sure that only one ProjectInfoWidget has been declared)
-  static bool declared;   
+  static bool declared;
   assert(declared==false);
   declared=true;
   
@@ -117,14 +117,18 @@ ProjectInfoWidget::~ProjectInfoWidget()
 }
 
 
-void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons)
+void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons, const QString &name)
 {
-  ui->buildPluginsLayout->addLayout(buttons);
+  QGroupBox *groupBox=new QGroupBox(this, tr("%1 build").arg(name));
+  groupBox->setLayout(buttons);
+  ui->buildPluginsLayout->addWidget(groupBox);;
 }
 
 
 void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 {
+  assert(ri);
+  
   if (releaseInfo)
     disconnect(releaseInfo);  //rozłącz połączenia poprzedniego projektu
   else  //pierwszy projekt
@@ -146,6 +150,14 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 
   ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
   refresh(ReleaseInfo::AllChanged);
+}
+
+
+void ProjectInfoWidget::setProjectInfo(ProjectInfo* projectInfo)
+{
+  //TODO: for now only first release is being used
+  if (projectInfo->getReleasesList()->size()>0)
+    setRelease(projectInfo->getReleasesList()->at(0));
 }
 
 

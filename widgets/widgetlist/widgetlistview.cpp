@@ -119,13 +119,14 @@ WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 void WidgetListView::itemClicked(const QModelIndex& index) const
 {
   const ProjectInfo *pI=getProjectWidget(index)->getProjectInfo();
-
-  //1. release
+  emit projectClicked(pI);
+/*
+  //first release  TODO: something smarter here
   if (pI->getReleasesList()->size()>0)
   {
     ReleaseInfo *rI=pI->getReleasesList()->at(0);
     ProjectsManager::instance()->showInfo(rI);
-  }
+  }*/
 }
 
 

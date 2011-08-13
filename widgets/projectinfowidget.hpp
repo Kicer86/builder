@@ -28,6 +28,7 @@ class QListView;
 class QStringListModel;
 
 class ReleaseInfo;
+class ProjectInfo;
 
 
 class ProjectInfoWidget:public QWidget
@@ -43,8 +44,8 @@ class ProjectInfoWidget:public QWidget
     QListView *localInfoView;
     QListView *remoteInfoView;
     QStringListModel *localInfoModel;
-    QStringListModel *remoteInfoModel;     
-
+    QStringListModel *remoteInfoModel;   
+    
   private slots:
     void refresh(int type);
     void editDowloadScriptButtonPressed();
@@ -63,11 +64,13 @@ class ProjectInfoWidget:public QWidget
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ProjectInfoWidget();
     
-    void addBuildPluginButtons(QLayout *);     //function which adds provided (by plugin) layout
+    void addBuildPluginButtons(QLayout* buttons, const QString&);     //function which adds provided (by plugin) layout
     ReleaseInfo *getCurrentRelease() const;
 
+    void setRelease(ReleaseInfo *);
+    
   public slots:
-    void setRelease(ReleaseInfo* pw);
+    void setProjectInfo(ProjectInfo *);
 };
 
 #endif // PROJECTINFOWIDGET_HPP

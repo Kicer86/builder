@@ -19,6 +19,7 @@
 
 #include <assert.h>
 
+#include <QPlainTextDocumentLayout>
 #include <QTextCursor>
 #include <QProcess>
 #include <QTextDocument>
@@ -35,6 +36,9 @@ BuildProcess::BuildProcess()
   log=new QTextDocument(this);
   process=new QProcess(this);
   process->setProcessChannelMode(QProcess::MergedChannels);
+  
+  QPlainTextDocumentLayout *documentLayout=new QPlainTextDocumentLayout(log);
+  log->setDocumentLayout(documentLayout);
   
   connect(process, SIGNAL(readyRead()), this, SLOT(read()));
   connect(process, SIGNAL(terminated()), this, SLOT(close()));
@@ -81,6 +85,11 @@ void BuildProcess::stop() const
 }
 
 
+void BuildProcess::setWorkingDirectory(const QString& dir)
+{
+  process->setWorkingDirectory(dir);
+}
+
 
 BuildPlugin::BuildPlugin(const char *n): name(n)
 {
@@ -105,6 +114,7 @@ void BuildPlugin::addBuildProcess(BuildProcess* buildProcess)
                           << buildProcess->releaseInfo->getName();
                           
   connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, removeBuildProcess(ReleaseInfo*));
+  
   buildsInfo[buildProcess->releaseInfo]=buildProcess;
   buildProcess->process->start();
 }

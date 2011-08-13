@@ -37,6 +37,8 @@ Builder::Builder()
 
   ProjectsManager::instance()->setProjectInfoWidget(projectInfoWidget);
 
+  connect(projectList, SIGNAL(projectClicked(const ProjectInfo*)), projectInfoWidget, );
+  
   //scan projects dir
   QDir directory(Settings::instance()->getProjectsPath());
   qDebug() << QString("scanning %1 for projects").arg(Settings::instance()->getProjectsPath());

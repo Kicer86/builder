@@ -33,32 +33,35 @@ class ReleaseInfo;
 
 class BuildProcess: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  QProcess *process;
-  QTextDocument *log;
-  ReleaseInfo *releaseInfo;
+    QProcess *process;              //build process
+    QTextDocument *log;             //build log
+    ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
+    int progress;                   //build progress (if -1 then unknown)
 
-private slots:
-  void read() const;
-  void close() const;
+  private slots:
+    void read() const;
+    void close() const;
+    
+  public:
+    friend class BuildPlugin;
 
-public:
-  friend class BuildPlugin;
-  
-  BuildProcess();
-  virtual ~BuildProcess();
-  
-  void stop() const;
-  
-signals:
-  void removeBuildProcess(const ReleaseInfo *) const;
+    BuildProcess();
+    virtual ~BuildProcess();
+
+    void stop() const;              //terminate build process
+    void setWorkingDirectory(const QString &); //set working dir for process
+
+  signals:
+    void removeBuildProcess(const ReleaseInfo *) const;
 };
+
 
 class BuildPlugin: public QObject                //it's QObject here, becouse plugin system requires it
 {
     Q_OBJECT
-    
+
   public:
     BuildPlugin(const char *);
     virtual ~BuildPlugin();
@@ -67,12 +70,13 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
 
     QString getBuilderName() const;               //return builder name
     virtual QLayout *getBuildButtons() const=0;   //return layout with button(s) for managing build process
+    virtual void updateProgress(int)=0;           //set build progress (-1 means that progress is unknown)
 
   protected:
     void addBuildProcess(const BuildProcess &);   //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
     BuildProcess *findBuildProcess(const ReleaseInfo*);
 
-      protected slots:
+  protected slots:
     void removeBuildProcess(const ReleaseInfo*);  //remove build process for ReleaseInfo
 
   private:

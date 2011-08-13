@@ -46,7 +46,7 @@ class ProjectsManager
     static ProjectsManager *instance();
     void registerProject(ProjectInfo *project);
     void destroyProjects();    
-    void setProjectInfoWidget(ProjectInfoWidget *piW);
+    void setProjectInfoWidget(ProjectInfoWidget *piW);  //connect ProjectsManager with ProjectInfoWidget
     ProjectInfo *findProject(int projectId);
     void showInfo(ReleaseInfo *releaseInfo);
     int getId();

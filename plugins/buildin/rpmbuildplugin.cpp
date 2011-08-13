@@ -17,16 +17,22 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include <assert.h>
+
+#include <QDir>
 #include <QtPlugin>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QPushButton>
 #include <QProcess>
+#include <QProgressBar>
 
 #include <debug.hpp>
 
 #include "rpmbuildplugin.hpp"
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/releaseinfo.hpp"
+#include "data_containers/projectinfo.hpp"
+#include "misc/sandboxprocess.hpp"
 #include "misc/settings.hpp"
 
 
@@ -35,12 +41,14 @@ Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
 RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
 {
   //construct layout  
-  buttons=new QHBoxLayout;
+  buttons=new QGridLayout;
   buildButton=new QPushButton(tr("Build"));
   fastBuildButton=new QPushButton(tr("Fast build"));
+  progressBar=new QProgressBar;
   
-  buttons->addWidget(buildButton);
-  buttons->addWidget(fastBuildButton);  
+  buttons->addWidget(buildButton,0,0);
+  buttons->addWidget(fastBuildButton,0,1);  
+  buttons->addWidget(progressBar,1,0);
   
   connect(buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
   connect(fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
@@ -52,9 +60,13 @@ RpmBuildPlugin::~RpmBuildPlugin()
 
 
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
-{  
+{
   //get release currently selected
   ReleaseInfo *releaseInfo=ProjectsManager::instance()->getCurrentRelease();
+  const ProjectInfo *projectInfo=releaseInfo->getProjectInfo();
+  const QString releasePath=releaseInfo->getReleasePath();
+  const ReleaseInfo::VersionList &localVersions=*releaseInfo->getLocalVersions();
+  
   if (releaseInfo==0)
     return;                     //no release ich choosen
   
@@ -67,17 +79,17 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   }
   
   //włącz progress bar
-  updateProgress(0,0);  //powinien migać czy coś
+  updateProgress(-1);  //powinien migać czy coś
 
   QString homePath=getenv("HOME");
   if (Settings::instance()->getEnvType()==Settings::External)
     homePath="/root";
 
   QString specFile= homePath + "/rpmbuild/SPECS/" + projectInfo->getName() + ".spec";
-  QString specSrc=releasePath() + "/" + projectInfo->getName() + ".spec";
+  QString specSrc=releasePath + "/" + projectInfo->getName() + ".spec";
   QString specDst=SandboxProcess::decoratePath(specFile);
 
-  qDebug() << QString("copying %1 to %2").arg(specSrc).arg(specDst);
+  debug(DebugLevel::Info) << QString("copying %1 to %2").arg(specSrc).arg(specDst);
 
   //skopiuj plik spec do SPECS (po uzupełnieniach)
   QFile src(specSrc);
@@ -89,11 +101,12 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   {
     QString line=src.readLine();
     QRegExp version("(.*)__VERSION_([a-zA-Z0-9_-]+)__(.*)");
+    
     if (version.exactMatch(line))
     {
       line=version.capturedTexts()[1];
       QString pkgName=version.capturedTexts()[2];
-      if (localVersions.contains(pkgName))
+      if (releaseInfo->getLocalVersions()->contains(pkgName))
         line+=localVersions[pkgName].getVersion();
       line+=version.capturedTexts()[3];
     }
@@ -127,8 +140,8 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   //skopiuj źródła
   foreach(ProjectVersion pV, localVersions)
   {
-    qDebug() << QString("copying %1 to %2").arg(pV.getLocalFile().absoluteFilePath())
-    .arg(SandboxProcess::decoratePath(homePath+"/rpmbuild/SOURCES/")+pV.getLocalFile().fileName());
+    debug(DebugLevel::Info) << QString("copying %1 to %2").arg(pV.getLocalFile().absoluteFilePath())
+                                                          .arg(SandboxProcess::decoratePath(homePath+"/rpmbuild/SOURCES/")+pV.getLocalFile().fileName());
 
     QFile::copy(pV.getLocalFile().absoluteFilePath(),
                 SandboxProcess::decoratePath(
@@ -139,16 +152,16 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   }
 
   //skopiuj patche
-  QDir patchesDir(releasePath()+"/patches");
-  patchesDir.cd(name);
+  QDir patchesDir(releasePath+"/patches");
+  patchesDir.cd(releaseInfo->getName());
   QStringList patches=patchesDir.entryList( QDir::Files, QDir::Name | QDir::IgnoreCase );
 
   foreach(QString patch, patches)
   {
-    qDebug() << QString("copying %1 to %2").arg(releasePath()+"/patches/" + patch)
-    .arg(SandboxProcess::decoratePath(homePath+"/rpmbuild/SOURCES/"+patch));
+    debug(DebugLevel::Info) << QString("copying %1 to %2").arg(releasePath+"/patches/" + patch)
+                                                          .arg(SandboxProcess::decoratePath(homePath+"/rpmbuild/SOURCES/"+patch));
 
-    QFile::copy(releasePath()+"/patches/" + patch,
+    QFile::copy(releasePath+"/patches/" + patch,
                 SandboxProcess::decoratePath(
                   homePath+
                   "/rpmbuild/SOURCES/"+
@@ -156,16 +169,14 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
                );
   }
 
-  buildingLog->clear();
-
   //zapuść maszynerię
   QStringList args;
 
-  assert(buildMode==Normal || buildMode==Fast);
+  assert(buildType==Normal || buildType==Fast);
 
-  if (buildMode==Normal)
+  if (buildType==Normal)
     args << "-ba";
-  else if (buildMode==Fast)
+  else if (buildType==Fast)
     args << "-bi" << "--short-circuit";
 
   args << specFile;
@@ -197,4 +208,16 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 QLayout* RpmBuildPlugin::getBuildButtons() const
 {
   return buttons;
+}
+
+
+void RpmBuildPlugin::updateProgress(int progress)
+{
+  if (progress==-1)
+    progressBar->setRange(0,0);
+  else
+  {
+    progressBar->setMaximum(100);
+    progressBar->setValue(progress);
+  }
 }
