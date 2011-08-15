@@ -1,4 +1,4 @@
-project(builder)
+﻿project(builder)
 cmake_minimum_required(VERSION 2.6)
 find_package(Qt4 4.6 REQUIRED core gui new)
 find_package(Lua51 REQUIRED)
@@ -6,7 +6,7 @@ find_program(CONVERT convert)
 find_program(INKSCAPE inkscape)
 include(pch.cmake)
 
-include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
+include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
 
@@ -36,7 +36,7 @@ set(builder_SRCS
   main.cpp
   data_containers/editorsmanager.cpp
   data_containers/imagesmanager.cpp
-  data_containers/projectinfo.cpp 
+  data_containers/projectinfo.cpp
   data_containers/projectsmanager.cpp
   data_containers/projectversion.cpp
   data_containers/releaseinfo.cpp
@@ -76,15 +76,15 @@ set(builder_MOC
   widgets/widgetlist/widgetlistview.hpp
 )
 
-set(builder_UIS 
+set(builder_UIS
   dialogs/configdialog.ui
   dialogs/newprojectwizard.ui
   widgets/projectinfowidget.ui
 )
 
-set(builder_IMGS 
-  icons/build.svg 
-  icons/download.svg 
+set(builder_IMGS
+  icons/build.svg
+  icons/download.svg
   icons/off.svg
   icons/progress.svg
 )
@@ -98,14 +98,14 @@ add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
 set_target_properties(builder PROPERTIES COMPILE_FLAGS "--std=c++0x"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
 
-target_link_libraries(builder 
-      ${QT_QTCORE_LIBRARY} 
-      ${QT_QTGUI_LIBRARY} 
-      ${QT_QTNETWORK_LIBRARY} 
+target_link_libraries(builder
+      ${QT_QTCORE_LIBRARY}
+      ${QT_QTGUI_LIBRARY}
+      ${QT_QTNETWORK_LIBRARY}
       ${QT_QTSVG_LIBRARY}
       ${LUA_LIBRARIES}
       htmlParser)
-      
+
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
 
