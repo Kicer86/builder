@@ -6,7 +6,7 @@ find_program(CONVERT convert)
 find_program(INKSCAPE inkscape)
 include(pch.cmake)
 
-include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
+include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 add_definitions(-std=c++0x)
 
 if (NOT BUILDER_DATADIR)
@@ -24,12 +24,12 @@ add_subdirectory(icons)
 
 configure_file (${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
 
-set(builder_SRCS 
+set(builder_SRCS
   builder.cpp
   main.cpp
   data_containers/editorsmanager.cpp
   data_containers/imagesmanager.cpp
-  data_containers/projectinfo.cpp 
+  data_containers/projectinfo.cpp
   data_containers/projectsmanager.cpp
   data_containers/projectversion.cpp
   data_containers/releaseinfo.cpp
@@ -67,15 +67,15 @@ set(builder_MOC
   widgets/widgetlist/widgetlistview.hpp
 )
 
-set(builder_UIS 
+set(builder_UIS
   dialogs/configdialog.ui
   dialogs/newprojectwizard.ui
   widgets/projectinfowidget.ui
 )
 
-set(builder_IMGS 
-  icons/build.svg 
-  icons/download.svg 
+set(builder_IMGS
+  icons/build.svg
+  icons/download.svg
   icons/off.svg
   icons/progress.svg
 )
@@ -87,14 +87,14 @@ qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
 # ADD_PRECOMPILED_HEADER(builder stdafx.h)
 
-target_link_libraries(builder 
-      ${QT_QTCORE_LIBRARY} 
-      ${QT_QTGUI_LIBRARY} 
-      ${QT_QTNETWORK_LIBRARY} 
+target_link_libraries(builder
+      ${QT_QTCORE_LIBRARY}
+      ${QT_QTGUI_LIBRARY}
+      ${QT_QTNETWORK_LIBRARY}
       ${QT_QTSVG_LIBRARY}
       ${LUA_LIBRARIES}
       htmlParser)
-      
+
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
 
