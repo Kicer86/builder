@@ -48,10 +48,10 @@ void ProjectsManager::registerProject(ProjectInfo* project)
   projectsList.append(project);
   
   //zaktualizuj model
-  QStandardItem *projectItem=new QStandardItem(project->getName());
+//   QStandardItem *projectItem=new QStandardItem(project->getName());
   
   //zapisz id projektu
-  projectItem->setData(project->getId());   
+//   projectItem->setData(project->getId());   
   
   qDebug() << QString("registering project %1 with id %2").arg(project->getName()).arg(project->getId());
   
@@ -59,9 +59,10 @@ void ProjectsManager::registerProject(ProjectInfo* project)
   {
     QStandardItem *releaseItem=new QStandardItem(release->getName());
     releaseItem->setData(release->getId());  //zapisz id wydania
-    projectItem->appendRow(releaseItem);     //dopisz wydanie do projektu
+//     projectItem->appendRow(releaseItem);     //dopisz wydanie do projektu
+    model->appendRow(releaseItem);
   }
-  model->appendRow(projectItem);             //dopisz projekt do modelu
+//   model->appendRow(projectItem);             //dopisz projekt do modelu
 }
 
 
@@ -95,7 +96,7 @@ ReleaseInfo* ProjectsManager::getCurrentRelease() const
   if (projectInfoWidget)
     return projectInfoWidget->getCurrentRelease();
   else
-    return nullptr;
+    return 0;
 }
 
 
@@ -113,6 +114,23 @@ ProjectInfo* ProjectsManager::findProject(int projectId)
     }
   }
   
+  return ret;
+}
+
+
+ReleaseInfo* ProjectsManager::findRelease(int releaseId)
+{
+  ReleaseInfo *ret=0;
+  
+  foreach( ProjectInfo *projectInfo, projectsList )
+    foreach( ReleaseInfo *releaseInfo, *(projectInfo->getReleasesList()) )
+      if (releaseInfo->getId()==releaseId)
+      {
+        ret=releaseInfo;
+        goto quit;
+      }
+  
+quit:
   return ret;
 }
 

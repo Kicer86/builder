@@ -64,7 +64,7 @@ class WidgetListView: public QListView
     const QHash< int, WidgetListItem* >* getWidgets() const;
     
   signals:
-    void projectClicked(const ProjectInfo *);
+    void projectClicked(const ProjectInfo *) const;
 };
 
 #endif // WIDGETLIST_HPP

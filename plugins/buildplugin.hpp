@@ -40,6 +40,8 @@ class BuildProcess: public QObject
     ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
     int progress;                   //build progress (if -1 then unknown)
 
+    void appendToLog(const QString& str) const;
+    
   private slots:
     void read() const;
     void close() const;
@@ -51,7 +53,10 @@ class BuildProcess: public QObject
     virtual ~BuildProcess();
 
     void stop() const;              //terminate build process
-    void setWorkingDirectory(const QString &); //set working dir for process
+    QProcess *getProcess()
+    {
+      return process;
+    }
 
   signals:
     void removeBuildProcess(const ReleaseInfo *) const;
@@ -73,11 +78,12 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
     virtual void updateProgress(int)=0;           //set build progress (-1 means that progress is unknown)
 
   protected:
-    void addBuildProcess(const BuildProcess &);   //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
-    BuildProcess *findBuildProcess(const ReleaseInfo*);
+    //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
+    void addBuildProcess(const QString &, const QStringList &, BuildProcess *);   
+    BuildProcess *findBuildProcess(ReleaseInfo* releaseInfo);
 
   protected slots:
-    void removeBuildProcess(const ReleaseInfo*);  //remove build process for ReleaseInfo
+    void removeBuildProcess(ReleaseInfo*);  //remove build process for ReleaseInfo
 
   private:
     BuildPlugin(const BuildPlugin& other);

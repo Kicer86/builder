@@ -25,7 +25,7 @@
 
 class QLabel;
 class ImageWidget;
-class ProjectInfo;
+class ReleaseInfo;
 class QGridLayout;
 class QGroupBox;
 
@@ -40,7 +40,7 @@ class WidgetListItem:public QWidget
     QList<QLabel *> download, build;
     ImageWidget *pixmap;
     
-    const ProjectInfo *projectInfo;
+    const ReleaseInfo *releaseInfo;
     QGridLayout *projectLayout;
     
     void construct();
@@ -50,11 +50,11 @@ class WidgetListItem:public QWidget
     void internalRepaint(); 
         
   public:
-    WidgetListItem(const ProjectInfo* pI, const QModelIndex &);
+    WidgetListItem(const ReleaseInfo* pI, const QModelIndex& mI);
     WidgetListItem(WidgetListItem* w);
     virtual ~WidgetListItem();
     
-    const ProjectInfo *getProjectInfo() const;
+    const ReleaseInfo *getReleaseInfo() const;
     QRect childPos(int);              //odnajduje pozycję wydania wewnątrz QGroupBoxu
     
   signals:

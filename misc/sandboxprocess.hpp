@@ -24,9 +24,9 @@
 
 class SandboxProcess
 {
-public:
-  static QString runProcess(const QString &process, const QStringList &args, QProcess *proc);
-  static QString decoratePath(const QString &path);
+  public:
+    static QString runProcess(const QString &process, const QStringList &args, QProcess *proc);
+    static QString decoratePath(const QString &path);
 };
 
 #endif // SANDBOXPROCESS_HPP

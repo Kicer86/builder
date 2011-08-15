@@ -25,6 +25,7 @@
 #include <QPushButton>
 #include <QProcess>
 #include <QProgressBar>
+#include <QDebug>
 
 #include <debug.hpp>
 
@@ -181,13 +182,11 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
   args << specFile;
 
-  buildProcess->setWorkingDirectory(SandboxProcess::decoratePath(""));
+  buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
   
-  QString infoMsg=SandboxProcess::runProcess("rpmbuild", args, buildProcess);
-  qDebug() << QString ("Starting: %1").arg(infoMsg);
-  appendTextToLog(tr("Starting: %1\n").arg(infoMsg));
+  addBuildProcess("rpmbuild", args, buildProcess);
 
-  setState(Building);
+//   setState(Building);
 }
 
 

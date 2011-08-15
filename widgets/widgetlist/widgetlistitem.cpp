@@ -32,24 +32,24 @@
 #include "widgets/imagewidget.hpp"
 #include "data_containers/imagesmanager.hpp"
 
-WidgetListItem::WidgetListItem(const ProjectInfo* pI, const QModelIndex &mI):
+WidgetListItem::WidgetListItem(const ReleaseInfo* pI, const QModelIndex &mI):
     QWidget(),
     modelIndex(mI),
     editor(false),
     origins(0),
-    projectInfo(pI)
+    releaseInfo(pI)
 {
   construct();
   setAttribute(Qt::WA_NoSystemBackground, true);
 }
 
 
-//konstruktor kopiujący (czyli tworzymy widget edytujący)
+//copying constructor -> editor widget is being created
 WidgetListItem::WidgetListItem(WidgetListItem* w):
     QWidget(),
     editor(true),
     origins(w),
-    projectInfo(w->getProjectInfo())
+    releaseInfo(w->getReleaseInfo())
 {
   construct();
   resize(w->size());
@@ -68,12 +68,12 @@ WidgetListItem::~WidgetListItem()
 
 void WidgetListItem::construct()
 {
-  groupBox=new QGroupBox(projectInfo->getName());
+  groupBox=new QGroupBox(releaseInfo->getName());
   projectLayout=new QGridLayout(groupBox);
 
-  for (int i=0; i<projectInfo->getReleasesList()->size(); i++)
+  for (int i=0; i<releaseInfo->getReleasesList()->size(); i++)
   {
-    ReleaseInfo *release=projectInfo->getReleasesList()->at(i);
+    ReleaseInfo *release=releaseInfo->getReleasesList()->at(i);
     QLabel *releaseName=new QLabel(release->getName());
 
     bool dwl=release->getDownloadFlag();
@@ -103,7 +103,7 @@ void WidgetListItem::construct()
       projectLayout->addWidget(download[i], i, 1);
       projectLayout->addWidget(build[i], i, 2);
       
-      connect(projectInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
+      connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
     }
   }
 
@@ -125,9 +125,9 @@ void WidgetListItem::updateValues()
   assert(editor==false); //funkcja wywoływana tylko w trybie view
   
   //print releases info
-  for (int i=0; i<projectInfo->getReleasesList()->size(); i++)
+  for (int i=0; i<releaseInfo->getReleasesList()->size(); i++)
   {
-    ReleaseInfo *release=projectInfo->getReleasesList()->at(i);
+    ReleaseInfo *release=releaseInfo->getReleasesList()->at(i);
 
     bool dwl=release->getDownloadFlag();
     bool bld=release->getBuildFlag();
@@ -151,7 +151,7 @@ void WidgetListItem::updateValues()
 
   pixmap->clear();
     
-  switch (projectInfo->getStatus())
+  switch (releaseInfo->getStatus())
   {
     case ProjectInfo::Nothing:
       pixmap->appendLayer(ImagesManager::instance()->getImage("off.png",48));
@@ -174,9 +174,9 @@ void WidgetListItem::updateValues()
 }
 
 
-const ProjectInfo* WidgetListItem::getProjectInfo() const
+const ProjectInfo* WidgetListItem::getReleaseInfo() const
 {
-  return projectInfo;
+  return releaseInfo;
 }
 
 

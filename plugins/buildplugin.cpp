@@ -29,6 +29,7 @@
 #include "buildplugin.hpp"
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
+#include "misc/sandboxprocess.hpp"
 
 
 BuildProcess::BuildProcess()
@@ -49,14 +50,19 @@ BuildProcess::~BuildProcess()
 {}
 
 
-void BuildProcess::read() const
+void BuildProcess::appendToLog(const QString &str) const
 {
-  QByteArray messages=process->readAll();
-  
-  //dopisz text do logu
+ //append text to logu
   QTextCursor cursor(log);
   cursor.movePosition(QTextCursor::End);
-  cursor.insertText(messages);
+  cursor.insertText(str);
+}
+
+
+void BuildProcess::read() const
+{
+  appendToLog(process->readAll());
+ 
 
   /*
   if (state==Building)  //cmake daje %, użyjemy ich :]
@@ -85,12 +91,6 @@ void BuildProcess::stop() const
 }
 
 
-void BuildProcess::setWorkingDirectory(const QString& dir)
-{
-  process->setWorkingDirectory(dir);
-}
-
-
 BuildPlugin::BuildPlugin(const char *n): name(n)
 {
   debug(DebugLevel::Debug) << "Loading plugin " << name;
@@ -103,30 +103,40 @@ BuildPlugin::~BuildPlugin()
 }
 
 
-void BuildPlugin::addBuildProcess(BuildProcess* buildProcess)
+QString BuildPlugin::getBuilderName() const
+{
+  return name;
+}
+
+
+void BuildPlugin::addBuildProcess(const QString &program, const QStringList &args, BuildProcess* buildProcess)
 {
   //make sure there is no such process already in base
-  assert(findBuildProcess(buildProcess->releaseInfo)==buildsInfo.end());  
+  assert(findBuildProcess(buildProcess->releaseInfo)==0);  
   
   debug(DebugLevel::Info) << "Starting new build process for project " 
                           << buildProcess->releaseInfo->getProjectInfo()->getName()
                           << ", release: "
                           << buildProcess->releaseInfo->getName();
                           
-  connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, removeBuildProcess(ReleaseInfo*));
+  connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, SLOT(removeBuildProcess(ReleaseInfo*)));
   
   buildsInfo[buildProcess->releaseInfo]=buildProcess;
-  buildProcess->process->start();
+//   buildProcess->process->start();
+  QString infoMsg=SandboxProcess::runProcess(program, args, buildProcess->process);
+  
+  debug(DebugLevel::Info) << QString ("Starting: %1").arg(infoMsg);
+  buildProcess->appendToLog(tr("Starting: %1\n").arg(infoMsg));
 }
 
 
-BuildProcess* BuildPlugin::findBuildProcess(const ReleaseInfo *releaseInfo)
+BuildProcess* BuildPlugin::findBuildProcess(ReleaseInfo *releaseInfo)
 {
   return *(buildsInfo.find(releaseInfo));
 }
 
 
-void BuildPlugin::removeBuildProcess(const ReleaseInfo* releaseInfo)
+void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
 {
   BuildProcess *buildProcess=findBuildProcess(releaseInfo);
   if (buildProcess)
@@ -134,7 +144,7 @@ void BuildPlugin::removeBuildProcess(const ReleaseInfo* releaseInfo)
     assert(buildProcess->process->state()==QProcess::NotRunning);  //process should be halted
     
     //remove all data
-    buildsInfo.erase(buildProcess->releaseInfo);
+    delete buildsInfo.take(buildProcess->releaseInfo);
     delete buildProcess;
   }
 }

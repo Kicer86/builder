@@ -48,6 +48,7 @@ class ProjectsManager
     void destroyProjects();    
     void setProjectInfoWidget(ProjectInfoWidget *piW);  //connect ProjectsManager with ProjectInfoWidget
     ProjectInfo *findProject(int projectId);
+    ReleaseInfo *findRelease(int releaseId);
     void showInfo(ReleaseInfo *releaseInfo);
     int getId();
     QStandardItemModel *getModel() const ;

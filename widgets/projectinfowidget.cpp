@@ -119,7 +119,7 @@ ProjectInfoWidget::~ProjectInfoWidget()
 
 void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons, const QString &name)
 {
-  QGroupBox *groupBox=new QGroupBox(this, tr("%1 build").arg(name));
+  QGroupBox *groupBox=new QGroupBox(tr("%1 build").arg(name), this);
   groupBox->setLayout(buttons);
   ui->buildPluginsLayout->addWidget(groupBox);;
 }
@@ -148,7 +148,7 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
   connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(refresh(int)));
   connect(releaseInfo, SIGNAL(logWillChange()), this, SLOT(logWillChange()));
 
-  ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
+//   ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
   refresh(ReleaseInfo::AllChanged);
 }
 
@@ -345,16 +345,16 @@ void ProjectInfoWidget::showMacrosButtonPressed()
 }
 
 
-void ProjectInfoWidget::buildButtonPressed()
-{
-  releaseInfo->buildPkg(ReleaseInfo::Normal);
-}
+// void ProjectInfoWidget::buildButtonPressed()
+// {
+//   releaseInfo->buildPkg(ReleaseInfo::Normal);
+// }
 
 
-void ProjectInfoWidget::fastBuildButtonPressed()
-{
-  releaseInfo->buildPkg(ReleaseInfo::Fast);
-}
+// void ProjectInfoWidget::fastBuildButtonPressed()
+// {
+//   releaseInfo->buildPkg(ReleaseInfo::Fast);
+// }
 
 
 void ProjectInfoWidget::downloadButtonPressed()

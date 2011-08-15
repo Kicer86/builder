@@ -35,8 +35,8 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
     QObject(0), id(ProjectsManager::instance()->getId()),
     name(n), total(100), done(0), projectInfo(p), state(Nothing)
 {
-  buildProcess=new QProcess(this);
-  buildingLog=new QTextDocument(this);
+//   buildProcess=new QProcess(this);
+//   buildingLog=new QTextDocument(this);
   estimator=new Estimator(this);
 
 
@@ -66,11 +66,11 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
   settings.endGroup();
   settings.endGroup();
 
-  connect(buildProcess, SIGNAL(readyRead()), this, SLOT(buildMessages()));
-  connect(buildProcess, SIGNAL(finished( int, QProcess::ExitStatus )),
-          this, SLOT(buildFinished(int, QProcess::ExitStatus)));
-  connect(buildProcess, SIGNAL(error(QProcess::ProcessError)),
-          this, SLOT(buildError(QProcess::ProcessError)));
+//   connect(buildProcess, SIGNAL(readyRead()), this, SLOT(buildMessages()));
+//   connect(buildProcess, SIGNAL(finished( int, QProcess::ExitStatus )),
+//           this, SLOT(buildFinished(int, QProcess::ExitStatus)));
+//   connect(buildProcess, SIGNAL(error(QProcess::ProcessError)),
+//           this, SLOT(buildError(QProcess::ProcessError)));
 }
 
 
@@ -123,29 +123,29 @@ void ReleaseInfo::setDownloadOption(int checkState)
 }
 
 
-void ReleaseInfo::updateProgress(int d, int t)
-{
-  done=d;
-  total=t;
-
-  emit statusChanged(ProgressChange);
-}
-
-
-void ReleaseInfo::updateProgress(qint64 d, qint64 t)
-{
-  done=d;
-  total=t;
-
-  emit statusChanged(ProgressChange);
-}
+// void ReleaseInfo::updateProgress(int d, int t)
+// {
+//   done=d;
+//   total=t;
+// 
+//   emit statusChanged(ProgressChange);
+// }
 
 
+// void ReleaseInfo::updateProgress(qint64 d, qint64 t)
+// {
+//   done=d;
+//   total=t;
+// 
+//   emit statusChanged(ProgressChange);
+// }
+// 
+// 
 void ReleaseInfo::setState(ReleaseInfo::State st)
 {
   state=st;
-  if (state==Nothing)
-    updateProgress(0,100);
+//   if (state==Nothing)
+//     updateProgress(0,100);
   
   //status has changed
 
@@ -153,61 +153,61 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 }
 
 
-void ReleaseInfo::appendTextToLog(const QString& msg)
-{
-  //dopisz text do logu
-  QTextCursor cursor(buildingLog);
-  cursor.movePosition(QTextCursor::End);
-  cursor.insertText(msg);
-
-  if (state==Building)  //cmake daje %, użyjemy ich :]
-  {
-    QStringList lines=msg.split("\n");
-    foreach(QString line, lines)
-    {
-      QRegExp cmakeRegEx("^\\[([0-9 ]{3})\\%\\].*");
-      if (cmakeRegEx.exactMatch(line))
-        updateProgress(cmakeRegEx.capturedTexts()[1].toInt(), 100);
-    }
-  }
-}
-
-
-void ReleaseInfo::buildMessages()
-{
-  //emit signal
-  emit logWillChange();
-  
-  //append text to log
-  appendTextToLog(buildProcess->readAll()); //dopisz wszystko co zostało wyplute przez proces
-}
+// void ReleaseInfo::appendTextToLog(const QString& msg)
+// {
+//   //dopisz text do logu
+//   QTextCursor cursor(buildingLog);
+//   cursor.movePosition(QTextCursor::End);
+//   cursor.insertText(msg);
+// 
+//   if (state==Building)  //cmake daje %, użyjemy ich :]
+//   {
+//     QStringList lines=msg.split("\n");
+//     foreach(QString line, lines)
+//     {
+//       QRegExp cmakeRegEx("^\\[([0-9 ]{3})\\%\\].*");
+//       if (cmakeRegEx.exactMatch(line))
+//         updateProgress(cmakeRegEx.capturedTexts()[1].toInt(), 100);
+//     }
+//   }
+// }
 
 
-void ReleaseInfo::buildFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
-  qDebug() << QString("Build process for %1:%2 finished with exit code: %3 and status: %4")
-  .arg(projectInfo->getName())
-  .arg(name)
-  .arg(exitCode)
-  .arg(exitStatus);
-
-  appendTextToLog(tr("Process finished normally with exit code: %1 and status: %2")
-                  .arg(exitCode)
-                  .arg(exitStatus));
-  setState(Nothing);
-}
+// void ReleaseInfo::buildMessages()
+// {
+//   //emit signal
+//   emit logWillChange();
+//   
+//   //append text to log
+//   appendTextToLog(buildProcess->readAll()); //dopisz wszystko co zostało wyplute przez proces
+// }
 
 
-void ReleaseInfo::buildError(QProcess::ProcessError error)
-{
-  qDebug() << QString("Build process for %1:%2 finished with error code: %3")
-  .arg(projectInfo->getName())
-  .arg(name)
-  .arg(error);
+// void ReleaseInfo::buildFinished(int exitCode, QProcess::ExitStatus exitStatus)
+// {
+//   qDebug() << QString("Build process for %1:%2 finished with exit code: %3 and status: %4")
+//   .arg(projectInfo->getName())
+//   .arg(name)
+//   .arg(exitCode)
+//   .arg(exitStatus);
+// 
+//   appendTextToLog(tr("Process finished normally with exit code: %1 and status: %2")
+//                   .arg(exitCode)
+//                   .arg(exitStatus));
+//   setState(Nothing);
+// }
 
-  appendTextToLog(tr("Process finished with error code %1").arg(error));
-  setState(Nothing);
-}
+
+// void ReleaseInfo::buildError(QProcess::ProcessError error)
+// {
+//   qDebug() << QString("Build process for %1:%2 finished with error code: %3")
+//   .arg(projectInfo->getName())
+//   .arg(name)
+//   .arg(error);
+// 
+//   appendTextToLog(tr("Process finished with error code %1").arg(error));
+//   setState(Nothing);
+// }
 
 
 int ReleaseInfo::getId() const
@@ -258,10 +258,10 @@ const ProjectInfo* ReleaseInfo::getProjectInfo() const
 }
 
 
-QTextDocument* ReleaseInfo::getBuildMesages()
-{
-  return buildingLog;
-}
+// QTextDocument* ReleaseInfo::getBuildMesages()
+// {
+//   return buildingLog;
+// }
 
 
 const QString& ReleaseInfo::getDownloadedPkg() const
@@ -309,7 +309,7 @@ const Estimator* ReleaseInfo::getEstimator() const
 void ReleaseInfo::update()
 {
   //włącz progress bar
-  updateProgress(0,0);  //powinien migać czy coś
+//   updateProgress(0,0);  //powinien migać czy coś
 
   if (! downloadScript.isEmpty())
   {
@@ -373,7 +373,7 @@ void ReleaseInfo::downloadPkg()
   setState(Nothing);
 }
 
-
+/*
 void ReleaseInfo::buildPkg(BuildMode buildMode)
 {
 
@@ -496,4 +496,4 @@ void ReleaseInfo::buildPkg(BuildMode buildMode)
   appendTextToLog(tr("Starting: %1\n").arg(infoMsg));
 
   setState(Building);
-}
+}*/

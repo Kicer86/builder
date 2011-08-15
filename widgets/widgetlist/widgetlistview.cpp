@@ -64,13 +64,13 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
     qDebug() << QString("inserting row in view for project %1 with id %2").arg(name).arg(id);
     if (widgets->contains(id)==false)  // nie ma takiego elementu w bazie widgetów?
     {
-      //znajdź projekt o zadanym id
-      ProjectInfo *projectInfo=ProjectsManager::instance()->findProject(id);
+      //znajdź release o zadanym id
+      ReleaseInfo *releaseInfo=ProjectsManager::instance()->findRelease(id);
 
       //stwórz na jego podstawie widget
-      WidgetListItem *widgetListItem=new WidgetListItem(projectInfo, ch);
+      WidgetListItem *widgetListItem=new WidgetListItem(releaseInfo, ch);
       connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
-      connect(projectInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
+      connect(releaseInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
 
       //zapisz widget w bazie
       widgets->insert(id, widgetListItem);

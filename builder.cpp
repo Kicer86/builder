@@ -37,7 +37,7 @@ Builder::Builder()
 
   ProjectsManager::instance()->setProjectInfoWidget(projectInfoWidget);
 
-  connect(projectList, SIGNAL(projectClicked(const ProjectInfo*)), projectInfoWidget, );
+  connect(projectList, SIGNAL(projectClicked(const ProjectInfo*)), projectInfoWidget, SLOT(setProjectInfo(ProjectInfo*)));
   
   //scan projects dir
   QDir directory(Settings::instance()->getProjectsPath());
@@ -99,7 +99,7 @@ void Builder::registerPlugin(QObject* plugin)
   BuildPlugin *buildplugin=qobject_cast<BuildPlugin*>(plugin);
   if (buildplugin) //add to ProjectInfoWidget some buttons
   {
-    projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons());
+    projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons(), buildplugin->getBuilderName());
   }
 }
 

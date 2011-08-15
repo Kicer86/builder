@@ -53,12 +53,9 @@ class ProjectInfoWidget:public QWidget
     void showMacrosButtonPressed();
     void updateButtonPressed();
     void downloadButtonPressed();
-    void buildButtonPressed();
-    void fastBuildButtonPressed();
     void logWillChange();
     void logChanged();
 
-//   void refreshProgress();
 
   public:
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);

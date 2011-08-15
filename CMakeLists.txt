@@ -11,7 +11,7 @@ include_directories(${QT_INCLUDES} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DI
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
 
 # ForceAddFlags(CMAKE_CXX_FLAGS -std=c++0x)
-add_definitions(-DDEBUG_QSTRING_SUPPORT -std=c++0x)      #let debug functions from my library know QString
+add_definitions(-DDEBUG_QSTRING_SUPPORT)      #let debug functions from my library know QString
 
 if (NOT BUILDER_DATADIR)
 	set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)
@@ -69,6 +69,7 @@ set(builder_MOC
   misc/editfile.hpp
   misc/estimator.hpp
   misc/wgetwrapper.hpp
+  plugins/buildplugin.hpp
   widgets/imagewidget.hpp
   widgets/projectinfowidget.hpp
   widgets/widgetlist/widgetlistitem.hpp
@@ -94,6 +95,8 @@ qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
 
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
 # ADD_PRECOMPILED_HEADER(builder stdafx.h)
+set_target_properties(builder PROPERTIES COMPILE_FLAGS "--std=c++0x"
+                                         COMPILE_FLAGS_DEBUG "-Weffc++")
 
 target_link_libraries(builder 
       ${QT_QTCORE_LIBRARY} 

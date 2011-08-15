@@ -77,17 +77,17 @@ class ReleaseInfo:public QObject
     QString downloadedPkg;      //paczka która wlasnie jest pobierania (ma sens tylko dla state==Downloading)
 
     QString releasePath() const;         //construct path to release
-    void appendTextToLog(const QString &msg);
+//     void appendTextToLog(const QString &msg);
     void setState(State st);
 
   private slots:
     void setDownloadOption(int);         //używane przez WidgetListItem
     void setBuildOption(int);            //używane przez WidgetListItem
-    void updateProgress(int, int);
-    void updateProgress(qint64, qint64);
-    void buildMessages();
-    void buildFinished( int exitCode, QProcess::ExitStatus exitStatus );
-    void buildError(QProcess::ProcessError error );
+//     void updateProgress(int, int);
+//     void updateProgress(qint64, qint64);
+//     void buildMessages();
+//     void buildFinished( int exitCode, QProcess::ExitStatus exitStatus );
+//     void buildError(QProcess::ProcessError error );
 
   public:
     explicit ReleaseInfo(const QString &n, ProjectInfo* p);
