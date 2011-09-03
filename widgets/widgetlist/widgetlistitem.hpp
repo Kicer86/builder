@@ -23,25 +23,25 @@
 #include <QWidget>
 #include <QModelIndex>
 
+class QVBoxLayout;
 class QLabel;
+
 class ImageWidget;
 class ReleaseInfo;
-class QGridLayout;
-class QGroupBox;
 
 class WidgetListItem:public QWidget
 {
     Q_OBJECT
   
     const QModelIndex modelIndex;              //każdy WidgetListItem w trybie nieedytora jest powiązany z indexem w modelu/widoku
-    QGroupBox *groupBox;
+    QWidget *widget;
     const bool editor;                         //widget moze trwać w jednym z dwóch stanów: edytor i nieedytor ;)
     WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
-    QList<QLabel *> download, build;
+    QLabel *download, *build;
     ImageWidget *pixmap;
     
     const ReleaseInfo *releaseInfo;
-    QGridLayout *projectLayout;
+    QVBoxLayout *projectLayout;
     
     void construct();
     

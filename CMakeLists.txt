@@ -1,4 +1,4 @@
-﻿project(builder)
+project(builder)
 cmake_minimum_required(VERSION 2.6)
 find_package(Qt4 4.6 REQUIRED core gui new)
 find_package(Lua51 REQUIRED)
