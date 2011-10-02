@@ -164,24 +164,17 @@ void WidgetListItem::updateValues()
 
   pixmap->clear();
 
-  switch (releaseInfo->getState())
-  {
-    case ReleaseInfo::Checking:
-      pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
-    case ReleaseInfo::Nothing:
-      pixmap->prependLayer(ImagesManager::instance()->getImage("off.png", 48));
-      break;
+  //set icon according to release's state
+  if (bld)
+    pixmap->appendLayer( ImagesManager::instance()->getImage("build.png", 48) );
+  else if (dwl)
+    pixmap->appendLayer( ImagesManager::instance()->getImage("download.png", 48) );
+  else
+    pixmap->appendLayer( ImagesManager::instance()->getImage("off.png", 48) );
 
-    case ReleaseInfo::Building:
-      pixmap->appendLayer(ImagesManager::instance()->getImage("build.png", 48));
-      pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
-      break;
-
-    case ReleaseInfo::Downloading:
-      pixmap->appendLayer(ImagesManager::instance()->getImage("download.png", 48));
-      pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
-      break;
-  }
+  //any action in progress??
+  if ( releaseInfo->getState() != ReleaseInfo::Nothing )
+    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
 }
 
 
