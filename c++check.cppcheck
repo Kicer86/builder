@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <root name="builder"/>
+    <includedir>
+        <dir name="/home/michal/projects/root/usr/include"/>
+    </includedir>
+    <paths>
+        <dir name="/home/michal/projects/sources/builder"/>
+    </paths>
+    <ignore>
+        <path name="/home/michal/projects/sources/builder/build/"/>
+    </ignore>
+</project>
