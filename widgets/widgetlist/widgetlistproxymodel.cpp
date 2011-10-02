@@ -40,30 +40,35 @@ bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& 
   ReleaseInfo *rri = ProjectsManager::instance()->findRelease(rid);
 
   assert(lri && rri);
-  
+
+  //owning project
   const ProjectInfo *lpi = lri->getProjectInfo();
   const ProjectInfo *rpi = rri->getProjectInfo();
-  //first phase: check if releases have the same parent
-  if (lpi == rpi)  //same project, so order internally
-  {
-    //check build state
+
+  //same project?
+  if (lpi == rpi)
+  {    
+    //build state
     bool buildLeft = lri->getBuildFlag();
     bool buildRight = rri->getBuildFlag();
-    
+  
     if (buildLeft == buildRight)  //same status of build?
     {
       //check download state
       bool downloadLeft = lri->getDownloadFlag();
       bool downloadRight = rri->getDownloadFlag();
-      
-      if (downloadLeft == downloadRight)  //same status of download??
-        return lri->getName() < rri->getName();  //alphabetical order
+
+      if (downloadLeft == downloadRight)         //same status of download??
+        return lri->getName() < rri->getName();  //use alphabetical order
       else
         return downloadLeft == true && downloadRight == false;
     }
     else
       return buildLeft == true && buildRight == false;
   }
-  else  //different projects. Use alphabetical order
-    return lpi->getName() < rpi->getName(); 
+  else //different projects
+  {
+    //use project's "global" status
+    return lpi->getStatus() > rpi->getStatus();
+  }
 }
