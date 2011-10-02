@@ -20,6 +20,7 @@
 
 #include "widgetlistproxymodel.hpp"
 #include "data_containers/projectsmanager.hpp"
+#include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
 
 WidgetListProxyModel::WidgetListProxyModel(QObject* p): QSortFilterProxyModel(p)
@@ -32,18 +33,37 @@ WidgetListProxyModel::~WidgetListProxyModel()
 //http://doc.qt.nokia.com/latest/qsortfilterproxymodel.html#details
 bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
-  int lid=left.data(Qt::UserRole+1).toInt();    //info w: void ProjectsManager::registerProject(ProjectInfo* project)
-  int rid=right.data(Qt::UserRole+1).toInt();   //info w: void ProjectsManager::registerProject(ProjectInfo* project)
-  
-  ReleaseInfo *lri=ProjectsManager::instance()->findRelease(lid);
-  ReleaseInfo *rri=ProjectsManager::instance()->findRelease(rid);
-  
+  int lid = left.data(Qt::UserRole + 1).toInt();    //info w: void ProjectsManager::registerProject(ProjectInfo* project)
+  int rid = right.data(Qt::UserRole + 1).toInt();   //info w: void ProjectsManager::registerProject(ProjectInfo* project)
+
+  ReleaseInfo *lri = ProjectsManager::instance()->findRelease(lid);
+  ReleaseInfo *rri = ProjectsManager::instance()->findRelease(rid);
+
   assert(lri && rri);
   
-  int result=lri->getState()-rri->getState();
-  
-  if (result==0)
-    return QSortFilterProxyModel::lessThan(left, right);
-  else
-    return result>0;
+  const ProjectInfo *lpi = lri->getProjectInfo();
+  const ProjectInfo *rpi = rri->getProjectInfo();
+  //first phase: check if releases have the same parent
+  if (lpi == rpi)  //same project, so order internally
+  {
+    //check build state
+    bool buildLeft = lri->getBuildFlag();
+    bool buildRight = rri->getBuildFlag();
+    
+    if (buildLeft == buildRight)  //same status of build?
+    {
+      //check download state
+      bool downloadLeft = lri->getDownloadFlag();
+      bool downloadRight = rri->getDownloadFlag();
+      
+      if (downloadLeft == downloadRight)  //same status of download??
+        return lri->getName() < rri->getName();  //alphabetical order
+      else
+        return downloadLeft == true && downloadRight == false;
+    }
+    else
+      return buildLeft == true && buildRight == false;
+  }
+  else  //different projects. Use alphabetical order
+    return lpi->getName() < rpi->getName(); 
 }
