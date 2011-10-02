@@ -340,7 +340,7 @@ void ReleaseInfo::downloadPkg()
     connect(&downloader, SIGNAL(progressUpdate(qint64,qint64)), this, SLOT(updateProgress(qint64,qint64)));
 
     VersionList::iterator i;
-    for (i=currentVersions.begin(); i!=currentVersions.end(); i++)
+    for (i=currentVersions.begin(); i!=currentVersions.end(); ++i)
     {
       ProjectVersion &pV=i.value();
       QString pkgName=pV.getName();
