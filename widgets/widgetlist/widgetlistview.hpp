@@ -23,7 +23,7 @@
 #include <QListView>
 #include <QHash>
 
-class ProjectInfo;
+class ReleaseInfo;
 class WidgetListItem;
 
 class WidgetListView: public QListView
@@ -37,7 +37,7 @@ class WidgetListView: public QListView
     void dumpModel(const QModelIndex &index) const;
 
   private slots:
-    void itemClicked(const QModelIndex &index) const;
+    void itemClicked(const QModelIndex& index);
     void itemChanged();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
     void itemReload(const QModelIndex &index);
     
@@ -64,7 +64,7 @@ class WidgetListView: public QListView
     const QHash< int, WidgetListItem* >* getWidgets() const;
     
   signals:
-    void itemClicked(const ProjectInfo *) const;
+    void itemClicked(ReleaseInfo *) const;
 };
 
 #endif // WIDGETLIST_HPP

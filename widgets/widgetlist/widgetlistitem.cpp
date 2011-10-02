@@ -33,7 +33,7 @@
 #include "data_containers/imagesmanager.hpp"
 #include "data_containers/projectsmanager.hpp"
 
-WidgetListItem::WidgetListItem(const ReleaseInfo* pI, const QModelIndex &mI):
+WidgetListItem::WidgetListItem(ReleaseInfo* pI, const QModelIndex &mI):
     QWidget(),
     modelIndex(mI),
     editor(false),
@@ -121,7 +121,7 @@ void WidgetListItem::construct()
 
     projectLayout->addLayout(lineLayout);
 
-    connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
+    //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
   }
 
   pixmap = new ImageWidget(this);
@@ -141,57 +141,51 @@ void WidgetListItem::updateValues()
 {
   assert(editor == false); //funkcja wywoływana tylko w trybie view
 
-  //print releases info
-  for (int i = 0; i < releaseInfo->getReleasesList()->size(); i++)
-  {
-    ReleaseInfo *release = releaseInfo->getReleasesList()->at(i);
+  //print release info
 
-    bool dwl = release->getDownloadFlag();
-    bool bld = release->getBuildFlag();
+  bool dwl = releaseInfo->getDownloadFlag();
+  bool bld = releaseInfo->getBuildFlag();
 
-    download[i]->setText(QString(tr("download: %1")
-                                 .arg(dwl ?
-                                      setColour(tr("yes"), Qt::darkGreen) :
-                                      setColour(tr("no"),  Qt::red)
-                                     )
+  download->setText(QString(tr("download: %1")
+                            .arg(dwl ?
+                                 setColour(tr("yes"), Qt::darkGreen) :
+                                 setColour(tr("no"),  Qt::red)
                                 )
-                        );
+                           )
+                   );
 
-    build[i]->setText(QString(tr("build: %1")
-                              .arg(bld ?
-                                   setColour(tr("yes"), Qt::darkGreen) :
-                                   setColour(tr("no"),  Qt::red)
-                                  )
+  build->setText(QString(tr("build: %1")
+                         .arg(bld ?
+                              setColour(tr("yes"), Qt::darkGreen) :
+                              setColour(tr("no"),  Qt::red)
                              )
-                     );
-  }
+                        )
+                );
 
   pixmap->clear();
 
-  switch (releaseInfo->getStatus())
+  switch (releaseInfo->getState())
   {
-    case ProjectInfo::Nothing:
-      pixmap->appendLayer(ImagesManager::instance()->getImage("off.png", 48));
+    case ReleaseInfo::Checking:
+      pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
+    case ReleaseInfo::Nothing:
+      pixmap->prependLayer(ImagesManager::instance()->getImage("off.png", 48));
       break;
 
-    case ProjectInfo::BuildInProgress:
-    case ProjectInfo::AllInProgress:
+    case ReleaseInfo::Building:
+      pixmap->appendLayer(ImagesManager::instance()->getImage("build.png", 48));
       pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
-    case ProjectInfo::Build:
-    case ProjectInfo::All:
-      pixmap->prependLayer(ImagesManager::instance()->getImage("build.png", 48));
       break;
 
-    case ProjectInfo::CheckInProgress:
+    case ReleaseInfo::Downloading:
+      pixmap->appendLayer(ImagesManager::instance()->getImage("download.png", 48));
       pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
-    case ProjectInfo::Check:
-      pixmap->prependLayer(ImagesManager::instance()->getImage("download.png", 48));
       break;
   }
 }
 
 
-const ProjectInfo* WidgetListItem::getReleaseInfo() const
+ReleaseInfo* WidgetListItem::getReleaseInfo() const
 {
   return releaseInfo;
 }
@@ -200,7 +194,7 @@ const ProjectInfo* WidgetListItem::getReleaseInfo() const
 QRect WidgetListItem::childPos(int position)
 {
   QRect ret;
-  QWidget *w = projectLayout->itemAtPosition(position, 0)->widget();  //znajdź widget w danym rzędzie 0. kolumnie (będzie to releaseName QLabel)
+  QWidget *w ;//= projectLayout->ititemAtPosition(position, 0)->widget();  //znajdź widget w danym rzędzie 0. kolumnie (będzie to releaseName QLabel)
   ret.setTopLeft(w->pos());                                        //pozycja etykiety
   ret.setSize(QSize(width(), w->height()));                        //szerokość QGroupBoxa, wysokość etykiety
 

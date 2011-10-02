@@ -36,7 +36,7 @@
 #include "misc/functions.hpp"
 
 
-static class HtmlDelegate:public QStyledItemDelegate
+static class HtmlDelegate: public QStyledItemDelegate
 {
   public:
     virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -62,14 +62,14 @@ static class HtmlDelegate:public QStyledItemDelegate
 
 
 ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
-    QWidget(p,f),releaseInfo(0), autoScrool(true)
+    QWidget(p, f), releaseInfo(0), autoScrool(true)
 {
   //nothing usefull -> just protector (to be sure that only one ProjectInfoWidget has been declared)
   static bool declared;
-  assert(declared==false);
-  declared=true;
-  
-  ui =new Ui_ProjectInfoForm();
+  assert(declared == false);
+  declared = true;
+
+  ui = new Ui_ProjectInfoForm();
   ui->setupUi(this);
 
   //disable buttons by default
@@ -79,17 +79,17 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
   ui->showMacrosButton->setDisabled(true);
 
   //fill up local and remote boxes
-  localInfoModel=new QStringListModel(this);
-  remoteInfoModel=new QStringListModel(this);
+  localInfoModel = new QStringListModel(this);
+  remoteInfoModel = new QStringListModel(this);
 
-  localInfoView=new QListView;
+  localInfoView = new QListView;
   localInfoView->setModel(localInfoModel);
-  remoteInfoView=new QListView;
+  remoteInfoView = new QListView;
   remoteInfoView->setModel(remoteInfoModel);
   remoteInfoView->setItemDelegate(&htmlDelegate);
 
-  QVBoxLayout *localVersionLayout=new QVBoxLayout;
-  QVBoxLayout *currentVersionLayout=new QVBoxLayout;
+  QVBoxLayout *localVersionLayout = new QVBoxLayout;
+  QVBoxLayout *currentVersionLayout = new QVBoxLayout;
 
   localVersionLayout->addWidget(localInfoView);
   currentVersionLayout->addWidget(remoteInfoView);
@@ -105,8 +105,8 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
   connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
   connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
   connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
-  connect(ui->buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
-  connect(ui->fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
+//   connect(ui->buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
+//   connect(ui->fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
   connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 }
 
@@ -119,7 +119,7 @@ ProjectInfoWidget::~ProjectInfoWidget()
 
 void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons, const QString &name)
 {
-  QGroupBox *groupBox=new QGroupBox(tr("%1 build").arg(name), this);
+  QGroupBox *groupBox = new QGroupBox(tr("%1 build").arg(name), this);
   groupBox->setLayout(buttons);
   ui->buildPluginsLayout->addWidget(groupBox);;
 }
@@ -128,7 +128,7 @@ void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons, const QString &n
 void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 {
   assert(ri);
-  
+
   if (releaseInfo)
     disconnect(releaseInfo);  //rozłącz połączenia poprzedniego projektu
   else  //pierwszy projekt
@@ -144,7 +144,7 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
     ui->fastBuildButton->setEnabled(true);
   }
 
-  releaseInfo=ri;
+  releaseInfo = ri;
   connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(refresh(int)));
   connect(releaseInfo, SIGNAL(logWillChange()), this, SLOT(logWillChange()));
 
@@ -153,11 +153,9 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 }
 
 
-void ProjectInfoWidget::setProjectInfo(ProjectInfo* projectInfo)
+void ProjectInfoWidget::setReleaseInfo(ReleaseInfo* rI)
 {
-  //TODO: for now only first release is being used
-  if (projectInfo->getReleasesList()->size()>0)
-    setRelease(projectInfo->getReleasesList()->at(0));
+  setRelease(rI);
 }
 
 
@@ -177,12 +175,12 @@ void ProjectInfoWidget::refresh(int type)
       ui->progressBar->setValue(releaseInfo->getProgressDone());
 
       //dodatkowe iformacje progressBara
-      ReleaseInfo::State state=releaseInfo->getState();
-      int d=releaseInfo->getProgressDone();
-      int t=releaseInfo->getProgressTotal();
-      if (t>0)
+      ReleaseInfo::State state = releaseInfo->getState();
+      int d = releaseInfo->getProgressDone();
+      int t = releaseInfo->getProgressTotal();
+      if (t > 0)
       {
-        if (state==ReleaseInfo::Downloading )
+        if (state == ReleaseInfo::Downloading )
           ui->progressBar->setFormat(tr("%5: %p% %1/%2 (%3/%4)")
                                      .arg(sizeToString(d),
                                           sizeToString(t),
@@ -191,7 +189,7 @@ void ProjectInfoWidget::refresh(int type)
                                           releaseInfo->getDownloadedPkg()
                                          )
                                     );
-        else if (state==ReleaseInfo::Building)
+        else if (state == ReleaseInfo::Building)
           ui->progressBar->setFormat(tr("%p% (%1/%2)")
                                      .arg(
                                        releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
@@ -203,11 +201,11 @@ void ProjectInfoWidget::refresh(int type)
 
     if (type & ReleaseInfo::StateChange)
     {
-      ReleaseInfo::State state=releaseInfo->getState();
-      ui->updateButton->setEnabled(state==ReleaseInfo::Nothing);
-      ui->progressBar->setEnabled(state!=ReleaseInfo::Nothing);
+      ReleaseInfo::State state = releaseInfo->getState();
+      ui->updateButton->setEnabled(state == ReleaseInfo::Nothing);
+      ui->progressBar->setEnabled(state != ReleaseInfo::Nothing);
 
-      if (state==ReleaseInfo::Building)
+      if (state == ReleaseInfo::Building)
       {
         ui->buildButton->setText(tr("Stop"));
         ui->fastBuildButton->setText(tr("Stop"));
@@ -220,12 +218,12 @@ void ProjectInfoWidget::refresh(int type)
 
       ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
 
-      const ReleaseInfo::VersionList localVersion=*releaseInfo->getLocalVersions();
-      const ReleaseInfo::VersionList currentVersion=*releaseInfo->getCurrentVersions();
+      const ReleaseInfo::VersionList localVersion = *releaseInfo->getLocalVersions();
+      const ReleaseInfo::VersionList currentVersion = *releaseInfo->getCurrentVersions();
 
       QStringList list;
 
-      localInfoModel->removeRows(0,localInfoModel->rowCount());
+      localInfoModel->removeRows(0, localInfoModel->rowCount());
 
       foreach(ProjectVersion pV, localVersion)
       {
@@ -237,22 +235,22 @@ void ProjectInfoWidget::refresh(int type)
       remoteInfoModel->removeRows(0, remoteInfoModel->rowCount());
       foreach(ProjectVersion pV, currentVersion)
       {
-        QString pkgName=pV.getName();
-        QString element=QString("%1: %2").arg(pkgName).arg(pV.getVersion());
+        QString pkgName = pV.getName();
+        QString element = QString("%1: %2").arg(pkgName).arg(pV.getVersion());
         if (localVersion.contains(pkgName))
         {
-          if ( localVersion[pkgName].getVersion()==pV.getVersion() )
-            element=setColour(element, Qt::darkGreen);
+          if ( localVersion[pkgName].getVersion() == pV.getVersion() )
+            element = setColour(element, Qt::darkGreen);
           else
-            element=setColour(element, Qt::red);
+            element = setColour(element, Qt::red);
         }
 
-        list <<element;
+        list << element;
       }
       remoteInfoModel->setStringList(list);
-      ui->downloadButton->setEnabled(state==ReleaseInfo::Nothing && releaseInfo->getCurrentVersions()->isEmpty()==false && *(releaseInfo->getCurrentVersions())!=*(releaseInfo->getLocalVersions()) );
+      ui->downloadButton->setEnabled(state == ReleaseInfo::Nothing && releaseInfo->getCurrentVersions()->isEmpty() == false && *(releaseInfo->getCurrentVersions()) != *(releaseInfo->getLocalVersions()) );
 
-      if (state==ReleaseInfo::Nothing)
+      if (state == ReleaseInfo::Nothing)
         ui->progressBar->reset();
     }
   }
@@ -261,9 +259,9 @@ void ProjectInfoWidget::refresh(int type)
 
 void ProjectInfoWidget::logWillChange()
 {
-  QScrollBar *bar=ui->buildMessages->verticalScrollBar();
-  
-  autoScrool=bar->value()==bar->maximum();
+  QScrollBar *bar = ui->buildMessages->verticalScrollBar();
+
+  autoScrool = bar->value() == bar->maximum();
 }
 
 
@@ -271,9 +269,9 @@ void ProjectInfoWidget::logChanged()
 {
   if (autoScrool)
   {
-    QScrollBar *bar=ui->buildMessages->verticalScrollBar();
+    QScrollBar *bar = ui->buildMessages->verticalScrollBar();
     bar->setValue(bar->maximum());
-  }    
+  }
 }
 
 
@@ -286,7 +284,7 @@ void ProjectInfoWidget::editDowloadScriptButtonPressed()
 void ProjectInfoWidget::specButtonPressed()
 {
   QFileInfo fileInfo(releaseInfo->getSpecFile());
-  if (fileInfo.exists()==false || fileInfo.size()==0) //spec jeszcze nie istnieje? użyj tamplate
+  if (fileInfo.exists() == false || fileInfo.size() == 0) //spec jeszcze nie istnieje? użyj tamplate
   {
     qDebug() << QString("preparing template for spec file (%1 -> %2)")
     .arg(dataPath("spec_template"), fileInfo.absoluteFilePath() );
@@ -297,23 +295,23 @@ void ProjectInfoWidget::specButtonPressed()
     src.open(QIODevice::ReadOnly);
     dst.open(QIODevice::WriteOnly);
 
-    QString projName=releaseInfo->getProjectInfo()->getName();
+    QString projName = releaseInfo->getProjectInfo()->getName();
 
-    while (src.atEnd()==false)
+    while (src.atEnd() == false)
     {
-      QString line=src.readLine();
+      QString line = src.readLine();
 
       QRegExp name("Name:.*$");
       if (name.exactMatch(line))       //uzupełnij nazwę projektu
-        line=QString("Name:           %1\n").arg(projName);
+        line = QString("Name:           %1\n").arg(projName);
 
       QRegExp mainSource("Source0:.*$");
       if (mainSource.exactMatch(line)) //uzupełnij główne źródło
-        line=QString("Source0:        __FILEURL_%1__\n").arg(projName);
+        line = QString("Source0:        __FILEURL_%1__\n").arg(projName);
 
       QRegExp version("%define         version.*$");
       if (version.exactMatch(line))    //wersja programu
-        line=QString("%define         version __VERSION_%1__\n").arg(projName);
+        line = QString("%define         version __VERSION_%1__\n").arg(projName);
 
       dst.write(line.toUtf8());
     }

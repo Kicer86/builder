@@ -56,7 +56,6 @@ class ProjectInfoWidget:public QWidget
     void logWillChange();
     void logChanged();
 
-
   public:
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ProjectInfoWidget();
@@ -67,7 +66,7 @@ class ProjectInfoWidget:public QWidget
     void setRelease(ReleaseInfo *);
     
   public slots:
-    void setProjectInfo(ProjectInfo *);
+    void setReleaseInfo(ReleaseInfo *);
 };
 
 #endif // PROJECTINFOWIDGET_HPP

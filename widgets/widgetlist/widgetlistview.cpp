@@ -36,7 +36,7 @@ WidgetListView::WidgetListView(QWidget* p): QListView(p)
   setItemDelegate(delegate);
 
   widgets=new QHash<int, WidgetListItem *>;
-  connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
+  connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(const QModelIndex)));
 }
 
 
@@ -70,7 +70,7 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
       //stwórz na jego podstawie widget
       WidgetListItem *widgetListItem=new WidgetListItem(releaseInfo, ch);
       connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
-      connect(releaseInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
+      //connect(releaseInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
 
       //zapisz widget w bazie
       widgets->insert(id, widgetListItem);
@@ -116,10 +116,10 @@ WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 }
 
 
-void WidgetListView::itemClicked(const QModelIndex& index) const
+void WidgetListView::itemClicked(const QModelIndex& index)
 {
-  const ReleaseInfo *rI=getProjectWidget(index)->getReleaseInfo();
-  emit item(rI);
+  ReleaseInfo *rI=getProjectWidget(index)->getReleaseInfo();
+  emit itemClicked(rI);
 /*
   //first release  TODO: something smarter here
   if (pI->getReleasesList()->size()>0)

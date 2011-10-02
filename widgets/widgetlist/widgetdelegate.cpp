@@ -29,8 +29,10 @@
 WidgetDelegate::WidgetDelegate(WidgetListView* p): QStyledItemDelegate(p), view(p)
 {}
 
+
 WidgetDelegate::~WidgetDelegate()
 {}
+
 
 WidgetListItem* WidgetDelegate::getProjectWidget(const QModelIndex& idx) const
 {
@@ -42,7 +44,7 @@ void WidgetDelegate::paintItem(QPainter* painter, const QStyleOptionViewItem& op
 {
   painter->save();
   painter->translate(option.rect.topLeft());
-  WidgetListItem *pW=getProjectWidget(index);
+  WidgetListItem *pW = getProjectWidget(index);
 
   //dostosuj szerokość widgetu do szerokości listy
   pW->resize(option.rect.width(), pW->sizeHint().height());
@@ -74,21 +76,22 @@ void WidgetDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
      1          QStyle::State_HasFocus
   */
 
-    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+  QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 //     QStyledItemDelegate::paint(painter, option, index);   //nie wyrysuje nic poza tłem, gdyż item nie zawiera zadnych danych
-    paintItem(painter, option, index);
+  paintItem(painter, option, index);
 }
 
 
 QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-  WidgetListItem *pW=getProjectWidget(index);
+  WidgetListItem *pW = getProjectWidget(index);
   return QSize( option.rect.width(), pW->sizeHint().height() );
 }
 
+
 QWidget* WidgetDelegate::createEditor(QWidget* p, const QStyleOptionViewItem& , const QModelIndex& index) const
 {
-  WidgetListItem *editor=new WidgetListItem(getProjectWidget(index)); //stwórz klona
+  WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
   editor->setParent(p);
   return editor;
 }

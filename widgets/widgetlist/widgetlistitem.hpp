@@ -40,7 +40,7 @@ class WidgetListItem:public QWidget
     QLabel *download, *build;
     ImageWidget *pixmap;
     
-    const ReleaseInfo *releaseInfo;
+    ReleaseInfo *releaseInfo;
     QVBoxLayout *projectLayout;
     
     void construct();
@@ -50,11 +50,11 @@ class WidgetListItem:public QWidget
     void internalRepaint(); 
         
   public:
-    WidgetListItem(const ReleaseInfo* pI, const QModelIndex& mI);
+    WidgetListItem(ReleaseInfo* pI, const QModelIndex& mI);
     WidgetListItem(WidgetListItem* w);
     virtual ~WidgetListItem();
     
-    const ReleaseInfo *getReleaseInfo() const;
+    ReleaseInfo *getReleaseInfo() const;
     QRect childPos(int);              //odnajduje pozycję wydania wewnątrz QGroupBoxu
     
   signals:

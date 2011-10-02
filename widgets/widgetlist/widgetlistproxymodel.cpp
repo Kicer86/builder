@@ -16,10 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <assert.h>
 
 #include "widgetlistproxymodel.hpp"
 #include "data_containers/projectsmanager.hpp"
-#include "data_containers/projectinfo.hpp"
+#include "data_containers/releaseinfo.hpp"
 
 WidgetListProxyModel::WidgetListProxyModel(QObject* p): QSortFilterProxyModel(p)
 {}
@@ -34,10 +35,12 @@ bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& 
   int lid=left.data(Qt::UserRole+1).toInt();    //info w: void ProjectsManager::registerProject(ProjectInfo* project)
   int rid=right.data(Qt::UserRole+1).toInt();   //info w: void ProjectsManager::registerProject(ProjectInfo* project)
   
-  ProjectInfo *lpi=ProjectsManager::instance()->findProject(lid);
-  ProjectInfo *rpi=ProjectsManager::instance()->findProject(rid);
+  ReleaseInfo *lri=ProjectsManager::instance()->findRelease(lid);
+  ReleaseInfo *rri=ProjectsManager::instance()->findRelease(rid);
   
-  int result=lpi->getStatus()-rpi->getStatus();
+  assert(lri && rri);
+  
+  int result=lri->getState()-rri->getState();
   
   if (result==0)
     return QSortFilterProxyModel::lessThan(left, right);

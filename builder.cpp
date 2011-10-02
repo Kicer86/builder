@@ -37,7 +37,7 @@ Builder::Builder()
 
   ProjectsManager::instance()->setProjectInfoWidget(projectInfoWidget);
 
-  connect(projectList, SIGNAL(projectClicked(const ProjectInfo*)), projectInfoWidget, SLOT(setProjectInfo(ProjectInfo*)));
+  connect(projectList, SIGNAL(itemClicked(ReleaseInfo*)), projectInfoWidget, SLOT(setReleaseInfo(ReleaseInfo*)));
   
   //scan projects dir
   QDir directory(Settings::instance()->getProjectsPath());
