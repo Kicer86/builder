@@ -39,23 +39,23 @@ ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), n
 
   QDir releaseDir(Settings::instance()->getProjectsPath());
   releaseDir.cd(name);
-  QStringList releases=releaseDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
+  QStringList releases = releaseDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
 
   foreach(QString release, releases)
   {
-    ReleaseInfo *releaseInfo=new ReleaseInfo(release, this);
+    ReleaseInfo *releaseInfo = new ReleaseInfo(release, this);
     releasesList.append(releaseInfo);
-    
+
     //update itself when release has changed
     connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(releaseChanged()));
     connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(releaseChanged()));
   }
-  
-  timer=new QTimer();
+
+  timer = new QTimer();
   timer->setInterval(100);
   connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
-  
-  updateStatus();   //set status 
+
+  updateStatus();   //set status
 }
 
 
@@ -63,7 +63,7 @@ ProjectInfo::~ProjectInfo()
 {
   qDebug() << QString("destroying project %1 with %2 releases").arg(name).arg(releasesList.size());
   QSettings settings;
-  while (releasesList.size()>0)
+  while (releasesList.size() > 0)
     delete releasesList.takeFirst();
 }
 
@@ -88,7 +88,7 @@ int ProjectInfo::getId() const
 
 void ProjectInfo::releaseChanged()
 {
-  //release has changed, it's possible that more changes were commit, so don't update on each of them. 
+  //release has changed, it's possible that more changes were commit, so don't update on each of them.
   //Do it once
   timer->start();   //start timer;
 }
@@ -96,35 +96,35 @@ void ProjectInfo::releaseChanged()
 
 void ProjectInfo::updateStatus() const
 {
-  Status st=Nothing;
+  Status st = Nothing;
   //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
   foreach(ReleaseInfo *ri, releasesList)
   {
-    bool dwl=ri->getDownloadFlag();
-    bool bld=ri->getBuildFlag();
-    bool progress=ri->getState()!=ReleaseInfo::Nothing;  //is there something goin' on ?
-   
+    bool dwl = ri->getDownloadFlag();
+    bool bld = ri->getBuildFlag();
+    bool progress = ri->getState() != ReleaseInfo::Nothing;  //is there something goin' on ?
+
     if (progress)
     {
-      if (dwl && st<CheckInProgress)
-        st=CheckInProgress;
-      
-      if (bld && st<BuildInProgress)
-        st=BuildInProgress;
+      if (dwl && st < CheckInProgress)
+        st = CheckInProgress;
+
+      if (bld && st < BuildInProgress)
+        st = BuildInProgress;
     }
     else
     {
-      if (dwl && st<Check)
-        st=Check;
-      
-      if (bld && st<Build)
-        st=Build;
+      if (dwl && st < Check)
+        st = Check;
+
+      if (bld && st < Build)
+        st = Build;
     }
   }
-  
-  bool update=status!=st; //current status differs from new one ?
-  status=st;  
-  if (update)  
+
+  bool update = status != st; //current status differs from new one ?
+  status = st;
+  if (update)
     emit changed();  //tell the world that needs to update
 }
 
