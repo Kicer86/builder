@@ -128,7 +128,7 @@ void WidgetListItem::construct()
   pixmap = new ImageWidget(this);
   connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
 
-//główny layout
+  //główny layout
   QHBoxLayout *mainLayout = new QHBoxLayout(this);
   mainLayout->addWidget(pixmap);
   mainLayout->addWidget(widget, 1);

@@ -32,10 +32,10 @@
 
 WidgetListView::WidgetListView(QWidget* p): QListView(p)
 {
-  WidgetDelegate *delegate=new WidgetDelegate(this);
+  WidgetDelegate *delegate = new WidgetDelegate(this);
   setItemDelegate(delegate);
 
-  widgets=new QHash<int, WidgetListItem *>;
+  widgets = new QHash<int, WidgetListItem *>;
   connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(const QModelIndex)));
 }
 
@@ -55,20 +55,22 @@ void WidgetListView::rowsAboutToBeRemoved(const QModelIndex& p, int start, int e
 void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int end)
 {
   //stwórz dla nowych wierszy widgety które będą wyświetlane w liście
-  for(int i=start; i<=end; i++)
+  for (int i = start; i <= end; i++)
   {
-    QAbstractItemModel *m=model();
-    const QModelIndex ch=m->index(i,0);
-    int id=ch.data(Qt::UserRole+1).toInt();  //rola: void ProjectsManager::registerProject(ProjectInfo* project)
-    QString name=ch.data(Qt::DisplayRole).toString();
+    QAbstractItemModel *m = model();
+    const QModelIndex ch = m->index(i, 0);
+    const int id = ch.data(Qt::UserRole + 1).toInt();  //rola: void ProjectsManager::registerProject(ProjectInfo* project)
+    const QString name = ch.data(Qt::DisplayRole).toString();
+
     qDebug() << QString("inserting row in view for project %1 with id %2").arg(name).arg(id);
-    if (widgets->contains(id)==false)  // nie ma takiego elementu w bazie widgetów?
+
+    if (widgets->contains(id) == false)  // nie ma takiego elementu w bazie widgetów?
     {
       //znajdź release o zadanym id
-      ReleaseInfo *releaseInfo=ProjectsManager::instance()->findRelease(id);
+      ReleaseInfo *releaseInfo = ProjectsManager::instance()->findRelease(id);
 
       //stwórz na jego podstawie widget
-      WidgetListItem *widgetListItem=new WidgetListItem(releaseInfo, ch);
+      WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo, ch);
       connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
       //connect(releaseInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
 
@@ -76,6 +78,7 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
       widgets->insert(id, widgetListItem);
     }
   }
+  
   QAbstractItemView::rowsInserted(modelIndex, start, end);
   itemChanged();              //potraktuj to także jako edycję elementu -> odświeżymy widok
 
@@ -92,7 +95,7 @@ const QHash<int, WidgetListItem*> *WidgetListView::getWidgets() const
 
 void WidgetListView::dumpModel(const QModelIndex& index) const
 {
-  if (index.isValid()==false)
+  if (index.isValid() == false)
     return;
 
   qDebug() << QString("Item %1 r:%2 c:%3").arg(index.data().toString()).arg(index.row()).arg(index.column());
@@ -110,7 +113,7 @@ void WidgetListView::dumpModel(const QModelIndex& index) const
 WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 {
   //odnajdź ten element na liście
-  int id=index.data(Qt::UserRole + 1).toInt();
+  int id = index.data(Qt::UserRole + 1).toInt();
   assert(widgets->contains(id));
   return (*widgets)[id];
 }
@@ -118,15 +121,15 @@ WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 
 void WidgetListView::itemClicked(const QModelIndex& index)
 {
-  ReleaseInfo *rI=getProjectWidget(index)->getReleaseInfo();
+  ReleaseInfo *rI = getProjectWidget(index)->getReleaseInfo();
   emit itemClicked(rI);
-/*
-  //first release  TODO: something smarter here
-  if (pI->getReleasesList()->size()>0)
-  {
-    ReleaseInfo *rI=pI->getReleasesList()->at(0);
-    ProjectsManager::instance()->showInfo(rI);
-  }*/
+  /*
+    //first release  TODO: something smarter here
+    if (pI->getReleasesList()->size()>0)
+    {
+      ReleaseInfo *rI=pI->getReleasesList()->at(0);
+      ProjectsManager::instance()->showInfo(rI);
+    }*/
 }
 
 
@@ -136,9 +139,9 @@ void WidgetListView::itemChanged()
 }
 
 
-void WidgetListView::itemReload(const QModelIndex& index) 
+void WidgetListView::itemReload(const QModelIndex& index)
 {
-  dataChanged(index,index);  //only this one works :/
+  dataChanged(index, index); //only this one works :/
   //update(index);
 }
 
