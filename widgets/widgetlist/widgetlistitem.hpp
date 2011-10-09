@@ -23,7 +23,7 @@
 #include <QWidget>
 #include <QModelIndex>
 
-class QVBoxLayout;
+class QGridLayout;
 class QLabel;
 
 class ImageWidget;
@@ -41,7 +41,7 @@ class WidgetListItem:public QWidget
     ImageWidget *pixmap;
     
     ReleaseInfo *releaseInfo;
-    QVBoxLayout *projectLayout;
+    QGridLayout *projectLayout;
     
     void construct();
     

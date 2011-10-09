@@ -20,6 +20,7 @@
 
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 
@@ -70,7 +71,7 @@ WidgetListItem::~WidgetListItem()
 void WidgetListItem::construct()
 {
   widget = new QWidget();
-  projectLayout = new QVBoxLayout(widget);
+  projectLayout = new QGridLayout(widget);
 
   //the same project as in prevoius element?
   QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
@@ -81,7 +82,7 @@ void WidgetListItem::construct()
      )
   {
     //add Title
-    projectLayout->addWidget(new QLabel(releaseInfo->getProjectInfo()->getName()));
+    projectLayout->addWidget(new QLabel(releaseInfo->getProjectInfo()->getName()), 0, 0);
   }
 
   QLabel *releaseName = new QLabel(releaseInfo->getName());
@@ -89,7 +90,7 @@ void WidgetListItem::construct()
   bool dwl = releaseInfo->getDownloadFlag();
   bool bld = releaseInfo->getBuildFlag();
 
-  projectLayout->addWidget(releaseName);
+  projectLayout->addWidget(releaseName, 0, 1);
 
   if (editor)
   {
@@ -107,7 +108,7 @@ void WidgetListItem::construct()
     lineLayout->addWidget(downloadEditor);
     lineLayout->addWidget(buildEditor);
 
-    projectLayout->addLayout(lineLayout);
+    projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
   }
   else  //view
   {
@@ -119,7 +120,7 @@ void WidgetListItem::construct()
     lineLayout->addWidget(download);
     lineLayout->addWidget(build);
 
-    projectLayout->addLayout(lineLayout);
+    projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
 
     //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
   }
@@ -164,17 +165,19 @@ void WidgetListItem::updateValues()
 
   pixmap->clear();
 
+  const int icoSize = 32;
+
   //set icon according to release's state
   if (bld)
-    pixmap->appendLayer( ImagesManager::instance()->getImage("build.png", 48) );
+    pixmap->appendLayer( ImagesManager::instance()->getImage("build.png", icoSize) );
   else if (dwl)
-    pixmap->appendLayer( ImagesManager::instance()->getImage("download.png", 48) );
+    pixmap->appendLayer( ImagesManager::instance()->getImage("download.png", icoSize) );
   else
-    pixmap->appendLayer( ImagesManager::instance()->getImage("off.png", 48) );
+    pixmap->appendLayer( ImagesManager::instance()->getImage("off.png", icoSize) );
 
   //any action in progress??
   if ( releaseInfo->getState() != ReleaseInfo::Nothing )
-    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", 48));
+    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", icoSize));
 }
 
 
