@@ -49,7 +49,7 @@ void WidgetDelegate::paintItem(QPainter* painter, const QStyleOptionViewItem& op
   //dostosuj szerokość widgetu do szerokości listy
   pW->resize(option.rect.width(), pW->sizeHint().height());
 
-  //wyrysuj widget
+  //draw the widget
   pW->render(painter, QPoint() );
 
   painter->restore();
@@ -84,8 +84,10 @@ void WidgetDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
 
 QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-  WidgetListItem *pW = getProjectWidget(index);
-  return QSize( option.rect.width(), pW->sizeHint().height() );
+  const WidgetListItem *pW = getProjectWidget(index);    
+  const QSize result( option.rect.width(), pW->sizeHint().height() );
+  
+  return result;
 }
 
 
