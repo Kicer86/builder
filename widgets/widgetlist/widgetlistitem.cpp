@@ -130,11 +130,12 @@ void WidgetListItem::construct()
 
   //główny layout
   QHBoxLayout *mainLayout = new QHBoxLayout(this);
+  mainLayout->setContentsMargins(0,0,0,0);
   mainLayout->addWidget(pixmap);
   mainLayout->addWidget(widget, 1);
 
   if (editor == false)
-    updateValues();   //zaktualizuj widok
+    updateValues();   //zaktualizuj widok    
 }
 
 

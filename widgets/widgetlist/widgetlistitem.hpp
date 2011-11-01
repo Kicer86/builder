@@ -55,6 +55,7 @@ class WidgetListItem:public QWidget
     virtual ~WidgetListItem();
     
     ReleaseInfo *getReleaseInfo() const;
+    
     QRect childPos(int);              //odnajduje pozycję wydania wewnątrz QGroupBoxu
     
   signals:
