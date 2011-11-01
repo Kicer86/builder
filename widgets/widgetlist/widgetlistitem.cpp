@@ -35,34 +35,36 @@
 #include "data_containers/projectsmanager.hpp"
 
 WidgetListItem::WidgetListItem(ReleaseInfo* pI, const QModelIndex &mI):
-    QWidget(),
-    modelIndex(mI),
-    editor(false),
-    origins(0),
-    releaseInfo(pI)
+        QWidget(),
+        modelIndex(mI),
+        editor(false),
+        origins(0),
+        releaseInfo(pI)
 {
-  construct();
-  setAttribute(Qt::WA_NoSystemBackground, true);
+    construct();
+    setAttribute(Qt::WA_NoSystemBackground, true);
+
+    connect(pI, SIGNAL(optionsChanged()), this, SLOT(updateValues()));
 }
 
 
 //copying constructor -> editor widget is being created
 WidgetListItem::WidgetListItem(WidgetListItem* w):
-    QWidget(),
-    editor(true),
-    origins(w),
-    releaseInfo(w->getReleaseInfo())
+        QWidget(),
+        editor(true),
+        origins(w),
+        releaseInfo(w->getReleaseInfo())
 {
-  construct();
-  resize(w->size());
-  setAutoFillBackground(true);  //tło musi być!
+    construct();
+    resize(w->size());
+    setAutoFillBackground(true);  //tło musi być!
 //   setFocusPolicy(Qt::StrongFocus);
 }
 
 
 WidgetListItem::~WidgetListItem()
 {
-  assert(editor == (origins > 0)); //jesli origins to editor (i vice versa)
+    assert(editor == (origins > 0)); //jesli origins to editor (i vice versa)
 //   if (origins)
 //     origins->updateValues();       //niech się widget wizualny zaktualizuje
 }
@@ -70,136 +72,152 @@ WidgetListItem::~WidgetListItem()
 
 void WidgetListItem::construct()
 {
-  widget = new QWidget();
-  projectLayout = new QGridLayout(widget);
+    //setup view
+    widget = new QWidget();
+    projectLayout = new QGridLayout(widget);
 
-  //the same project as in prevoius element?
-  QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
+    //the same project as in prevoius element?
+    QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
 
-  if (prevModel.isValid() == false ||        //if prev is invalid or
-      ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo() !=
-      releaseInfo->getProjectInfo()          //prev and current have different ProjectInfo
-     )
-  {
-    //add Title
-    projectLayout->addWidget(new QLabel(releaseInfo->getProjectInfo()->getName()), 0, 0);
-  }
+//  if (prevModel.isValid() == false ||        //if prev is invalid or
+//      ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo() !=
+//      releaseInfo->getProjectInfo()          //prev and current have different ProjectInfo
+//     )
+    {
+        //add Title
+        title = new QLabel(releaseInfo->getProjectInfo()->getName());
+        projectLayout->addWidget(title, 0, 0);
+    }
 
-  QLabel *releaseName = new QLabel(releaseInfo->getName());
+    QLabel *releaseName = new QLabel(releaseInfo->getName());
 
-  bool dwl = releaseInfo->getDownloadFlag();
-  bool bld = releaseInfo->getBuildFlag();
+    bool dwl = releaseInfo->getDownloadFlag();
+    bool bld = releaseInfo->getBuildFlag();
 
-  projectLayout->addWidget(releaseName, 0, 1);
+    projectLayout->addWidget(releaseName, 0, 1);
 
-  if (editor)
-  {
-    QHBoxLayout *lineLayout = new QHBoxLayout();
+    if (editor)
+    {
+        QHBoxLayout *lineLayout = new QHBoxLayout();
 
-    QCheckBox *downloadEditor = new QCheckBox(tr("download"));
-    QCheckBox *buildEditor = new QCheckBox(tr("build"));
+        QCheckBox *downloadEditor = new QCheckBox(tr("download"));
+        QCheckBox *buildEditor = new QCheckBox(tr("build"));
 
-    downloadEditor->setCheckState(dwl ? Qt::Checked : Qt::Unchecked);
-    buildEditor->setCheckState(bld ? Qt::Checked : Qt::Unchecked);
+        downloadEditor->setCheckState(dwl ? Qt::Checked : Qt::Unchecked);
+        buildEditor->setCheckState(bld ? Qt::Checked : Qt::Unchecked);
 
-    connect(downloadEditor, SIGNAL(stateChanged(int)), releaseInfo, SLOT(setDownloadOption(int)));
-    connect(buildEditor, SIGNAL(stateChanged(int)), releaseInfo, SLOT(setBuildOption(int)));
+        connect(downloadEditor, SIGNAL(stateChanged(int)), releaseInfo, SLOT(setDownloadOption(int)));
+        connect(buildEditor, SIGNAL(stateChanged(int)), releaseInfo, SLOT(setBuildOption(int)));
 
-    lineLayout->addWidget(downloadEditor);
-    lineLayout->addWidget(buildEditor);
+        lineLayout->addWidget(downloadEditor);
+        lineLayout->addWidget(buildEditor);
 
-    projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
-  }
-  else  //view
-  {
-    QHBoxLayout *lineLayout = new QHBoxLayout();
+        projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
+    }
+    else  //view
+    {
+        QHBoxLayout *lineLayout = new QHBoxLayout();
 
-    download = new QLabel();
-    build = new QLabel();
+        download = new QLabel();
+        build = new QLabel();
 
-    lineLayout->addWidget(download);
-    lineLayout->addWidget(build);
+        lineLayout->addWidget(download);
+        lineLayout->addWidget(build);
 
-    projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
+        projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
 
-    //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
-  }
+        //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
+    }
 
-  pixmap = new ImageWidget(this);
-  connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
+    pixmap = new ImageWidget(this);
+    connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
 
-  //główny layout
-  QHBoxLayout *mainLayout = new QHBoxLayout(this);
-  mainLayout->setContentsMargins(0,0,0,0);
-  mainLayout->addWidget(pixmap);
-  mainLayout->addWidget(widget, 1);
+    //główny layout
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->addWidget(pixmap);
+    mainLayout->addWidget(widget, 1);
 
-  if (editor == false)
-    updateValues();   //zaktualizuj widok    
+    if (editor == false)
+        updateValues();   //zaktualizuj widok
 }
 
 
 void WidgetListItem::updateValues()
 {
-  assert(editor == false); //funkcja wywoływana tylko w trybie view
+    assert(editor == false); //funkcja wywoływana tylko w trybie view
 
-  //print release info
+    //the same project as in prevoius element?
+    QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
+    const ProjectInfo *prevProjectInfo = ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo();
+    const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
-  bool dwl = releaseInfo->getDownloadFlag();
-  bool bld = releaseInfo->getBuildFlag();
+    const bool prevIsValid = prevModel.isValid() == false;
 
-  download->setText(QString(tr("download: %1")
-                            .arg(dwl ?
-                                 setColour(tr("yes"), Qt::darkGreen) :
-                                 setColour(tr("no"),  Qt::red)
-                                )
-                           )
-                   );
+    if (prevIsValid ||                      //if prev is invalid or
+            prevProjectInfo != curProjectInfo)  //prev and current have different ProjectInfo
+    {
+        title->setEnabled(true);
+    }
+    else
+        title->setDisabled(true);
 
-  build->setText(QString(tr("build: %1")
-                         .arg(bld ?
-                              setColour(tr("yes"), Qt::darkGreen) :
-                              setColour(tr("no"),  Qt::red)
+    //print release info
+    bool dwl = releaseInfo->getDownloadFlag();
+    bool bld = releaseInfo->getBuildFlag();
+
+    download->setText(QString(tr("download: %1")
+                              .arg(dwl ?
+                                   setColour(tr("yes"), Qt::darkGreen) :
+                                   setColour(tr("no"),  Qt::red)
+                                  )
                              )
-                        )
-                );
+                     );
 
-  pixmap->clear();
+    build->setText(QString(tr("build: %1")
+                           .arg(bld ?
+                                setColour(tr("yes"), Qt::darkGreen) :
+                                setColour(tr("no"),  Qt::red)
+                               )
+                          )
+                  );
 
-  const int icoSize = 32;
+    pixmap->clear();
 
-  //set icon according to release's state
-  if (bld)
-    pixmap->appendLayer( ImagesManager::instance()->getImage("build.png", icoSize) );
-  else if (dwl)
-    pixmap->appendLayer( ImagesManager::instance()->getImage("download.png", icoSize) );
-  else
-    pixmap->appendLayer( ImagesManager::instance()->getImage("off.png", icoSize) );
+    const int icoSize = 32;
 
-  //any action in progress??
-  if ( releaseInfo->getState() != ReleaseInfo::Nothing )
-    pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", icoSize));
+    //set icon according to release's state
+    if (bld)
+        pixmap->appendLayer( ImagesManager::instance()->getImage("build.png", icoSize) );
+    else if (dwl)
+        pixmap->appendLayer( ImagesManager::instance()->getImage("download.png", icoSize) );
+    else
+        pixmap->appendLayer( ImagesManager::instance()->getImage("off.png", icoSize) );
+
+    //any action in progress??
+    if ( releaseInfo->getState() != ReleaseInfo::Nothing )
+        pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", icoSize));
 }
 
 
 ReleaseInfo* WidgetListItem::getReleaseInfo() const
 {
-  return releaseInfo;
+    return releaseInfo;
 }
 
 
 QRect WidgetListItem::childPos(int position)
 {
-  QRect ret;
-  QWidget *w ;//= projectLayout->ititemAtPosition(position, 0)->widget();  //znajdź widget w danym rzędzie 0. kolumnie (będzie to releaseName QLabel)
-  ret.setTopLeft(w->pos());                                        //pozycja etykiety
-  ret.setSize(QSize(width(), w->height()));                        //szerokość QGroupBoxa, wysokość etykiety
+    QRect ret;
+    QWidget *w ;//= projectLayout->ititemAtPosition(position, 0)->widget();  //znajdź widget w danym rzędzie 0. kolumnie (będzie to releaseName QLabel)
+    ret.setTopLeft(w->pos());                                        //pozycja etykiety
+    ret.setSize(QSize(width(), w->height()));                        //szerokość QGroupBoxa, wysokość etykiety
 
-  return ret;
+    return ret;
 }
 
 
 void WidgetListItem::internalRepaint()
 {
-  emit rerender(modelIndex);
+    emit rerender(modelIndex);
 }

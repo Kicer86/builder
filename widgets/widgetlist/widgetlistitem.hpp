@@ -38,9 +38,10 @@ class WidgetListItem:public QWidget
     const bool editor;                         //widget moze trwać w jednym z dwóch stanów: edytor i nieedytor ;)
     WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
     QLabel *download, *build;
+    QLabel *title;
     ImageWidget *pixmap;
     
-    ReleaseInfo *releaseInfo;
+    ReleaseInfo *releaseInfo;                  //related releaseInfo
     QGridLayout *projectLayout;
     
     void construct();
@@ -56,7 +57,7 @@ class WidgetListItem:public QWidget
     
     ReleaseInfo *getReleaseInfo() const;
     
-    QRect childPos(int);              //odnajduje pozycję wydania wewnątrz QGroupBoxu
+    QRect childPos(int);                          //odnajduje pozycję wydania wewnątrz QGroupBoxu
     
   signals:
     void rerender(const QModelIndex &);           //signal emited when widget needs to be repainted
