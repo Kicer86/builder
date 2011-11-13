@@ -79,10 +79,6 @@ void WidgetListItem::construct()
     //the same project as in prevoius element?
     QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
 
-//  if (prevModel.isValid() == false ||        //if prev is invalid or
-//      ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo() !=
-//      releaseInfo->getProjectInfo()          //prev and current have different ProjectInfo
-//     )
     {
         //add Title
         title = new QLabel(releaseInfo->getProjectInfo()->getName());
@@ -149,13 +145,13 @@ void WidgetListItem::updateValues()
 
     //the same project as in prevoius element?
     QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
-    const ProjectInfo *prevProjectInfo = ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo();
+    const bool prevIsValid = prevModel.isValid();
+    
+    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo() : 0;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
-    const bool prevIsValid = prevModel.isValid() == false;
-
-    if (prevIsValid ||                      //if prev is invalid or
-            prevProjectInfo != curProjectInfo)  //prev and current have different ProjectInfo
+    if (prevIsValid == false ||                 //if prev is invalid or
+        prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
     {
         title->setEnabled(true);
     }
