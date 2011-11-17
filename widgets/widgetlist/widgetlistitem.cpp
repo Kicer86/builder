@@ -151,11 +151,8 @@ void WidgetListItem::updateValues()
     const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
-    if (prevIsValid == false ||                 //if prev is invalid or
-        prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
-    {
+    if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
         title->setEnabled(true);
-    }
     else
         title->setDisabled(true);
 
