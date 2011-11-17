@@ -140,8 +140,6 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 
     ui->updateButton->setEnabled(true);
     ui->downloadButton->setEnabled(true);
-    ui->buildButton->setEnabled(true);
-    ui->fastBuildButton->setEnabled(true);
   }
 
   releaseInfo = ri;
@@ -204,18 +202,6 @@ void ProjectInfoWidget::refresh(int type)
       ReleaseInfo::State state = releaseInfo->getState();
       ui->updateButton->setEnabled(state == ReleaseInfo::Nothing);
       ui->progressBar->setEnabled(state != ReleaseInfo::Nothing);
-
-      if (state == ReleaseInfo::Building)
-      {
-        ui->buildButton->setText(tr("Stop"));
-        ui->fastBuildButton->setText(tr("Stop"));
-      }
-      else
-      {
-        ui->buildButton->setText(tr("Build"));
-        ui->fastBuildButton->setText(tr("Install check"));
-      }
-
       ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
 
       const ReleaseInfo::VersionList localVersion = *releaseInfo->getLocalVersions();
