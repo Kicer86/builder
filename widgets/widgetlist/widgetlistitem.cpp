@@ -144,10 +144,11 @@ void WidgetListItem::updateValues()
     assert(editor == false); //funkcja wywoływana tylko w trybie view
 
     //the same project as in prevoius element?
-    QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
+    QModelIndex prevModel = modelIndex.sibling( modelIndex.row() - 1, modelIndex.column() );
     const bool prevIsValid = prevModel.isValid();
     
-    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModel.data(Qt::UserRole + 1).toInt())->getProjectInfo() : 0;
+    const int prevModelData = prevIsValid? prevModel.data(Qt::UserRole + 1).toInt() : -1;
+    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
     if (prevIsValid == false ||                 //if prev is invalid or
