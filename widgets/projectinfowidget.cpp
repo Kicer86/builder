@@ -179,9 +179,9 @@ void ProjectInfoWidget::refresh(int type)
             if (t > 0)
             {
                 if (state == ReleaseInfo::Downloading )
-                    ui->progressBar->setFormat(tr("%5: %p% %1/%2 (%3/%4)")
-                                               .arg(sizeToString(d),
-                                                    sizeToString(t),
+                    ui->progressBar->setFormat(tr("%3: %p% (%1/%2)")
+                                               .arg(/*sizeToString(d),
+                                                    sizeToString(t),*/
                                                     releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
                                                     releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
                                                     releaseInfo->getDownloadedPkg()
