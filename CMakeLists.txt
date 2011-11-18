@@ -4,7 +4,6 @@ find_package(Qt4 4.6 COMPONENTS core gui new)
 find_package(Lua51 REQUIRED)
 find_program(CONVERT convert)
 find_program(INKSCAPE inkscape)
-include(pch.cmake)
 
 include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 
