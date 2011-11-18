@@ -329,18 +329,6 @@ void ProjectInfoWidget::showMacrosButtonPressed()
 }
 
 
-// void ProjectInfoWidget::buildButtonPressed()
-// {
-//   releaseInfo->buildPkg(ReleaseInfo::Normal);
-// }
-
-
-// void ProjectInfoWidget::fastBuildButtonPressed()
-// {
-//   releaseInfo->buildPkg(ReleaseInfo::Fast);
-// }
-
-
 void ProjectInfoWidget::downloadButtonPressed()
 {
     releaseInfo->downloadPkg();
