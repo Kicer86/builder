@@ -212,9 +212,8 @@ void ProjectInfoWidget::refresh(int type)
             localInfoModel->removeRows(0, localInfoModel->rowCount());
 
             foreach(ProjectVersion pV, localVersion)
-            {
                 list << QString("%1: %2").arg(pV.getName()).arg(pV.getVersion());
-            }
+
             localInfoModel->setStringList(list);
 
             list.clear();
