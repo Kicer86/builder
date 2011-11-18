@@ -25,20 +25,20 @@
 
 QString sizeToString(int value)
 {
-  QString bps="B/s";
+  QString suffix="B";
 
   if (value>1024*1024)
   {
     value/=1024*1024;
-    bps="MiB";
+    suffix="MiB";
   }
   else if (value>1024)
   {
     value/=1024;
-    bps="KiB";
+    suffix="KiB";
   }
-  
-  return QString("%1%2").arg(value).arg(bps);
+
+  return QString("%1%2").arg(value).arg(suffix);
 }
 
 

@@ -44,7 +44,7 @@ set(builder_SRCS
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
-  misc/funcions.cpp
+  misc/functions.cpp
   misc/sandboxprocess.cpp
   misc/settings.cpp
   misc/wgetwrapper.cpp
