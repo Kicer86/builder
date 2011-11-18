@@ -83,8 +83,8 @@ class ReleaseInfo:public QObject
   private slots:
     void setDownloadOption(int);         //używane przez WidgetListItem
     void setBuildOption(int);            //używane przez WidgetListItem
-//     void updateProgress(int, int);
-//     void updateProgress(qint64, qint64);
+    void updateProgress(int, int);
+    void updateProgress(qint64, qint64);
 //     void buildMessages();
 //     void buildFinished( int exitCode, QProcess::ExitStatus exitStatus );
 //     void buildError(QProcess::ProcessError error );

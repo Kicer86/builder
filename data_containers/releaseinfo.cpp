@@ -123,30 +123,30 @@ void ReleaseInfo::setDownloadOption(int checkState)
 }
 
 
-// void ReleaseInfo::updateProgress(int d, int t)
-// {
-//   done=d;
-//   total=t;
-// 
-//   emit statusChanged(ProgressChange);
-// }
+ void ReleaseInfo::updateProgress(int d, int t)
+ {
+   done=d;
+   total=t;
+
+   emit statusChanged(ProgressChange);
+ }
 
 
-// void ReleaseInfo::updateProgress(qint64 d, qint64 t)
-// {
-//   done=d;
-//   total=t;
-// 
-//   emit statusChanged(ProgressChange);
-// }
-// 
-// 
+ void ReleaseInfo::updateProgress(qint64 d, qint64 t)
+ {
+   done=d;
+   total=t;
+
+   emit statusChanged(ProgressChange);
+ }
+
+
 void ReleaseInfo::setState(ReleaseInfo::State st)
 {
   state=st;
 //   if (state==Nothing)
 //     updateProgress(0,100);
-  
+
   //status has changed
 
   emit statusChanged(StateChange);
@@ -159,7 +159,7 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 //   QTextCursor cursor(buildingLog);
 //   cursor.movePosition(QTextCursor::End);
 //   cursor.insertText(msg);
-// 
+//
 //   if (state==Building)  //cmake daje %, użyjemy ich :]
 //   {
 //     QStringList lines=msg.split("\n");
@@ -177,7 +177,7 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 // {
 //   //emit signal
 //   emit logWillChange();
-//   
+//
 //   //append text to log
 //   appendTextToLog(buildProcess->readAll()); //dopisz wszystko co zostało wyplute przez proces
 // }
@@ -190,7 +190,7 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 //   .arg(name)
 //   .arg(exitCode)
 //   .arg(exitStatus);
-// 
+//
 //   appendTextToLog(tr("Process finished normally with exit code: %1 and status: %2")
 //                   .arg(exitCode)
 //                   .arg(exitStatus));
@@ -204,7 +204,7 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 //   .arg(projectInfo->getName())
 //   .arg(name)
 //   .arg(error);
-// 
+//
 //   appendTextToLog(tr("Process finished with error code %1").arg(error));
 //   setState(Nothing);
 // }
