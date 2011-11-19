@@ -67,11 +67,10 @@ class DownloaderHelper: public QObject
         DownloaderHelper();
         virtual ~DownloaderHelper();
         
-        int fetch(const QUrl& url, Mode mode, ServerType type, const QString &localFile = "", const Downloader *downloader = 0);
+        int fetch(const QUrl&, Mode, ServerType, const QString &l = "", const Downloader * d = 0);  //return: 0 - ok, 1 - error
         void killConnections();
 
         const QList<DownloaderEntry> *getEntries() const;
-        int getState() const;
 
     private:
         QList<DownloaderEntry> elementsList;
@@ -82,7 +81,6 @@ class DownloaderHelper: public QObject
         QEventLoop *localLoop;
         int awaitingId;
 
-        int state;        //0 - ok, 1 - error
         Mode mode;
         ServerType type;
 

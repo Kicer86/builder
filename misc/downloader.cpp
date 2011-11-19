@@ -156,7 +156,7 @@ static int searchForPkg(lua_State *state)
 
 DownloaderHelper::DownloaderHelper():
         ftp(0), http(0), wget(0), file(0), localLoop(0),
-        state(0), mode(Mode::Check), type(DownloaderHelper::ServerType::None)
+        mode(Mode::Check), type(DownloaderHelper::ServerType::None)
 {
     //register download helper
     helpers.insert(this);
@@ -218,7 +218,7 @@ int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, Downloade
 
 void DownloaderHelper::killConnections()
 {
-    localLoop->exit(state = 1);   //quit with error (unfinished jobs)
+    localLoop->exit(1);   //quit with error (unfinished jobs)
 }
 
 
@@ -235,7 +235,8 @@ void DownloaderHelper::stateChanged(int st)
 void DownloaderHelper::commandFinished(int id, bool error)
 {
     assert (ftp || http || wget);
-
+    int state = 0;
+    
     if (error)   //błąd?
     {
         state = 1; //ustaw status
@@ -344,12 +345,6 @@ const QList<DownloaderHelper::DownloaderEntry>* DownloaderHelper::getEntries() c
 }
 
 
-int DownloaderHelper::getState() const
-{
-    return state;
-}
-
-
 void DownloaderHelper::ftpDirectoryEntry(const QUrlInfo& i)
 {
     DownloaderEntry entry;
@@ -399,8 +394,8 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
 bool Downloader::download(const QUrl& url, const QString &localFile) const
 {
     DownloaderHelper dH;
-    dH.fetch(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
-    return dH.getState() == 0;
+    const int status = dH.fetch(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
+    return status == 0;
 }
 
 
