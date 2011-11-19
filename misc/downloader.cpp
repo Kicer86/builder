@@ -159,7 +159,7 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
                 qWarning() << "current version: could not find any matching file :(";
                 lua_pushstring(state, "none of files matched");
             
-                goto error;  //go out of {}
+                goto error;  //go out of {} to destroy all objects
             }        
         }
         else //problems with download
@@ -176,9 +176,11 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
     }
     
     //calling error is out of main block of function.
-    //we need to be sure that DownloaderHelper is destroyed 
+    //we need to be sure that DownloaderHelper is destroyed (be leaving it's scope)
 error:
     lua_error(state);        //raise an error
+    
+    assert(!"bug in searchForPkg, calling lua_error failed");
     return 0;                //lua_error never returns, so this return will be never called
 }
 
