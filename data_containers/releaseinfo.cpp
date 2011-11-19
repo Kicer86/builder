@@ -325,7 +325,7 @@ void ReleaseInfo::update()
             qWarning() << QString("Could not open lua script file: %1").arg(downloadScript);
 
         foreach (ProjectVersion pV, currentVersions)
-        qDebug() << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
+            qDebug() << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
     }
     setState(Nothing);
 }
