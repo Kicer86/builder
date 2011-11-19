@@ -309,9 +309,9 @@ const Estimator* ReleaseInfo::getEstimator() const
 void ReleaseInfo::update()
 {
     //włącz progress bar
-//   updateProgress(0,0);  //powinien migać czy coś
+    updateProgress(0, 0); //powinien migać czy coś
 
-    if (! downloadScript.isEmpty())
+    if ( downloadScript.isEmpty() == false )
     {
         setState(Checking);
         Downloader downloader;

@@ -107,7 +107,7 @@ class ReleaseInfo: public QObject
         const VersionList *getCurrentVersions() const;  //zwraca wskaźnik na wersję projektu sprawdzoną w internecie
         qint64 getProgressTotal() const;
         qint64 getProgressDone() const;
-        void update();                                  //sprawdź jakie jest bieżąca wersja
+        void update();                                  //check, what is the newest version
         void downloadPkg();                             //pobierz paczkę z bieżącą wersją
         //void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
         const Estimator *getEstimator() const;
