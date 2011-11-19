@@ -36,6 +36,7 @@ extern "C"
 #include <htmlparser.hpp>
 #include <std_macros.hpp>
 #include <str_op.hpp>
+#include <std_macros.hpp>
 
 #include "downloader.hpp"
 #include "settings.hpp"
@@ -285,6 +286,13 @@ void DownloaderHelper::commandFinished(int id, bool error)
 }
 
 
+void DownloaderHelper::killConnections()
+{
+    localLoop->exit(state = 1);   //quit with error (unfinished jobs)
+}
+
+
+
 DownloaderHelper::~DownloaderHelper()
 {
     //remove helper from list of helpers
@@ -362,10 +370,10 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
     }
 
     ReleaseInfo::VersionList retList;
-    int retValues = lua_gettop(luaState);
+    const int retValues = lua_gettop(luaState);
     for (int i = 0; i < retValues; i += 2)
     {
-        QUrl url(lua_tostring(luaState, i + 2));
+        const QUrl url(lua_tostring(luaState, i + 2));
         ProjectVersion pV(url);
         QString name = lua_tostring(luaState, i + 1);
         pV.setName(name);
@@ -379,5 +387,13 @@ bool Downloader::download(const QUrl& url, const QString &localFile) const
 {
     DownloaderHelper dH(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
     return dH.getState() == 0;
+}
+
+
+void Downloader::killDownloadHelpers()
+{
+    //delete each helper
+    FOREACH(helper, helpers)
+        helper->killConnections();
 }
 

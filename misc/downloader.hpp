@@ -66,6 +66,8 @@ class DownloaderHelper: public QObject
 
         DownloaderHelper(const QUrl& url, Mode mode, ServerType type, const QString &localFile = "", const Downloader *downloader = 0);
         virtual ~DownloaderHelper();
+        
+        void killConnections();
 
         const QList<DownloaderEntry> *getEntries() const;
         int getState() const;
@@ -101,6 +103,8 @@ class Downloader : public QObject
 
         ReleaseInfo::VersionList checkVersion(QByteArray script) const;
         bool download(const QUrl& url, const QString &localFile) const;
+        
+        static void killDownloadHelpers();
 
     signals:
         void progressUpdate(int, int);
