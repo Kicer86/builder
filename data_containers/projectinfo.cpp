@@ -34,102 +34,102 @@
 
 ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), name(n)
 {
-  qDebug() << QString("crating project %1 with id %2").arg(name).arg(id);
-  QSettings setting;
+    qDebug() << QString("creating project %1 with id %2").arg(name).arg(id);
+    QSettings setting;
 
-  QDir releaseDir(Settings::instance()->getProjectsPath());
-  releaseDir.cd(name);
-  QStringList releases = releaseDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
+    QDir releaseDir(Settings::instance()->getProjectsPath());
+    releaseDir.cd(name);
+    QStringList releases = releaseDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
 
-  foreach(QString release, releases)
-  {
-    ReleaseInfo *releaseInfo = new ReleaseInfo(release, this);
-    releasesList.append(releaseInfo);
+    foreach(QString release, releases)
+    {
+        ReleaseInfo *releaseInfo = new ReleaseInfo(release, this);
+        releasesList.append(releaseInfo);
 
-    //update itself when release has changed
-    connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(releaseChanged()));
-    connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(releaseChanged()));
-  }
+        //update itself when release has changed
+        connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(releaseChanged()));
+        connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(releaseChanged()));
+    }
 
-  timer = new QTimer();
-  timer->setInterval(100);
-  connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
+    timer = new QTimer();
+    timer->setInterval(100);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
-  updateStatus();   //set status
+    updateStatus();   //set status
 }
 
 
 ProjectInfo::~ProjectInfo()
 {
-  qDebug() << QString("destroying project %1 with %2 releases").arg(name).arg(releasesList.size());
-  QSettings settings;
-  while (releasesList.size() > 0)
-    delete releasesList.takeFirst();
+    qDebug() << QString("destroying project %1 with %2 releases").arg(name).arg(releasesList.size());
+
+    while (releasesList.size() > 0)
+        delete releasesList.takeFirst();
 }
 
 
 const QList<ReleaseInfo*> *ProjectInfo::getReleasesList() const
 {
-  return &releasesList;
+    return &releasesList;
 }
 
 
 QString ProjectInfo::getName() const
 {
-  return name;
+    return name;
 }
 
 
 int ProjectInfo::getId() const
 {
-  return id;
+    return id;
 }
 
 
 void ProjectInfo::releaseChanged()
 {
-  //release has changed, it's possible that more changes were commit, so don't update on each of them.
-  //Do it once
-  timer->start();   //start timer;
+    //release has changed, it's possible that more changes were commit, so don't update on each of them.
+    //Do it once
+    timer->start();   //start timer;
 }
 
 
 void ProjectInfo::updateStatus() const
 {
-  Status st = Nothing;
-  //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
-  foreach(ReleaseInfo *ri, releasesList)
-  {
-    bool dwl = ri->getDownloadFlag();
-    bool bld = ri->getBuildFlag();
-    bool progress = ri->getState() != ReleaseInfo::Nothing;  //is there something goin' on ?
-
-    if (progress)
+    Status st = Nothing;
+    //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
+    foreach(ReleaseInfo *ri, releasesList)
     {
-      if (dwl && st < CheckInProgress)
-        st = CheckInProgress;
+        bool dwl = ri->getDownloadFlag();
+        bool bld = ri->getBuildFlag();
+        bool progress = ri->getState() != ReleaseInfo::Nothing;  //is there something goin' on ?
 
-      if (bld && st < BuildInProgress)
-        st = BuildInProgress;
+        if (progress)
+        {
+            if (dwl && st < CheckInProgress)
+                st = CheckInProgress;
+
+            if (bld && st < BuildInProgress)
+                st = BuildInProgress;
+        }
+        else
+        {
+            if (dwl && st < Check)
+                st = Check;
+
+            if (bld && st < Build)
+                st = Build;
+        }
     }
-    else
-    {
-      if (dwl && st < Check)
-        st = Check;
 
-      if (bld && st < Build)
-        st = Build;
-    }
-  }
-
-  bool update = status != st; //current status differs from new one ?
-  status = st;
-  if (update)
-    emit changed();  //tell the world that needs to update
+    bool update = status != st; //current status differs from new one ?
+    status = st;
+    if (update)
+        emit changed();  //tell the world that needs to update
 }
 
 
 ProjectInfo::Status ProjectInfo::getStatus() const
 {
-  return status;
+    return status;
 }

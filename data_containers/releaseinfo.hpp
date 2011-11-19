@@ -29,95 +29,95 @@ class QTextDocument;
 class Estimator;
 class ProjectInfo;
 
-class ReleaseInfo:public QObject
+class ReleaseInfo: public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 
-  public:
-    typedef QHash<QString, ProjectVersion> VersionList;
+    public:
+        typedef QHash<QString, ProjectVersion> VersionList;
 
-    enum State
-    {
-      Nothing,     //nic się nie dzieje
-      Checking,    //sprawdzanie aktualnej wersji
-      Downloading, //pobieranie aktualnej wersji
-      Building     //budowanie pakietu
-    };
+        enum State
+        {
+            Nothing,     //nic się nie dzieje
+            Checking,    //sprawdzanie aktualnej wersji
+            Downloading, //pobieranie aktualnej wersji
+            Building     //budowanie pakietu
+        };
 
-    enum BuildMode
-    {
-      Normal,      //wywolanie rpmbuild -ba
-      Fast,        //wywołanie rpmbuild -bi --short-circuit (dla szybkiego poprawiania plików spec)
-    };
+        enum BuildMode
+        {
+            Normal,      //wywolanie rpmbuild -ba
+            Fast,        //wywołanie rpmbuild -bi --short-circuit (dla szybkiego poprawiania plików spec)
+        };
 
-    enum ChangeType
-    {
-      StateChange=1,
-      ProgressChange=2,
-      AllChanged=0xff
-    };
+        enum ChangeType
+        {
+            StateChange = 1,
+            ProgressChange = 2,
+            AllChanged = 0xff
+        };
 
-  private:
-    const int id;        //id wydania
-    const QString name;
-    bool download;
-    bool build;
+    private:
+        const int id;        //id wydania
+        const QString name;
+        bool download;
+        bool build;
 
-    qint64 total;   //zmienna uzywana przy pobieraniu danych z internetu - wartość max dla progressBaru
-    qint64 done;    //jw, wartość bieżąca
+        qint64 total;   //zmienna uzywana przy pobieraniu danych z internetu - wartość max dla progressBaru
+        qint64 done;    //jw, wartość bieżąca
 
-    VersionList localVersions, currentVersions;
+        VersionList localVersions, currentVersions;
 
-    ProjectInfo *projectInfo;   //rodzic
-    QString downloadScript;
-    //QProcess *buildProcess;     //process res
-    //QTextDocument *buildingLog; //build log
-    Estimator *estimator;
-    State state;
-    QString downloadedPkg;      //paczka która wlasnie jest pobierania (ma sens tylko dla state==Downloading)
+        ProjectInfo *projectInfo;   //rodzic
+        QString downloadScript;
+        //QProcess *buildProcess;     //process res
+        //QTextDocument *buildingLog; //build log
+        Estimator *estimator;
+        State state;
+        QString downloadedPkg;      //paczka która wlasnie jest pobierania (ma sens tylko dla state==Downloading)
 
-    QString releasePath() const;         //construct path to release
+        QString releasePath() const;         //construct path to release
 //     void appendTextToLog(const QString &msg);
-    void setState(State st);
+        void setState(State st);
 
-  private slots:
-    void setDownloadOption(int);         //używane przez WidgetListItem
-    void setBuildOption(int);            //używane przez WidgetListItem
-    void updateProgress(int, int);
-    void updateProgress(qint64, qint64);
+    private slots:
+        void setDownloadOption(int);         //używane przez WidgetListItem
+        void setBuildOption(int);            //używane przez WidgetListItem
+        void updateProgress(int, int);
+        void updateProgress(qint64, qint64);
 //     void buildMessages();
 //     void buildFinished( int exitCode, QProcess::ExitStatus exitStatus );
 //     void buildError(QProcess::ProcessError error );
 
-  public:
-    explicit ReleaseInfo(const QString &n, ProjectInfo* p);
-    virtual ~ReleaseInfo();
+    public:
+        explicit ReleaseInfo(const QString &n, ProjectInfo* p);
+        virtual ~ReleaseInfo();
 
-    int getId() const;
-    QString getName() const;
-    bool getBuildFlag() const;
-    bool getDownloadFlag() const;
-    QTextDocument *getBuildMesages();
-    QString getDownloadScriptFile() const;         //zwraca scieżkę do pliku lua
-    QString getSpecFile() const;
-    QString getReleasePath() const;                //rlease path (dir)
-    const QString &getDownloadedPkg() const;
-    const ProjectInfo *getProjectInfo() const;
-    const VersionList *getLocalVersions() const;    //zwraca wskaźnik na wersję projektu na dysku
-    const VersionList *getCurrentVersions() const;  //zwraca wskaźnik na wersję projektu sprawdzoną w internecie
-    qint64 getProgressTotal() const;
-    qint64 getProgressDone() const;
-    void update();                                  //sprawdź jakie jest bieżąca wersja
-    void downloadPkg();                             //pobierz paczkę z bieżącą wersją
-    //void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
-    const Estimator *getEstimator() const;
+        int getId() const;
+        QString getName() const;
+        bool getBuildFlag() const;
+        bool getDownloadFlag() const;
+        QTextDocument *getBuildMesages();
+        QString getDownloadScriptFile() const;         //zwraca scieżkę do pliku lua
+        QString getSpecFile() const;
+        QString getReleasePath() const;                //rlease path (dir)
+        const QString &getDownloadedPkg() const;
+        const ProjectInfo *getProjectInfo() const;
+        const VersionList *getLocalVersions() const;    //zwraca wskaźnik na wersję projektu na dysku
+        const VersionList *getCurrentVersions() const;  //zwraca wskaźnik na wersję projektu sprawdzoną w internecie
+        qint64 getProgressTotal() const;
+        qint64 getProgressDone() const;
+        void update();                                  //sprawdź jakie jest bieżąca wersja
+        void downloadPkg();                             //pobierz paczkę z bieżącą wersją
+        //void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
+        const Estimator *getEstimator() const;
 
-    State getState() const;
+        State getState() const;
 
-  signals:
-    void statusChanged(int);       //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
-    void optionsChanged();         //zmieniły się opcje releasea (buduj/nie buduj, ściągaj/nie ściągaj)
-    void logWillChange();          //log budowania zaraz zmieni swoją zawartość.
+    signals:
+        void statusChanged(int);       //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
+        void optionsChanged();         //zmieniły się opcje releasea (buduj/nie buduj, ściągaj/nie ściągaj)
+        void logWillChange();          //log budowania zaraz zmieni swoją zawartość.
 };
 
 #endif // RELEASEINFO_HPP

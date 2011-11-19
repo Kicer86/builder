@@ -26,117 +26,117 @@
 
 ProjectsManager::ProjectsManager(): id(0)
 {
-  model=new QStandardItemModel();
+    model = new QStandardItemModel();
 }
 
 ProjectsManager::~ProjectsManager()
 {
-  delete model;
+    delete model;
 }
 
 
 ProjectsManager* ProjectsManager::instance()
 {
-  static ProjectsManager _instance;
-  return &_instance;
+    static ProjectsManager _instance;
+    return &_instance;
 }
 
 
 ///TODO: przywrócić nazwy itemów oraz uczynić wydania childrenami (patrz widgetlist.cpp)
 void ProjectsManager::registerProject(ProjectInfo* project)
 {
-  projectsList.append(project);
-  
-  //zaktualizuj model
+    projectsList.append(project);
+
+    //zaktualizuj model
 //   QStandardItem *projectItem=new QStandardItem(project->getName());
-  
-  //zapisz id projektu
-//   projectItem->setData(project->getId());   
-  
-  qDebug() << QString("registering project %1 with id %2").arg(project->getName()).arg(project->getId());
-  
-  foreach(const ReleaseInfo *release, *project->getReleasesList())
-  {
-    QStandardItem *releaseItem=new QStandardItem(release->getName());
-    releaseItem->setData(release->getId());  //zapisz id wydania
+
+    //zapisz id projektu
+//   projectItem->setData(project->getId());
+
+    qDebug() << QString("registering project %1 with id %2").arg(project->getName()).arg(project->getId());
+
+    foreach(const ReleaseInfo *release, *project->getReleasesList())
+    {
+        QStandardItem *releaseItem = new QStandardItem(release->getName());
+        releaseItem->setData(release->getId());  //zapisz id wydania
 //     projectItem->appendRow(releaseItem);     //dopisz wydanie do projektu
-    model->appendRow(releaseItem);
-  }
+        model->appendRow(releaseItem);
+    }
 //   model->appendRow(projectItem);             //dopisz projekt do modelu
 }
 
 
 void ProjectsManager::setProjectInfoWidget(ProjectInfoWidget* piW)
 {
-  projectInfoWidget=piW;
+    projectInfoWidget = piW;
 }
 
 
 void ProjectsManager::showInfo(ReleaseInfo* releaseInfo)
 {
-  if (projectInfoWidget)
-    projectInfoWidget->setRelease(releaseInfo);
+    if (projectInfoWidget)
+        projectInfoWidget->setRelease(releaseInfo);
 }
 
 
 int ProjectsManager::getId()
 {
-  return id++;
+    return id++;
 }
 
 
 QStandardItemModel* ProjectsManager::getModel() const
 {
-  return model;
+    return model;
 }
 
 
 ReleaseInfo* ProjectsManager::getCurrentRelease() const
 {
-  if (projectInfoWidget)
-    return projectInfoWidget->getCurrentRelease();
-  else
-    return 0;
+    if (projectInfoWidget)
+        return projectInfoWidget->getCurrentRelease();
+    else
+        return 0;
 }
 
 
 
 ProjectInfo* ProjectsManager::findProject(int projectId)
 {
-  ProjectInfo *ret=0;
-  
-  foreach(ProjectInfo *projectInfo, projectsList)
-  {
-    if (projectInfo->getId()==projectId)
+    ProjectInfo *ret = 0;
+
+    foreach(ProjectInfo *projectInfo, projectsList)
     {
-      ret=projectInfo;
-      break;
+        if (projectInfo->getId() == projectId)
+        {
+            ret = projectInfo;
+            break;
+        }
     }
-  }
-  
-  return ret;
+
+    return ret;
 }
 
 
 ReleaseInfo* ProjectsManager::findRelease(int releaseId)
 {
-  ReleaseInfo *ret=0;
-  
-  foreach( ProjectInfo *projectInfo, projectsList )
+    ReleaseInfo *ret = 0;
+
+    foreach( ProjectInfo *projectInfo, projectsList )
     foreach( ReleaseInfo *releaseInfo, *(projectInfo->getReleasesList()) )
-      if (releaseInfo->getId()==releaseId)
-      {
-        ret=releaseInfo;
+    if (releaseInfo->getId() == releaseId)
+    {
+        ret = releaseInfo;
         goto quit;
-      }
-  
+    }
+
 quit:
-  return ret;
+    return ret;
 }
 
 
 void ProjectsManager::destroyProjects()
 {
-  while (projectsList.count()>0)
-    delete projectsList.takeFirst();
+    while (projectsList.count() > 0)
+        delete projectsList.takeFirst();
 }

@@ -29,41 +29,41 @@ class ReleaseInfo;
 
 class ProjectInfo: public QObject
 {
-    Q_OBJECT
-  
-  public:
-    ProjectInfo(QString n);
-    virtual ~ProjectInfo();
+        Q_OBJECT
 
-    enum Status
-    {
-      Nothing,
-      Check,
-      Build,
-      All,
-      CheckInProgress,
-      BuildInProgress,
-      AllInProgress
-    };
+    public:
+        ProjectInfo(QString n);
+        virtual ~ProjectInfo();
 
-    const QList<ReleaseInfo*> *getReleasesList() const;
-    QString getName() const;
-    int getId() const;
-    Status getStatus() const;
+        enum Status
+        {
+            Nothing,
+            Check,
+            Build,
+            All,
+            CheckInProgress,
+            BuildInProgress,
+            AllInProgress
+        };
 
-  private:
-    const int id;         //id projektu
-    const QString name;
-    QList <ReleaseInfo *> releasesList;
-    mutable Status status;
-    QTimer *timer;
-    
-  private slots:
-    void releaseChanged();     //one of releases has changed
-    void updateStatus() const;
-    
-  signals:
-    void changed() const;      //emited when project's status has changed (build/update/off chamge or progress/no progress)
+        const QList<ReleaseInfo*> *getReleasesList() const;
+        QString getName() const;
+        int getId() const;
+        Status getStatus() const;
+
+    private:
+        const int id;         //id projektu
+        const QString name;
+        QList <ReleaseInfo *> releasesList;
+        mutable Status status;
+        QTimer *timer;
+
+    private slots:
+        void releaseChanged();     //one of releases has changed
+        void updateStatus() const;
+
+    signals:
+        void changed() const;      //emited when project's status has changed (build/update/off chamge or progress/no progress)
 };
 
 #endif // PROJECTINFO_HPP

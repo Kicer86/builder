@@ -32,39 +32,39 @@
 
 
 ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
-    QObject(0), id(ProjectsManager::instance()->getId()),
-    name(n), total(100), done(0), projectInfo(p), state(Nothing)
+        QObject(0), id(ProjectsManager::instance()->getId()),
+        name(n), total(100), done(0), projectInfo(p), state(Nothing)
 {
 //   buildProcess=new QProcess(this);
 //   buildingLog=new QTextDocument(this);
-  estimator=new Estimator(this);
+    estimator = new Estimator(this);
 
 
-  qDebug() << QString("adding release %1").arg(name);
-  QSettings settings;
-  settings.beginGroup("Projects");
-  settings.beginGroup(projectInfo->getName());
-  settings.beginGroup(name);
-  download=settings.value("download").toBool();
-  build=settings.value("build").toBool();
+    qDebug() << QString("adding release %1").arg(name);
+    QSettings settings;
+    settings.beginGroup("Projects");
+    settings.beginGroup(projectInfo->getName());
+    settings.beginGroup(name);
+    download = settings.value("download").toBool();
+    build = settings.value("build").toBool();
 
-  //lua script
-  downloadScript=releasePath() + "/download.lua";
+    //lua script
+    downloadScript = releasePath() + "/download.lua";
 
-  //read local version
-  int size=settings.beginReadArray("localVersion");
-  for (int i=0; i<size; i++)
-  {
-    settings.setArrayIndex(i);
-    ProjectVersion pV;
-    pV.load(&settings);
-    localVersions[pV.getName()] = pV;
-  }
-  settings.endArray();
+    //read local version
+    int size = settings.beginReadArray("localVersion");
+    for (int i = 0; i < size; i++)
+    {
+        settings.setArrayIndex(i);
+        ProjectVersion pV;
+        pV.load(&settings);
+        localVersions[pV.getName()] = pV;
+    }
+    settings.endArray();
 
-  settings.endGroup();
-  settings.endGroup();
-  settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
 
 //   connect(buildProcess, SIGNAL(readyRead()), this, SLOT(buildMessages()));
 //   connect(buildProcess, SIGNAL(finished( int, QProcess::ExitStatus )),
@@ -76,80 +76,80 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
 
 ReleaseInfo::~ReleaseInfo()
 {
-  qDebug() << QString("deleting release %1").arg(name);
-  QSettings settings;
-  settings.beginGroup("Projects");
-  settings.beginGroup(projectInfo->getName());
-  settings.beginGroup(name);
-  settings.setValue("download", download);
-  settings.setValue("build", build);
+    qDebug() << QString("deleting release %1").arg(name);
+    QSettings settings;
+    settings.beginGroup("Projects");
+    settings.beginGroup(projectInfo->getName());
+    settings.beginGroup(name);
+    settings.setValue("download", download);
+    settings.setValue("build", build);
 
-  settings.beginWriteArray("localVersion");
-  int i=0;
-  foreach(ProjectVersion pV, localVersions)
-  {
-    QString pkgName=pV.getName();
-    settings.setArrayIndex(i);
-    if (localVersions[pkgName].save(&settings))
-      i++;            //inkrementuj tylko jesli było coś do zapisania
-  }
-  settings.endArray();
+    settings.beginWriteArray("localVersion");
+    int i = 0;
+    foreach(ProjectVersion pV, localVersions)
+    {
+        QString pkgName = pV.getName();
+        settings.setArrayIndex(i);
+        if (localVersions[pkgName].save(&settings))
+            i++;            //inkrementuj tylko jesli było coś do zapisania
+    }
+    settings.endArray();
 
-  settings.endGroup();
-  settings.endGroup();
-  settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
 }
 
 
 QString ReleaseInfo::releasePath() const
 {
-  return QString("%1/%2/%3").arg(Settings::instance()->getProjectsPath())
-         .arg(projectInfo->getName())
-         .arg(name);
+    return QString("%1/%2/%3").arg(Settings::instance()->getProjectsPath())
+           .arg(projectInfo->getName())
+           .arg(name);
 }
 
 
 void ReleaseInfo::setBuildOption(int checkState)
 {
-  build=checkState==Qt::Checked;
-  emit optionsChanged();
+    build = checkState == Qt::Checked;
+    emit optionsChanged();
 }
 
 
 void ReleaseInfo::setDownloadOption(int checkState)
 {
-  download=checkState==Qt::Checked;
-  emit optionsChanged();
+    download = checkState == Qt::Checked;
+    emit optionsChanged();
 }
 
 
- void ReleaseInfo::updateProgress(int d, int t)
- {
-   done=d;
-   total=t;
+void ReleaseInfo::updateProgress(int d, int t)
+{
+    done = d;
+    total = t;
 
-   emit statusChanged(ProgressChange);
- }
+    emit statusChanged(ProgressChange);
+}
 
 
- void ReleaseInfo::updateProgress(qint64 d, qint64 t)
- {
-   done=d;
-   total=t;
+void ReleaseInfo::updateProgress(qint64 d, qint64 t)
+{
+    done = d;
+    total = t;
 
-   emit statusChanged(ProgressChange);
- }
+    emit statusChanged(ProgressChange);
+}
 
 
 void ReleaseInfo::setState(ReleaseInfo::State st)
 {
-  state=st;
+    state = st;
 //   if (state==Nothing)
 //     updateProgress(0,100);
 
-  //status has changed
+    //status has changed
 
-  emit statusChanged(StateChange);
+    emit statusChanged(StateChange);
 }
 
 
@@ -212,49 +212,49 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 
 int ReleaseInfo::getId() const
 {
-  return id;
+    return id;
 }
 
 
 QString ReleaseInfo::getName() const
 {
-  return name;
+    return name;
 }
 
 
 bool ReleaseInfo::getDownloadFlag() const
 {
-  return download;
+    return download;
 }
 
 
 bool ReleaseInfo::getBuildFlag() const
 {
-  return build;
+    return build;
 }
 
 
 QString ReleaseInfo::getDownloadScriptFile() const
 {
-  return downloadScript;
+    return downloadScript;
 }
 
 
 QString ReleaseInfo::getSpecFile() const
 {
-  return releasePath() + "/" + projectInfo->getName() + ".spec";
+    return releasePath() + "/" + projectInfo->getName() + ".spec";
 }
 
 
 QString ReleaseInfo::getReleasePath() const
 {
-  return releasePath();
+    return releasePath();
 }
 
 
 const ProjectInfo* ReleaseInfo::getProjectInfo() const
 {
-  return projectInfo;
+    return projectInfo;
 }
 
 
@@ -266,111 +266,111 @@ const ProjectInfo* ReleaseInfo::getProjectInfo() const
 
 const QString& ReleaseInfo::getDownloadedPkg() const
 {
-  return downloadedPkg;
+    return downloadedPkg;
 }
 
 
 const ReleaseInfo::VersionList* ReleaseInfo::getLocalVersions() const
 {
-  return &localVersions;
+    return &localVersions;
 }
 
 
 const ReleaseInfo::VersionList* ReleaseInfo::getCurrentVersions() const
 {
-  return &currentVersions;
+    return &currentVersions;
 }
 
 
 ReleaseInfo::State ReleaseInfo::getState() const
 {
-  return state;
+    return state;
 }
 
 
 qint64 ReleaseInfo::getProgressDone() const
 {
-  return done;
+    return done;
 }
 
 
 qint64 ReleaseInfo::getProgressTotal() const
 {
-  return total;
+    return total;
 }
 
 
 const Estimator* ReleaseInfo::getEstimator() const
 {
-  return estimator;
+    return estimator;
 }
 
 
 void ReleaseInfo::update()
 {
-  //włącz progress bar
+    //włącz progress bar
 //   updateProgress(0,0);  //powinien migać czy coś
 
-  if (! downloadScript.isEmpty())
-  {
-    setState(Checking);
-    Downloader downloader;
-    QFile script(downloadScript);
-    if (script.exists() && script.open(QIODevice::ReadOnly))
+    if (! downloadScript.isEmpty())
     {
-      currentVersions=downloader.checkVersion(script.readAll());
-      script.close();
-    }
-    else
-      qWarning() << QString("Could not open lua script file: %1").arg(downloadScript);
+        setState(Checking);
+        Downloader downloader;
+        QFile script(downloadScript);
+        if (script.exists() && script.open(QIODevice::ReadOnly))
+        {
+            currentVersions = downloader.checkVersion(script.readAll());
+            script.close();
+        }
+        else
+            qWarning() << QString("Could not open lua script file: %1").arg(downloadScript);
 
-    foreach (ProjectVersion pV, currentVersions)
-    qDebug() << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
-  }
-  setState(Nothing);
+        foreach (ProjectVersion pV, currentVersions)
+        qDebug() << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
+    }
+    setState(Nothing);
 }
 
 
 void ReleaseInfo::downloadPkg()
 {
-  if ( localVersions!=currentVersions && currentVersions.isEmpty()==false )
-  {
-    Downloader downloader;
-    connect(&downloader, SIGNAL(progressUpdate(int,int)), this, SLOT(updateProgress(int,int)));
-    connect(&downloader, SIGNAL(progressUpdate(qint64,qint64)), this, SLOT(updateProgress(qint64,qint64)));
-
-    VersionList::iterator i;
-    for (i=currentVersions.begin(); i!=currentVersions.end(); ++i)
+    if ( localVersions != currentVersions && currentVersions.isEmpty() == false )
     {
-      ProjectVersion &pV=i.value();
-      QString pkgName=pV.getName();
+        Downloader downloader;
+        connect(&downloader, SIGNAL(progressUpdate(int, int)), this, SLOT(updateProgress(int, int)));
+        connect(&downloader, SIGNAL(progressUpdate(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
 
-      if (localVersions.contains(pkgName)==false ||  //pobieraj dany plik tylko jesli różni się od wersji z dysku
-          localVersions[pkgName].getVersion()!=pV.getVersion())
-      {
-        QFileInfo fileInfo(pV.getPkgUrl().toString()); //potrzebne do wyodrębnienia nazwy pliku z urlu sieciowego
-        QFileInfo localFile(releasePath() + "/src/" + fileInfo.fileName()); //plik lokalny
-
-        downloadedPkg=pkgName;   //ustaw nazwę pobieranej paczki
-        setState(Downloading);   //zmien status (żeby interfejs się odświeżył)
-
-        if (downloader.download(pV.getPkgUrl(), localFile.absoluteFilePath())==true)
+        VersionList::iterator i;
+        for (i = currentVersions.begin(); i != currentVersions.end(); ++i)
         {
-          pV.setLocalFile(localFile);
-          localVersions[pkgName]=currentVersions[pkgName]; //synchronizuj dane
+            ProjectVersion &pV = i.value();
+            QString pkgName = pV.getName();
+
+            if (localVersions.contains(pkgName) == false ||  //pobieraj dany plik tylko jesli różni się od wersji z dysku
+                    localVersions[pkgName].getVersion() != pV.getVersion())
+            {
+                QFileInfo fileInfo(pV.getPkgUrl().toString()); //potrzebne do wyodrębnienia nazwy pliku z urlu sieciowego
+                QFileInfo localFile(releasePath() + "/src/" + fileInfo.fileName()); //plik lokalny
+
+                downloadedPkg = pkgName; //ustaw nazwę pobieranej paczki
+                setState(Downloading);   //zmien status (żeby interfejs się odświeżył)
+
+                if (downloader.download(pV.getPkgUrl(), localFile.absoluteFilePath()) == true)
+                {
+                    pV.setLocalFile(localFile);
+                    localVersions[pkgName] = currentVersions[pkgName]; //synchronizuj dane
+                }
+                else
+                {
+                    qWarning() << QString ("Could not download file: %1").arg(pV.getPkgUrl().toString());
+                    break;
+                }
+            }
         }
-        else
-        {
-          qWarning() << QString ("Could not download file: %1").arg(pV.getPkgUrl().toString());
-          break;
-        }
-      }
     }
-  }
-  else
-    qWarning() << "local and current versions are the same or current version not checked";
+    else
+        qWarning() << "local and current versions are the same or current version not checked";
 
-  setState(Nothing);
+    setState(Nothing);
 }
 
 /*
