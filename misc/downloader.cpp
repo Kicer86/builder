@@ -198,7 +198,8 @@ DownloaderHelper::DownloaderHelper(const QUrl& url, Mode m, DownloaderHelper::Se
 void DownloaderHelper::stateChanged(int st)
 {
     if ( (ftp && st == QFtp::Unconnected) ||
-            (http && st == QHttp::Unconnected) )
+         (http && st == QHttp::Unconnected) 
+       )
         qDebug() << "conenction closed";
 }
 

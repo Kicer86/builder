@@ -39,68 +39,68 @@ class Downloader;
 
 class DownloaderHelper: public QObject
 {
-    Q_OBJECT
-    
-  public:
-    enum Mode
-    {
-      Check,
-      Download,
-    };
+        Q_OBJECT
 
-    enum ServerType
-    {
-      None,
-      Index,
-      SourceForge,
-      CodeGoogle
-    };
-    
-    struct DownloaderEntry
-    {
-      QString name;
-      QString url;      
-    };
+    public:
+        enum Mode
+        {
+            Check,
+            Download,
+        };
 
-    DownloaderHelper(const QUrl& url, Mode mode, ServerType type, const QString &localFile="", const Downloader *downloader=0);
-    virtual ~DownloaderHelper();
+        enum ServerType
+        {
+            None,
+            Index,
+            SourceForge,
+            CodeGoogle
+        };
 
-    const QList<DownloaderEntry> *getEntries() const;
-    int getState() const;
-    
-private:
-    QList<DownloaderEntry> elementsList;
-    QFtp *ftp;
-    QHttp *http;
-    WgetWrapper *wget;
-    QFile *file;
-    QEventLoop *localLoop;
-    int awaitingId;
+        struct DownloaderEntry
+        {
+            QString name;
+            QString url;
+        };
 
-    int state;        //0 - ok, 1 - error
-    Mode mode;
-    ServerType type;
+        DownloaderHelper(const QUrl& url, Mode mode, ServerType type, const QString &localFile = "", const Downloader *downloader = 0);
+        virtual ~DownloaderHelper();
 
-  private slots:
-    void ftpDirectoryEntry(const QUrlInfo & i);
-    void commandFinished( int id, bool error );
-    void stateChanged(int state);
+        const QList<DownloaderEntry> *getEntries() const;
+        int getState() const;
+
+    private:
+        QList<DownloaderEntry> elementsList;
+        QFtp *ftp;
+        QHttp *http;
+        WgetWrapper *wget;
+        QFile *file;
+        QEventLoop *localLoop;
+        int awaitingId;
+
+        int state;        //0 - ok, 1 - error
+        Mode mode;
+        ServerType type;
+
+    private slots:
+        void ftpDirectoryEntry(const QUrlInfo & i);
+        void commandFinished( int id, bool error );
+        void stateChanged(int state);
 };
 
 class Downloader : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 
-  public:
-    explicit Downloader(QObject* p = 0);
-    virtual ~Downloader();
+    public:
+        explicit Downloader(QObject* p = 0);
+        virtual ~Downloader();
 
-    ReleaseInfo::VersionList checkVersion(QByteArray script) const;
-    bool download(const QUrl& url, const QString &localFile) const;
+        ReleaseInfo::VersionList checkVersion(QByteArray script) const;
+        bool download(const QUrl& url, const QString &localFile) const;
 
-  signals:
-    void progressUpdate(int, int);
-    void progressUpdate(qint64, qint64);
+    signals:
+        void progressUpdate(int, int);
+        void progressUpdate(qint64, qint64);
 };
 
 #endif // DOWNLOADER_HPP

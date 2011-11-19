@@ -39,30 +39,30 @@
 static class HtmlDelegate: public QStyledItemDelegate
 {
     public:
-    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-    {
-        QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+        virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+        {
+            QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
-        QLabel label(index.data().toString()); //create QLabel
-        label.setAttribute(Qt::WA_OpaquePaintEvent, true);
-        label.setAttribute(Qt::WA_NoSystemBackground, true);
-        painter->save();
-        painter->translate(option.rect.topLeft());
+            QLabel label(index.data().toString()); //create QLabel
+            label.setAttribute(Qt::WA_OpaquePaintEvent, true);
+            label.setAttribute(Qt::WA_NoSystemBackground, true);
+            painter->save();
+            painter->translate(option.rect.topLeft());
 
-        //dostosuj szerokość widgetu do szerokości listy
-        label.resize(option.rect.width(), label.sizeHint().height());
+            //dostosuj szerokość widgetu do szerokości listy
+            label.resize(option.rect.width(), label.sizeHint().height());
 
-        //wyrysuj widget
-        label.render(painter, QPoint() );
+            //wyrysuj widget
+            label.render(painter, QPoint() );
 
-        painter->restore();
-        //       QStyledItemDelegate::paint(painter, option, index);
-    }
+            painter->restore();
+            //       QStyledItemDelegate::paint(painter, option, index);
+        }
 } htmlDelegate;
 
 
 ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
-    QWidget(p, f), releaseInfo(0), autoScrool(true)
+        QWidget(p, f), releaseInfo(0), autoScrool(true)
 {
     //nothing usefull -> just protector (to be sure that only one ProjectInfoWidget has been declared)
     static bool declared;
@@ -105,8 +105,6 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
-    //   connect(ui->buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
-    //   connect(ui->fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
     connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 }
 
@@ -182,18 +180,18 @@ void ProjectInfoWidget::refresh(int type)
                     ui->progressBar->setFormat(tr("%3: %p% (%1/%2)")
                                                .arg(/*sizeToString(d),
                                                     sizeToString(t),*/
-                                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
-                                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
-                                                    releaseInfo->getDownloadedPkg()
-                                                    )
-                                               );
+                                                   releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
+                                                   releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
+                                                   releaseInfo->getDownloadedPkg()
+                                                   )
+                                              );
                 else if (state == ReleaseInfo::Building)
                     ui->progressBar->setFormat(tr("%p% (%1/%2)")
                                                .arg(
                                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
                                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
                                                    )
-                                               );
+                                              );
             }
         }
 
@@ -212,7 +210,7 @@ void ProjectInfoWidget::refresh(int type)
             localInfoModel->removeRows(0, localInfoModel->rowCount());
 
             foreach(ProjectVersion pV, localVersion)
-                list << QString("%1: %2").arg(pV.getName()).arg(pV.getVersion());
+            list << QString("%1: %2").arg(pV.getName()).arg(pV.getVersion());
 
             localInfoModel->setStringList(list);
 
@@ -272,7 +270,7 @@ void ProjectInfoWidget::specButtonPressed()
     if (fileInfo.exists() == false || fileInfo.size() == 0) //spec jeszcze nie istnieje? użyj tamplate
     {
         qDebug() << QString("preparing template for spec file (%1 -> %2)")
-                    .arg(dataPath("spec_template"), fileInfo.absoluteFilePath() );
+        .arg(dataPath("spec_template"), fileInfo.absoluteFilePath() );
 
         //przygotuj spec pod bieżący projekt
         QFile src(dataPath("spec_template"));
