@@ -41,16 +41,16 @@ Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
 
 RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
 {
-  //construct layout  
+  //construct layout
   buttons=new QGridLayout;
   buildButton=new QPushButton(tr("Build"));
   fastBuildButton=new QPushButton(tr("Fast build"));
   progressBar=new QProgressBar;
-  
+
   buttons->addWidget(buildButton,0,0);
-  buttons->addWidget(fastBuildButton,0,1);  
-  buttons->addWidget(progressBar,1,0);
-  
+  buttons->addWidget(fastBuildButton,0,1);
+  buttons->addWidget(progressBar,1,0, 1, 2);
+
   connect(buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
   connect(fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
 }
@@ -67,10 +67,10 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   const ProjectInfo *projectInfo=releaseInfo->getProjectInfo();
   const QString releasePath=releaseInfo->getReleasePath();
   const ReleaseInfo::VersionList &localVersions=*releaseInfo->getLocalVersions();
-  
+
   if (releaseInfo==0)
     return;                     //no release ich choosen
-  
+
   //get info about this release
   BuildProcess *buildProcess=findBuildProcess(releaseInfo);
   if (buildProcess)   //there is an info about build? then stop it
@@ -78,7 +78,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     buildProcess->stop();
     return;
   }
-  
+
   //włącz progress bar
   updateProgress(-1);  //powinien migać czy coś
 
@@ -102,7 +102,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   {
     QString line=src.readLine();
     QRegExp version("(.*)__VERSION_([a-zA-Z0-9_-]+)__(.*)");
-    
+
     if (version.exactMatch(line))
     {
       line=version.capturedTexts()[1];
@@ -183,7 +183,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
   args << specFile;
 
   buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
-  
+
   addBuildProcess("rpmbuild", args, buildProcess);
 
 //   setState(Building);
