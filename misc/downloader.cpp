@@ -85,11 +85,12 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
 
     DownloaderHelper downloadHelper;
     const int status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
-    ProjectVersion maxVersion;  //wersja zero
     
     //everything went ok?
     if (status == 0)
     {
+        ProjectVersion maxVersion;  //wersja zero
+        
         foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
         {
             QString toMatch;
@@ -139,22 +140,30 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
                     .arg(version.text());
             }
         }
+        
+        if (maxVersion.isEmpty() == false)
+        {
+            const QByteArray ret = maxVersion.text().toUtf8();
+            qDebug() << "current version:" << ret;
+            lua_pushstring(state, ret.data());
+            return 1;
+        }
+        else
+        {
+            qWarning() << "current version: could not find any matching file :(";
+            lua_pushstring(state, "none of files matched");
+            
+            lua_error(state);        //raise an error            
+            return 0;                //lua_error never returns, so this return will be never called
+        }        
     }
-
-    QByteArray ret;
-    if (maxVersion.isEmpty() == false)
+    else //problems with download
     {
-        ret = maxVersion.text().toUtf8();
-        qDebug() << "current version:" << ret;
+        lua_pushstring(state, "connection problems");
+        
+        lua_error(state);        //raise an error
+        return 0;                //lua_error never returns, so this return will be never called
     }
-    else
-    {
-        qWarning() << "current version: could not find any matching file :(";
-        ret = "";
-    }
-
-    lua_pushstring(state, ret.data());
-    return 1;
 }
 
 
@@ -368,29 +377,32 @@ Downloader::~Downloader()
 
 ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
 {
+    ReleaseInfo::VersionList retList;
     lua_State *luaState = lua_open();   // lua initiation
     int err = luaL_loadbuffer(luaState, script.data(), script.size(), "downloader");  //load script
     if (err == 0)
     {
         lua_register(luaState, "findPkg", searchForPkg);
 
-        if (lua_pcall (luaState, 0, LUA_MULTRET, 0))
-            qDebug() << lua_tostring(luaState, -1) << "\n";
+        if (lua_pcall(luaState, 0, LUA_MULTRET, 0) == 0)  //it's ok?
+        {
+            const int retValues = lua_gettop(luaState);
+            
+            assert(retValues % 2 == 0);
+            
+            for (int i = 0; i < retValues; i += 2)
+            {
+                const QUrl url(lua_tostring(luaState, i + 2));
+                ProjectVersion pV(url);
+                QString name = lua_tostring(luaState, i + 1);
+                pV.setName(name);
+                retList[name] = pV;
+            }            
+        }
+        else
+            qDebug() << "lua error: " << lua_tostring(luaState, -1) << "\n";
     }
 
-    ReleaseInfo::VersionList retList;
-    const int retValues = lua_gettop(luaState);
-    
-    assert(retValues % 2 == 0);
-    
-    for (int i = 0; i < retValues; i += 2)
-    {
-        const QUrl url(lua_tostring(luaState, i + 2));
-        ProjectVersion pV(url);
-        QString name = lua_tostring(luaState, i + 1);
-        pV.setName(name);
-        retList[name] = pV;
-    }
     return retList;
 }
 
