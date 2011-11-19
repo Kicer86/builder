@@ -48,7 +48,7 @@ typedef std::set<DownloaderHelper *> HelpersSet;
 static HelpersSet helpers;
 
 //lua "extensions"
-static int searchForPkg(lua_State *state)
+static int searchForPkg(lua_State *state)  //search for package. "" is returned when something went wrong
 {
     //dostaniemy 2/3 parametry od lua: url, to czego szukać, i ew parametry dodatkowe :]
     int c = lua_gettop(state); //liczba parametrów
@@ -84,56 +84,60 @@ static int searchForPkg(lua_State *state)
     }
 
     DownloaderHelper downloadHelper;
-    downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
+    const int status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
     ProjectVersion maxVersion;  //wersja zero
-
-    foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
+    
+    //everything went ok?
+    if (status == 0)
     {
-        QString toMatch;
-        switch (type)
+        foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
         {
-            case DownloaderHelper::Index:       toMatch=entry.url;  break;
-            case DownloaderHelper::SourceForge: toMatch=entry.name; break;
-            case DownloaderHelper::CodeGoogle:  toMatch=entry.name; break;
-            case DownloaderHelper::None: break;
-        }
-
-        if (searchRegEx.exactMatch(toMatch))  //przeszukaj wpisy pod kątem tych, pasujących do wzorca
-        {
-            ProjectVersion version;
-            //sortowanie zalezy od typu serwera
-            //w SF to nazwa linku się liczy, w przypadku indexów - link
-
+            QString toMatch;
             switch (type)
             {
-                case DownloaderHelper::Index:
-                    version = ProjectVersion(entry.url);   //jeśli element spasował, to dodaj go do listy
-                    break;
-
-                case DownloaderHelper::SourceForge:
-                    version = ProjectVersion(entry.name);
-                    version.setPkgUrl(QUrl(entry.url));    //zapisz element docelowy (w przypadku linków - href)
-                    break;
-
-                case DownloaderHelper::CodeGoogle:
-                    version = ProjectVersion(entry.name);  //name of package is enought
-                    break;
-
-                case DownloaderHelper::None:
-                    break;
+                case DownloaderHelper::Index:       toMatch=entry.url;  break;
+                case DownloaderHelper::SourceForge: toMatch=entry.name; break;
+                case DownloaderHelper::CodeGoogle:  toMatch=entry.name; break;
+                case DownloaderHelper::None: break;
             }
 
-            //check if file extension matches
-            if (matchExt == false || Settings::instance()->getExtList().contains(version.getExtension()))
+            if (searchRegEx.exactMatch(toMatch))  //przeszukaj wpisy pod kątem tych, pasujących do wzorca
             {
-                qDebug() << QString("matched package: %1").arg(version.text());
+                ProjectVersion version;
+                //sortowanie zalezy od typu serwera
+                //w SF to nazwa linku się liczy, w przypadku indexów - link
 
-                if (maxVersion < version)
-                    maxVersion = version;
+                switch (type)
+                {
+                    case DownloaderHelper::Index:
+                        version = ProjectVersion(entry.url);   //jeśli element spasował, to dodaj go do listy
+                        break;
+
+                    case DownloaderHelper::SourceForge:
+                        version = ProjectVersion(entry.name);
+                        version.setPkgUrl(QUrl(entry.url));    //zapisz element docelowy (w przypadku linków - href)
+                        break;
+
+                    case DownloaderHelper::CodeGoogle:
+                        version = ProjectVersion(entry.name);  //name of package is enought
+                        break;
+
+                    case DownloaderHelper::None:
+                        break;
+                }
+
+                //check if file extension matches
+                if (matchExt == false || Settings::instance()->getExtList().contains(version.getExtension()))
+                {
+                    qDebug() << QString("matched package: %1").arg(version.text());
+
+                    if (maxVersion < version)
+                        maxVersion = version;
+                }
+                else
+                    qDebug() << QString("%1 is matching regex in findPkg, but has unsufficient extension")
+                    .arg(version.text());
             }
-            else
-                qDebug() << QString("%1 is matching regex in findPkg, but has unsufficient extension")
-                .arg(version.text());
         }
     }
 
