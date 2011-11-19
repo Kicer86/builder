@@ -73,7 +73,10 @@ Builder::Builder()
 
 
 Builder::~Builder()
-{}
+{
+    //delete projects
+    ProjectsManager::instance()->destroyProjects();
+}
 
 
 void Builder::loadPlugins()
@@ -165,7 +168,5 @@ void Builder::closeEvent(QCloseEvent* e)
     //close connections
     Downloader::killDownloadHelpers();
     
-    //delete projects
-    ProjectsManager::instance()->destroyProjects();
     QWidget::closeEvent(e);
 }
