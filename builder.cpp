@@ -13,6 +13,7 @@
 #include "data_containers/projectinfo.hpp"
 #include "dialogs/configdialog.hpp"
 #include "dialogs/newprojectwizard.hpp"
+#include "misc/downloader.hpp"
 #include "misc/functions.hpp"
 #include "misc/settings.hpp"
 #include "plugins/buildplugin.hpp"
@@ -160,7 +161,11 @@ void Builder::projectsDialog()
 }
 
 void Builder::closeEvent(QCloseEvent* e)
-{
+{   
+    //close connections
+    Downloader::killDownloadHelpers();
+    
+    //delete projects
     ProjectsManager::instance()->destroyProjects();
     QWidget::closeEvent(e);
 }
