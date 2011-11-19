@@ -18,6 +18,8 @@
 
 #include <assert.h>
 
+#include <set>
+
 #include <QDebug>
 #include <QFtp>
 #include <QHttp>
@@ -39,6 +41,12 @@ extern "C"
 #include "settings.hpp"
 #include "wgetwrapper.hpp"
 
+
+//set of all working DownloaderHelpers
+typedef std::set<DownloaderHelper *> HelpersSet;
+static HelpersSet helpers;
+
+//lua "extensions"
 static int searchForPkg(lua_State *state)
 {
     //dostaniemy 2/3 parametry od lua: url, to czego szukać, i ew parametry dodatkowe :]
@@ -147,6 +155,9 @@ static int searchForPkg(lua_State *state)
 DownloaderHelper::DownloaderHelper(const QUrl& url, Mode m, DownloaderHelper::ServerType t, const QString &localFile, const Downloader *downloader):
         ftp(0), http(0), wget(0), file(0), state(0), mode(m), type(t)
 {
+    //register download helper
+    helpers.insert(this);
+    
     switch (mode)
     {
         case Check:
@@ -276,6 +287,12 @@ void DownloaderHelper::commandFinished(int id, bool error)
 
 DownloaderHelper::~DownloaderHelper()
 {
+    //remove helper from list of helpers
+    HelpersSet::iterator helper = helpers.find(this);
+    assert(helper != helpers.end());
+    
+    helpers.erase(helper);
+    
     qDebug() << "killing downloader, closing connections";
 
     if (ftp)
