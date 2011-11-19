@@ -69,7 +69,7 @@ static int searchForPkg(lua_State *state)
     qDebug() << "fetching:" << rawUrl << "Looking for:" << searchRegEx.pattern();
 
     //rozpoznaj (w miarę możliwości) co to za typ serwera
-    QUrl url(rawUrl);
+    const QUrl url(rawUrl);
     DownloaderHelper::ServerType type = DownloaderHelper::Index;
 
     if (url.scheme() == "http")
@@ -83,7 +83,8 @@ static int searchForPkg(lua_State *state)
         //... jakieś inne
     }
 
-    DownloaderHelper downloadHelper(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
+    DownloaderHelper downloadHelper;
+    downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
     ProjectVersion maxVersion;  //wersja zero
 
     foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
@@ -153,11 +154,19 @@ static int searchForPkg(lua_State *state)
 }
 
 
-DownloaderHelper::DownloaderHelper(const QUrl& url, Mode m, DownloaderHelper::ServerType t, const QString &localFile, const Downloader *downloader):
-        ftp(0), http(0), wget(0), file(0), state(0), mode(m), type(t)
+DownloaderHelper::DownloaderHelper():
+        ftp(0), http(0), wget(0), file(0), localLoop(0),
+        state(0), mode(Mode::Check), type(DownloaderHelper::ServerType::None)
 {
     //register download helper
     helpers.insert(this);
+}
+
+
+int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, DownloaderHelper::ServerType t, const QString& localFile, const Downloader* downloader)
+{
+    mode = m;
+    type = t;
     
     switch (mode)
     {
@@ -203,8 +212,15 @@ DownloaderHelper::DownloaderHelper(const QUrl& url, Mode m, DownloaderHelper::Se
         connect(http, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
 
     localLoop = new QEventLoop;  //lokalna pętla potrzebna do wyczekiwania na połączenie
-    localLoop->exec();
+    return localLoop->exec();
 }
+
+
+void DownloaderHelper::killConnections()
+{
+    localLoop->exit(state = 1);   //quit with error (unfinished jobs)
+}
+
 
 
 void DownloaderHelper::stateChanged(int st)
@@ -286,13 +302,6 @@ void DownloaderHelper::commandFinished(int id, bool error)
 }
 
 
-void DownloaderHelper::killConnections()
-{
-    localLoop->exit(state = 1);   //quit with error (unfinished jobs)
-}
-
-
-
 DownloaderHelper::~DownloaderHelper()
 {
     //remove helper from list of helpers
@@ -324,7 +333,8 @@ DownloaderHelper::~DownloaderHelper()
     if (file)
         delete file;
 
-    delete localLoop;
+    if (localLoop)
+        delete localLoop;
 }
 
 
@@ -371,6 +381,9 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
 
     ReleaseInfo::VersionList retList;
     const int retValues = lua_gettop(luaState);
+    
+    assert(retValues % 2 == 0);
+    
     for (int i = 0; i < retValues; i += 2)
     {
         const QUrl url(lua_tostring(luaState, i + 2));
@@ -385,7 +398,8 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
 
 bool Downloader::download(const QUrl& url, const QString &localFile) const
 {
-    DownloaderHelper dH(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
+    DownloaderHelper dH;
+    dH.fetch(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
     return dH.getState() == 0;
 }
 

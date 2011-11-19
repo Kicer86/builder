@@ -64,9 +64,10 @@ class DownloaderHelper: public QObject
             QString url;
         };
 
-        DownloaderHelper(const QUrl& url, Mode mode, ServerType type, const QString &localFile = "", const Downloader *downloader = 0);
+        DownloaderHelper();
         virtual ~DownloaderHelper();
         
+        int fetch(const QUrl& url, Mode mode, ServerType type, const QString &localFile = "", const Downloader *downloader = 0);
         void killConnections();
 
         const QList<DownloaderEntry> *getEntries() const;
