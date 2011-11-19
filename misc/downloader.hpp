@@ -37,6 +37,8 @@ class QUrlInfo;
 
 class Downloader;
 
+//helper for download - it does all the download operations.
+//it's functions are called by lua scripts runned by Downloader class.
 class DownloaderHelper: public QObject
 {
         Q_OBJECT
@@ -87,6 +89,8 @@ class DownloaderHelper: public QObject
         void stateChanged(int state);
 };
 
+
+//class with download related functions interface
 class Downloader : public QObject
 {
         Q_OBJECT
