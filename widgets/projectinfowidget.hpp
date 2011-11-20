@@ -23,6 +23,7 @@
 #include <QWidget>
 
 #include "ui_projectinfowidget.h"
+#include "plugins/buildplugin.hpp"
 
 class QListView;
 class QStringListModel;
@@ -37,6 +38,8 @@ class ProjectInfoWidget:public QWidget
 
     Ui_ProjectInfoForm *ui;
     ReleaseInfo *releaseInfo;
+    typedef QMap<QWidget *, BuildPlugin *> RefreshFunctions;
+    RefreshFunctions refreshFunctions;  //list of refresh functions for each tab
 
 //    bool autoScrool;                 //this value is set to true if build log should scroll to bottom automatically
 
@@ -53,15 +56,16 @@ class ProjectInfoWidget:public QWidget
     void showMacrosButtonPressed();
     void updateButtonPressed();
     void downloadButtonPressed();
-    void logWillChange();
-    void logChanged();
+//    void logWillChange();
+//    void logChanged();
+    void tabChanged(int);
 
   public:
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ProjectInfoWidget();
 
-    void addBuildPluginButtons(QLayout*, const QString&);     //function which adds provided (by plugin) layout
-    void addBuildPluginLogs(QWidget*, const QString&);        //function which adds provided (by plugin) layout and tab
+    void addBuildPluginButtons(QLayout *, const QString &);     //function which adds provided (by plugin) layout
+    void addBuildPluginLogs(QWidget *, const QString &, BuildPlugin *);        //function which adds provided (by plugin) layout and tab
     ReleaseInfo *getCurrentRelease() const;
 
     void setRelease(ReleaseInfo *);

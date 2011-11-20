@@ -103,7 +103,7 @@ BuildPlugin::~BuildPlugin()
 }
 
 
-QString BuildPlugin::getBuilderName() const
+const QString& BuildPlugin::getBuilderName() const
 {
     return name;
 }

@@ -32,37 +32,38 @@ class QProgressBar;
 
 class RpmBuildPlugin: public BuildPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(BuildPlugin)
+        Q_OBJECT
+        Q_INTERFACES(BuildPlugin)
 
-    RpmBuildPlugin(const RpmBuildPlugin&);
-    void operator=(const RpmBuildPlugin&);
+        RpmBuildPlugin(const RpmBuildPlugin&);
+        void operator=(const RpmBuildPlugin&);
 
-    enum Type
-    {
-      Normal,
-      Fast
-    };
+        enum Type
+        {
+            Normal,
+            Fast
+        };
 
-    QGridLayout  *buttons;
-    QPlainTextEdit *log;
-    QPushButton  *buildButton;
-    QPushButton  *fastBuildButton;
-    QProgressBar *progressBar;
+        QGridLayout  *buttons;
+        QPlainTextEdit *log;
+        QPushButton  *buildButton;
+        QPushButton  *fastBuildButton;
+        QProgressBar *progressBar;
 
-    void build(Type);
+        void build(Type);
 
-  private slots:
-    void buildButtonPressed();
-    void fastBuildButtonPressed();
+    private slots:
+        void buildButtonPressed();
+        void fastBuildButtonPressed();
 
-  public:
-    RpmBuildPlugin();
-    virtual ~RpmBuildPlugin();
+    public:
+        RpmBuildPlugin();
+        virtual ~RpmBuildPlugin();
 
-    virtual QLayout* getBuildButtons() const;
-    virtual QWidget* getBuildLog() const;
-    virtual void updateProgress(int);
+        virtual QLayout* getBuildButtons() const;
+        virtual QWidget* getBuildLog() const;
+        virtual void updateTab();
+        virtual void updateProgress(int);
 };
 
 #endif // RPMBUILDPLUGIN_HPP

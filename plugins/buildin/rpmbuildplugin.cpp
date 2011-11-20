@@ -55,6 +55,8 @@ RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
 
     connect(buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
     connect(fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
+
+
 }
 
 
@@ -217,6 +219,27 @@ QLayout* RpmBuildPlugin::getBuildButtons() const
 QWidget* RpmBuildPlugin::getBuildLog() const
 {
     return log;
+}
+
+
+void RpmBuildPlugin::updateTab()
+{
+    //rpm's build log has been chosen
+    //display log of particular releaseinfo
+
+    ReleaseInfo *currentRelease = ProjectsManager::instance()->getCurrentRelease();
+    if (currentRelease)
+    {
+        if (currentRelease->getState() == ReleaseInfo::State::Building)
+        {
+            BuildProcess *const bP = findBuildProcess(currentRelease);
+            assert(bP);  //because ReleaseInfo is in "building" state, there must be BuildProcess
+
+            log->setDocument(bP->getLog());
+        }
+        else
+            log->setDocument(0);
+    }
 }
 
 

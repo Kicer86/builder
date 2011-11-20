@@ -50,7 +50,7 @@ Builder::Builder()
 
     foreach(QString item, dirs)
     {
-        ProjectInfo *projectInfo=new ProjectInfo(item);
+        ProjectInfo *projectInfo = new ProjectInfo(item);
         ProjectsManager::instance()->registerProject(projectInfo);
     }
 
@@ -103,8 +103,13 @@ void Builder::registerPlugin(QObject* plugin)
     BuildPlugin *buildplugin = qobject_cast<BuildPlugin*>(plugin);
     if (buildplugin) //add to ProjectInfoWidget some buttons
     {
-        projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons(), buildplugin->getBuilderName());
-        projectInfoWidget->addBuildPluginLogs(buildplugin->getBuildLog(), buildplugin->getBuilderName());
+        projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons(),
+                                                 buildplugin->getBuilderName());
+
+
+        projectInfoWidget->addBuildPluginLogs(buildplugin->getBuildLog(),
+                                              buildplugin->getBuilderName(),
+                                              buildplugin );
     }
 }
 

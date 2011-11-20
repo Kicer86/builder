@@ -26,6 +26,8 @@
 #include <QDebug>
 #include <QTemporaryFile>
 
+#include <std_macros.hpp>
+
 #include "projectinfowidget.hpp"
 #include "data_containers/editorsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -105,6 +107,7 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 //    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 }
 
@@ -123,9 +126,12 @@ void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons, const QString &n
 }
 
 
-void ProjectInfoWidget::addBuildPluginLogs(QWidget *tab, const QString  &name)
+void ProjectInfoWidget::addBuildPluginLogs(QWidget *tab,
+                                           const QString &name,
+                                           BuildPlugin* buildPlugin)
 {
     ui->tabWidget->addTab(tab, name);
+    refreshFunctions[tab] = buildPlugin;
 }
 
 
@@ -248,22 +254,22 @@ void ProjectInfoWidget::refresh(int type)
 }
 
 
-void ProjectInfoWidget::logWillChange()
-{
-//    QScrollBar *bar = ui->buildMessages->verticalScrollBar();
+//void ProjectInfoWidget::logWillChange()
+//{
+////    QScrollBar *bar = ui->buildMessages->verticalScrollBar();
 
-//    autoScrool = bar->value() == bar->maximum();
-}
+////    autoScrool = bar->value() == bar->maximum();
+//}
 
 
-void ProjectInfoWidget::logChanged()
-{
-//    if (autoScrool)
-//    {
-//        QScrollBar *bar = ui->buildMessages->verticalScrollBar();
-//        bar->setValue(bar->maximum());
-//    }
-}
+//void ProjectInfoWidget::logChanged()
+//{
+////    if (autoScrool)
+////    {
+////        QScrollBar *bar = ui->buildMessages->verticalScrollBar();
+////        bar->setValue(bar->maximum());
+////    }
+//}
 
 
 void ProjectInfoWidget::editDowloadScriptButtonPressed()
@@ -343,4 +349,21 @@ void ProjectInfoWidget::downloadButtonPressed()
 void ProjectInfoWidget::updateButtonPressed()
 {
     releaseInfo->update();
+}
+
+
+void ProjectInfoWidget::tabChanged(int index)
+{
+    //find plugin of this tab
+    QWidget *tab = ui->tabWidget->widget(index);  //get widget of current tab
+
+    RefreshFunctions::const_iterator it = refreshFunctions.constFind(tab);   //find refresh function for this widget
+
+    if (it != refreshFunctions.end())
+    {
+        BuildPlugin *bP = it.value();
+
+        //call it
+        bP->updateTab();
+    }
 }

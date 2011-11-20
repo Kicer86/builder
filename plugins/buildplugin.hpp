@@ -59,6 +59,11 @@ class BuildProcess: public QObject
             return process;
         }
 
+        QTextDocument *getLog()
+        {
+            return log;
+        }
+
     signals:
         void removeBuildProcess(ReleaseInfo *);
 };
@@ -74,9 +79,10 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
 
         typedef std::map<ReleaseInfo*, BuildProcess*> BuildsInfo;
 
-        QString getBuilderName() const;               //return builder name
+        const QString& getBuilderName() const;        //return builder name
         virtual QLayout* getBuildButtons() const = 0; //return layout with button(s) for managing build process
         virtual QWidget* getBuildLog() const = 0;     //return widget with build messages
+        virtual void updateTab() = 0;                 //function called, when tab with build logs should be updated
         virtual void updateProgress(int) = 0;         //set build progress (-1 means that progress is unknown)
 
     protected:
@@ -91,7 +97,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         BuildPlugin(const BuildPlugin& other);
         void operator=(const BuildPlugin&);
 
-        const char *name;
+        const QString name;
 
         BuildsInfo buildsInfo;
 };
