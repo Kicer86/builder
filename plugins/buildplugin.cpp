@@ -32,17 +32,17 @@
 #include "misc/sandboxprocess.hpp"
 
 
-BuildProcess::BuildProcess(): process(0)
+BuildProcess::BuildProcess(ReleaseInfo *r): releaseInfo(r)
 {
-    log=new QTextDocument(this);
-    process=new QProcess(this);
+    log = new QTextDocument(this);
+    process = new QProcess(this);
     process->setProcessChannelMode(QProcess::MergedChannels);
 
     QPlainTextDocumentLayout *documentLayout=new QPlainTextDocumentLayout(log);
     log->setDocumentLayout(documentLayout);
 
     connect(process, SIGNAL(readyRead()), this, SLOT(read()));
-    connect(process, SIGNAL(terminated()), this, SLOT(close()));
+    connect(process, SIGNAL(finished(int)), this, SLOT(close(int)));
 }
 
 
@@ -52,7 +52,7 @@ BuildProcess::~BuildProcess()
 
 void BuildProcess::appendToLog(const QString &str) const
 {
-//append text to logu
+    //append text to log
     QTextCursor cursor(log);
     cursor.movePosition(QTextCursor::End);
     cursor.insertText(str);
@@ -62,7 +62,6 @@ void BuildProcess::appendToLog(const QString &str) const
 void BuildProcess::read() const
 {
     appendToLog(process->readAll());
-
 
     /*
     if (state==Building)  //cmake daje %, użyjemy ich :]
@@ -79,7 +78,7 @@ void BuildProcess::read() const
 }
 
 
-void BuildProcess::close() const
+void BuildProcess::close(int)
 {
     emit removeBuildProcess(releaseInfo);
 }
@@ -115,13 +114,13 @@ void BuildPlugin::addBuildProcess(const QString &program, const QStringList &arg
     assert(findBuildProcess(buildProcess->releaseInfo)==0);
 
     debug(DebugLevel::Info) << "Starting new build process for project "
-    << buildProcess->releaseInfo->getProjectInfo()->getName()
-    << ", release: "
-    << buildProcess->releaseInfo->getName();
+                            << buildProcess->releaseInfo->getProjectInfo()->getName()
+                            << ", release: "
+                            << buildProcess->releaseInfo->getName();
 
     connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, SLOT(removeBuildProcess(ReleaseInfo*)));
 
-    buildsInfo[buildProcess->releaseInfo]=buildProcess;
+    buildsInfo[buildProcess->releaseInfo] = buildProcess;
 //   buildProcess->process->start();
     QString infoMsg=SandboxProcess::runProcess(program, args, buildProcess->process);
 
@@ -133,7 +132,7 @@ void BuildPlugin::addBuildProcess(const QString &program, const QStringList &arg
 BuildProcess* BuildPlugin::findBuildProcess(ReleaseInfo *releaseInfo)
 {
     BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
-    
+
     return (it != buildsInfo.end()) ? (it->second) : 0;
 }
 
@@ -149,7 +148,7 @@ void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
         BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
         assert (it != buildsInfo.end());
         buildsInfo.erase(it);
-        
+
         delete buildProcess;
     }
 }

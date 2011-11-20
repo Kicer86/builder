@@ -45,12 +45,12 @@ class BuildProcess: public QObject
 
     private slots:
         void read() const;
-        void close() const;
+        void close(int);
 
     public:
         friend class BuildPlugin;
 
-        BuildProcess();
+        BuildProcess(ReleaseInfo *);
         virtual ~BuildProcess();
 
         void stop() const;              //terminate build process
@@ -60,7 +60,7 @@ class BuildProcess: public QObject
         }
 
     signals:
-        void removeBuildProcess(const ReleaseInfo *) const;
+        void removeBuildProcess(ReleaseInfo *);
 };
 
 
@@ -81,10 +81,10 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
     protected:
         //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
         void addBuildProcess(const QString &, const QStringList &, BuildProcess *);
-        BuildProcess *findBuildProcess(ReleaseInfo* releaseInfo);
+        BuildProcess *findBuildProcess(ReleaseInfo *releaseInfo);
 
     protected slots:
-        void removeBuildProcess(ReleaseInfo*);  //remove build process for ReleaseInfo
+        void removeBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
 
     private:
         BuildPlugin(const BuildPlugin& other);
