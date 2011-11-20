@@ -104,6 +104,7 @@ void Builder::registerPlugin(QObject* plugin)
     if (buildplugin) //add to ProjectInfoWidget some buttons
     {
         projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons(), buildplugin->getBuilderName());
+        projectInfoWidget->addBuildPluginLogs(buildplugin->getBuildLog(), buildplugin->getBuilderName());
     }
 }
 
