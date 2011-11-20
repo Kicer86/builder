@@ -100,7 +100,7 @@ void Builder::loadPlugins()
 void Builder::registerPlugin(QObject* plugin)
 {
     //check plugin type
-    BuildPlugin *buildplugin=qobject_cast<BuildPlugin*>(plugin);
+    BuildPlugin *buildplugin = qobject_cast<BuildPlugin*>(plugin);
     if (buildplugin) //add to ProjectInfoWidget some buttons
     {
         projectInfoWidget->addBuildPluginButtons(buildplugin->getBuildButtons(), buildplugin->getBuilderName());
@@ -164,9 +164,9 @@ void Builder::projectsDialog()
 }
 
 void Builder::closeEvent(QCloseEvent* e)
-{   
+{
     //close connections
     Downloader::killDownloadHelpers();
-    
+
     QWidget::closeEvent(e);
 }
