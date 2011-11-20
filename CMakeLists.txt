@@ -94,7 +94,7 @@ qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
 
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
 # ADD_PRECOMPILED_HEADER(builder stdafx.h)
-set_target_properties(builder PROPERTIES COMPILE_FLAGS "--std=c++0x"
+set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
 
 target_link_libraries(builder
