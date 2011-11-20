@@ -59,7 +59,7 @@ class ProjectInfo: public QObject
         QTimer *timer;
 
     private slots:
-        void releaseChanged(int);     //release has changed
+        void releaseChanged(int i=0);     //release has changed (parameter is useless)
         void updateStatus() const;
 
     signals:

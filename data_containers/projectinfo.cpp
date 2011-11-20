@@ -48,7 +48,7 @@ ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), n
 
         //update itself when release has changed
         connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(releaseChanged()));
-        connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(releaseChanged()));
+        connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(releaseChanged(int)));
     }
 
     timer = new QTimer();
@@ -90,7 +90,7 @@ void ProjectInfo::releaseChanged(int)
 {
     //release has changed, it's possible that more changes were commit, so don't update on each of them.
     //Do it once
-    timer->start();   //start timer;
+    timer->start();   //(re)start timer;
 }
 
 
