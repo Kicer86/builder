@@ -115,7 +115,7 @@ class ReleaseInfo: public QObject
         State getState() const;
 
     signals:
-        void statusChanged(ChangeType);  //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
+        void statusChanged(int);         //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
         void optionsChanged();           //zmieniły się opcje releasea (buduj/nie buduj, ściągaj/nie ściągaj)
         void logWillChange();            //log budowania zaraz zmieni swoją zawartość.
 };

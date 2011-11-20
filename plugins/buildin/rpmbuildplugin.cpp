@@ -192,7 +192,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     addBuildProcess("rpmbuild", args, buildProcess);
 
-//   setState(Building);
+    releaseInfo->setState(ReleaseInfo::State::Building);
 }
 
 

@@ -151,5 +151,7 @@ void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
         buildsInfo.erase(it);
 
         delete buildProcess;
+
+        releaseInfo->setState(ReleaseInfo::State::Nothing);
     }
 }

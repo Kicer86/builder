@@ -86,7 +86,7 @@ int ProjectInfo::getId() const
 }
 
 
-void ProjectInfo::releaseChanged()
+void ProjectInfo::releaseChanged(int)
 {
     //release has changed, it's possible that more changes were commit, so don't update on each of them.
     //Do it once
