@@ -60,7 +60,8 @@ class ProjectInfoWidget:public QWidget
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ProjectInfoWidget();
 
-    void addBuildPluginButtons(QLayout* buttons, const QString&);     //function which adds provided (by plugin) layout
+    void addBuildPluginButtons(QLayout*, const QString&);     //function which adds provided (by plugin) layout
+    void addBuildPluginLogs(QWidget*, const QString&);        //function which adds provided (by plugin) layout and tab
     ReleaseInfo *getCurrentRelease() const;
 
     void setRelease(ReleaseInfo *);

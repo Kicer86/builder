@@ -123,6 +123,12 @@ void ProjectInfoWidget::addBuildPluginButtons(QLayout* buttons, const QString &n
 }
 
 
+void ProjectInfoWidget::addBuildPluginLogs(QWidget *tab, const QString  &name)
+{
+    ui->tabWidget->addTab(tab, name);
+}
+
+
 void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 {
     assert(ri);
