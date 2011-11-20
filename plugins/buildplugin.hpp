@@ -33,65 +33,65 @@ class ReleaseInfo;
 
 class BuildProcess: public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 
-    QProcess *process;              //build process
-    QTextDocument *log;             //build log
-    ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
-    int progress;                   //build progress (if -1 then unknown)
+        QProcess *process;              //build process
+        QTextDocument *log;             //build log
+        ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
+        int progress;                   //build progress (if -1 then unknown)
 
-    void appendToLog(const QString& str) const;
-    
-  private slots:
-    void read() const;
-    void close() const;
-    
-  public:
-    friend class BuildPlugin;
+        void appendToLog(const QString& str) const;
 
-    BuildProcess();
-    virtual ~BuildProcess();
+    private slots:
+        void read() const;
+        void close() const;
 
-    void stop() const;              //terminate build process
-    QProcess *getProcess()
-    {
-      return process;
-    }
+    public:
+        friend class BuildPlugin;
 
-  signals:
-    void removeBuildProcess(const ReleaseInfo *) const;
+        BuildProcess();
+        virtual ~BuildProcess();
+
+        void stop() const;              //terminate build process
+        QProcess *getProcess()
+        {
+            return process;
+        }
+
+    signals:
+        void removeBuildProcess(const ReleaseInfo *) const;
 };
 
 
 class BuildPlugin: public QObject                //it's QObject here, becouse plugin system requires it
 {
-    Q_OBJECT
+        Q_OBJECT
 
-  public:
-    BuildPlugin(const char *);
-    virtual ~BuildPlugin();
+    public:
+        BuildPlugin(const char *);
+        virtual ~BuildPlugin();
 
-    typedef QHash<ReleaseInfo*, BuildProcess*> BuildsInfo;
+        typedef QHash<ReleaseInfo*, BuildProcess*> BuildsInfo;
 
-    QString getBuilderName() const;               //return builder name
-    virtual QLayout *getBuildButtons() const=0;   //return layout with button(s) for managing build process
-    virtual void updateProgress(int)=0;           //set build progress (-1 means that progress is unknown)
+        QString getBuilderName() const;               //return builder name
+        virtual QLayout *getBuildButtons() const = 0; //return layout with button(s) for managing build process
+        virtual void updateProgress(int) = 0;         //set build progress (-1 means that progress is unknown)
 
-  protected:
-    //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
-    void addBuildProcess(const QString &, const QStringList &, BuildProcess *);   
-    BuildProcess *findBuildProcess(ReleaseInfo* releaseInfo);
+    protected:
+        //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
+        void addBuildProcess(const QString &, const QStringList &, BuildProcess *);
+        BuildProcess *findBuildProcess(ReleaseInfo* releaseInfo);
 
-  protected slots:
-    void removeBuildProcess(ReleaseInfo*);  //remove build process for ReleaseInfo
+    protected slots:
+        void removeBuildProcess(ReleaseInfo*);  //remove build process for ReleaseInfo
 
-  private:
-    BuildPlugin(const BuildPlugin& other);
-    void operator=(const BuildPlugin&);
+    private:
+        BuildPlugin(const BuildPlugin& other);
+        void operator=(const BuildPlugin&);
 
-    const char *name;
+        const char *name;
 
-    BuildsInfo buildsInfo;
+        BuildsInfo buildsInfo;
 };
 
 Q_DECLARE_INTERFACE(BuildPlugin, "kicer.builder.BuildPlugin/1.0")
