@@ -33,7 +33,8 @@
 
 ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
         QObject(0), id(ProjectsManager::instance()->getId()),
-        name(n), total(100), done(0), projectInfo(p), state(State::Nothing)
+        name(n), builds(0), total(100), done(0), projectInfo(p),
+        state(State::Nothing)
 {
 //   buildProcess=new QProcess(this);
 //   buildingLog=new QTextDocument(this);
@@ -371,6 +372,20 @@ void ReleaseInfo::downloadPkg()
         qWarning() << "local and current versions are the same or current version not checked";
 
     setState(State::Nothing);
+}
+
+
+void ReleaseInfo::buildStarted()
+{
+    if (builds++ == 0)
+        setState(State::Building);  //first build process? set state to building
+}
+
+
+void ReleaseInfo::buildStopped()
+{
+    if (--builds == 0)
+        setState(State::Nothing);   //last build process finished? set state to nothing
 }
 
 /*

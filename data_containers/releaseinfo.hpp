@@ -62,6 +62,7 @@ class ReleaseInfo: public QObject
         const QString name;
         bool download;
         bool build;
+        int builds;
 
         qint64 total;   //zmienna uzywana przy pobieraniu danych z internetu - wartość max dla progressBaru
         qint64 done;    //jw, wartość bieżąca
@@ -70,14 +71,11 @@ class ReleaseInfo: public QObject
 
         ProjectInfo *projectInfo;   //rodzic
         QString downloadScript;
-        //QProcess *buildProcess;     //process res
-        //QTextDocument *buildingLog; //build log
         Estimator *estimator;
         State state;
         QString downloadedPkg;      //paczka która wlasnie jest pobierania (ma sens tylko dla state==Downloading)
 
         QString releasePath() const;         //construct path to release
-//     void appendTextToLog(const QString &msg);
         void setState(State st);
 
     private slots:
@@ -85,9 +83,6 @@ class ReleaseInfo: public QObject
         void setBuildOption(int);            //używane przez WidgetListItem
         void updateProgress(int, int);
         void updateProgress(qint64, qint64);
-//     void buildMessages();
-//     void buildFinished( int exitCode, QProcess::ExitStatus exitStatus );
-//     void buildError(QProcess::ProcessError error );
 
     public:
         explicit ReleaseInfo(const QString &n, ProjectInfo* p);
@@ -109,7 +104,8 @@ class ReleaseInfo: public QObject
         qint64 getProgressDone() const;
         void update();                                  //check, what is the newest version
         void downloadPkg();                             //pobierz paczkę z bieżącą wersją
-        //void buildPkg(BuildMode);      //zbuduj paczkę (lub zatrzym budowę, jeśli wywołane w trakcie budowy)
+        void buildStarted();
+        void buildStopped();
         const Estimator *getEstimator() const;
 
         State getState() const;
