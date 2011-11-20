@@ -53,7 +53,7 @@ QTime Estimator::estimate() const
     if (delta>0)
       timeLeft=time->elapsed()/delta;   //taki wzór mi wyszedł z proporcji ;)
   }
-  
+
   return QTime(0,0).addMSecs(timeLeft);
 }
 
