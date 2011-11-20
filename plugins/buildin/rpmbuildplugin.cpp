@@ -63,7 +63,7 @@ RpmBuildPlugin::~RpmBuildPlugin()
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
     //get release currently selected
-    ReleaseInfo *releaseInfo = ProjectsManager::instance()->getCurrentRelease();
+    ReleaseInfo * const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
     const ProjectInfo *projectInfo = releaseInfo->getProjectInfo();
     const QString releasePath = releaseInfo->getReleasePath();
     const ReleaseInfo::VersionList &localVersions = *releaseInfo->getLocalVersions();
@@ -72,7 +72,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
         return;                     //no release ich choosen
 
     //get info about this release
-    BuildProcess *buildProcess = findBuildProcess(releaseInfo);
+    BuildProcess *const buildProcess = findBuildProcess(releaseInfo);
     if (buildProcess)   //there is an info about build? then stop it
     {
         buildProcess->stop();
@@ -86,9 +86,9 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     if (Settings::instance()->getEnvType() == Settings::External)
         homePath = "/root";
 
-    QString specFile = homePath + "/rpmbuild/SPECS/" + projectInfo->getName() + ".spec";
-    QString specSrc = releasePath + "/" + projectInfo->getName() + ".spec";
-    QString specDst = SandboxProcess::decoratePath(specFile);
+    const QString specFile = homePath + "/rpmbuild/SPECS/" + projectInfo->getName() + ".spec";
+    const QString specSrc = releasePath + "/" + projectInfo->getName() + ".spec";
+    const QString specDst = SandboxProcess::decoratePath(specFile);
 
     debug(DebugLevel::Info) << QString("copying %1 to %2").arg(specSrc).arg(specDst);
 
@@ -101,32 +101,32 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     while (src.atEnd() == false)
     {
         QString line = src.readLine();
-        QRegExp version("(.*)__VERSION_([a-zA-Z0-9_-]+)__(.*)");
+        const QRegExp version("(.*)__VERSION_([a-zA-Z0-9_-]+)__(.*)");
 
         if (version.exactMatch(line))
         {
             line = version.capturedTexts()[1];
-            QString pkgName = version.capturedTexts()[2];
+            const QString pkgName = version.capturedTexts()[2];
             if (releaseInfo->getLocalVersions()->contains(pkgName))
                 line += localVersions[pkgName].getVersion();
             line += version.capturedTexts()[3];
         }
 
-        QRegExp extension("(.*)__EXTENSION_([a-zA-Z0-9_-]+)__(.*)");
+        const QRegExp extension("(.*)__EXTENSION_([a-zA-Z0-9_-]+)__(.*)");
         if (extension.exactMatch(line))
         {
             line = extension.capturedTexts()[1];
-            QString pkgName = extension.capturedTexts()[2];
+            const QString pkgName = extension.capturedTexts()[2];
             if (localVersions.contains(pkgName))
                 line += localVersions[pkgName].getExtension();
             line += extension.capturedTexts()[3];
         }
 
-        QRegExp fileurl("(.*)__FILEURL_([a-zA-Z0-9_-]+)__(.*)");
+        const QRegExp fileurl("(.*)__FILEURL_([a-zA-Z0-9_-]+)__(.*)");
         if (fileurl.exactMatch(line))
         {
             line = fileurl.capturedTexts()[1];
-            QString pkgName = fileurl.capturedTexts()[2];
+            const QString pkgName = fileurl.capturedTexts()[2];
             if (localVersions.contains(pkgName))
                 line += localVersions[pkgName].getPkgUrl().toString();
             line += fileurl.capturedTexts()[3];
@@ -155,12 +155,13 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     //skopiuj patche
     QDir patchesDir(releasePath + "/patches");
     patchesDir.cd(releaseInfo->getName());
-    QStringList patches = patchesDir.entryList( QDir::Files, QDir::Name | QDir::IgnoreCase );
+    const QStringList patches = patchesDir.entryList( QDir::Files, QDir::Name | QDir::IgnoreCase );
 
     foreach(QString patch, patches)
     {
-        debug(DebugLevel::Info) << QString("copying %1 to %2").arg(releasePath + "/patches/" + patch)
-        .arg(SandboxProcess::decoratePath(homePath + "/rpmbuild/SOURCES/" + patch));
+        debug(DebugLevel::Info) << QString("copying %1 to %2")
+                                   .arg(releasePath + "/patches/" + patch)
+                                   .arg(SandboxProcess::decoratePath(homePath + "/rpmbuild/SOURCES/" + patch));
 
         QFile::copy(releasePath + "/patches/" + patch,
                     SandboxProcess::decoratePath(
