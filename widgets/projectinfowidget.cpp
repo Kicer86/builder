@@ -176,7 +176,7 @@ void ProjectInfoWidget::refresh(int type)
             int t = releaseInfo->getProgressTotal();
             if (t > 0)
             {
-                if (state == ReleaseInfo::Downloading )
+                if (state == ReleaseInfo::State::Downloading )
                     ui->progressBar->setFormat(tr("%3: %p% (%1/%2)")
                                                .arg(/*sizeToString(d),
                                                     sizeToString(t),*/
@@ -185,7 +185,7 @@ void ProjectInfoWidget::refresh(int type)
                                                    releaseInfo->getDownloadedPkg()
                                                    )
                                               );
-                else if (state == ReleaseInfo::Building)
+                else if (state == ReleaseInfo::State::Building)
                     ui->progressBar->setFormat(tr("%p% (%1/%2)")
                                                .arg(
                                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
@@ -198,8 +198,8 @@ void ProjectInfoWidget::refresh(int type)
         if (type & ReleaseInfo::StateChange)
         {
             ReleaseInfo::State state = releaseInfo->getState();
-            ui->updateButton->setEnabled(state == ReleaseInfo::Nothing);
-            ui->progressBar->setEnabled(state != ReleaseInfo::Nothing);
+            ui->updateButton->setEnabled(state == ReleaseInfo::State::Nothing);
+            ui->progressBar->setEnabled(state != ReleaseInfo::State::Nothing);
             ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
 
             const ReleaseInfo::VersionList localVersion = *releaseInfo->getLocalVersions();
@@ -231,9 +231,11 @@ void ProjectInfoWidget::refresh(int type)
                 list << element;
             }
             remoteInfoModel->setStringList(list);
-            ui->downloadButton->setEnabled(state == ReleaseInfo::Nothing && releaseInfo->getCurrentVersions()->isEmpty() == false && *(releaseInfo->getCurrentVersions()) != *(releaseInfo->getLocalVersions()) );
+            ui->downloadButton->setEnabled(state == ReleaseInfo::State::Nothing &&
+                                           releaseInfo->getCurrentVersions()->isEmpty() == false &&
+                                           *(releaseInfo->getCurrentVersions()) != *(releaseInfo->getLocalVersions()) );
 
-            if (state == ReleaseInfo::Nothing)
+            if (state == ReleaseInfo::State::Nothing)
                 ui->progressBar->reset();
         }
     }

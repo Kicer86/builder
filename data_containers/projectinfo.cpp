@@ -102,7 +102,7 @@ void ProjectInfo::updateStatus() const
     {
         bool dwl = ri->getDownloadFlag();
         bool bld = ri->getBuildFlag();
-        bool progress = ri->getState() != ReleaseInfo::Nothing;  //is there something goin' on ?
+        bool progress = ri->getState() != ReleaseInfo::State::Nothing;  //is there something goin' on ?
 
         if (progress)
         {

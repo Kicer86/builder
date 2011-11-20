@@ -33,7 +33,7 @@
 
 ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
         QObject(0), id(ProjectsManager::instance()->getId()),
-        name(n), total(100), done(0), projectInfo(p), state(Nothing)
+        name(n), total(100), done(0), projectInfo(p), state(State::Nothing)
 {
 //   buildProcess=new QProcess(this);
 //   buildingLog=new QTextDocument(this);
@@ -128,7 +128,7 @@ void ReleaseInfo::updateProgress(int d, int t)
     done = d;
     total = t;
 
-    emit statusChanged(ProgressChange);
+    emit statusChanged( ChangeType::ProgressChange );
 }
 
 
@@ -137,7 +137,7 @@ void ReleaseInfo::updateProgress(qint64 d, qint64 t)
     done = d;
     total = t;
 
-    emit statusChanged(ProgressChange);
+    emit statusChanged(ChangeType::ProgressChange);
 }
 
 
@@ -149,7 +149,7 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 
     //status has changed
 
-    emit statusChanged(StateChange);
+    emit statusChanged(ChangeType::StateChange);
 }
 
 
@@ -313,7 +313,7 @@ void ReleaseInfo::update()
 
     if ( downloadScript.isEmpty() == false )
     {
-        setState(Checking);
+        setState(State::Checking);
         Downloader downloader;
         QFile script(downloadScript);
         if (script.exists() && script.open(QIODevice::ReadOnly))
@@ -327,7 +327,7 @@ void ReleaseInfo::update()
         foreach (ProjectVersion pV, currentVersions)
             qDebug() << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
     }
-    setState(Nothing);
+    setState(State::Nothing);
 }
 
 
@@ -351,8 +351,8 @@ void ReleaseInfo::downloadPkg()
                 QFileInfo fileInfo(pV.getPkgUrl().toString()); //potrzebne do wyodrębnienia nazwy pliku z urlu sieciowego
                 QFileInfo localFile(releasePath() + "/src/" + fileInfo.fileName()); //plik lokalny
 
-                downloadedPkg = pkgName; //ustaw nazwę pobieranej paczki
-                setState(Downloading);   //zmien status (żeby interfejs się odświeżył)
+                downloadedPkg = pkgName;       //ustaw nazwę pobieranej paczki
+                setState(State::Downloading);  //zmien status (żeby interfejs się odświeżył)
 
                 if (downloader.download(pV.getPkgUrl(), localFile.absoluteFilePath()) == true)
                 {
@@ -370,7 +370,7 @@ void ReleaseInfo::downloadPkg()
     else
         qWarning() << "local and current versions are the same or current version not checked";
 
-    setState(Nothing);
+    setState(State::Nothing);
 }
 
 /*

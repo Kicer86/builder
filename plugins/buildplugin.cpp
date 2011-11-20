@@ -61,18 +61,19 @@ void BuildProcess::appendToLog(const QString &str) const
 
 void BuildProcess::read() const
 {
-    appendToLog(process->readAll());
+    const QByteArray msg = process->readAll();
+    appendToLog(msg);
 
     /*
-    if (state==Building)  //cmake daje %, użyjemy ich :]
+    if (state == Building)  //cmake daje %, użyjemy ich :]
     {
-      QStringList lines=msg.split("\n");
-      foreach(QString line, lines)
-      {
-        QRegExp cmakeRegEx("^\\[([0-9 ]{3})\\%\\].*");
-        if (cmakeRegEx.exactMatch(line))
-          updateProgress(cmakeRegEx.capturedTexts()[1].toInt(), 100);
-      }
+        QStringList lines = msg.split("\n");
+        foreach(QString line, lines)
+        {
+            QRegExp cmakeRegEx("^\\[([0-9 ]{3})\\%\\].*");
+            if (cmakeRegEx.exactMatch(line))
+                updateProgress(cmakeRegEx.capturedTexts()[1].toInt(), 100);
+        }
     }
     */
 }

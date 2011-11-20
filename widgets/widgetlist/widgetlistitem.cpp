@@ -146,7 +146,7 @@ void WidgetListItem::updateValues()
     //the same project as in prevoius element?
     QModelIndex prevModel = modelIndex.sibling( modelIndex.row() - 1, modelIndex.column() );
     const bool prevIsValid = prevModel.isValid();
-    
+
     const int prevModelData = prevIsValid? prevModel.data(Qt::UserRole + 1).toInt() : -1;
     const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
@@ -189,7 +189,7 @@ void WidgetListItem::updateValues()
         pixmap->appendLayer( ImagesManager::instance()->getImage("off.png", icoSize) );
 
     //any action in progress??
-    if ( releaseInfo->getState() != ReleaseInfo::Nothing )
+    if ( releaseInfo->getState() != ReleaseInfo::State::Nothing )
         pixmap->appendLayer(ImagesManager::instance()->getImage("progress.svg", icoSize));
 }
 

@@ -36,7 +36,7 @@ class ReleaseInfo: public QObject
     public:
         typedef QHash<QString, ProjectVersion> VersionList;
 
-        enum State
+        enum class State
         {
             Nothing,     //nic się nie dzieje
             Checking,    //sprawdzanie aktualnej wersji
@@ -44,10 +44,10 @@ class ReleaseInfo: public QObject
             Building     //budowanie pakietu
         };
 
-        enum BuildMode
+        enum class BuildMode
         {
             Normal,      //wywolanie rpmbuild -ba
-            Fast,        //wywołanie rpmbuild -bi --short-circuit (dla szybkiego poprawiania plików spec)
+            Fast         //wywołanie rpmbuild -bi --short-circuit (dla szybkiego poprawiania plików spec)
         };
 
         enum ChangeType
@@ -98,9 +98,9 @@ class ReleaseInfo: public QObject
         bool getBuildFlag() const;
         bool getDownloadFlag() const;
         QTextDocument *getBuildMesages();
-        QString getDownloadScriptFile() const;         //zwraca scieżkę do pliku lua
+        QString getDownloadScriptFile() const;          //zwraca scieżkę do pliku lua
         QString getSpecFile() const;
-        QString getReleasePath() const;                //rlease path (dir)
+        QString getReleasePath() const;                 //rlease path (dir)
         const QString &getDownloadedPkg() const;
         const ProjectInfo *getProjectInfo() const;
         const VersionList *getLocalVersions() const;    //zwraca wskaźnik na wersję projektu na dysku
@@ -115,9 +115,9 @@ class ReleaseInfo: public QObject
         State getState() const;
 
     signals:
-        void statusChanged(int);       //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
-        void optionsChanged();         //zmieniły się opcje releasea (buduj/nie buduj, ściągaj/nie ściągaj)
-        void logWillChange();          //log budowania zaraz zmieni swoją zawartość.
+        void statusChanged(ChangeType);  //coś się zmieniło (progress, lub stan  (pobieranie/budowanie)), sygnał informuje otoczenie że powinno się odswieżyć
+        void optionsChanged();           //zmieniły się opcje releasea (buduj/nie buduj, ściągaj/nie ściągaj)
+        void logWillChange();            //log budowania zaraz zmieni swoją zawartość.
 };
 
 #endif // RELEASEINFO_HPP
