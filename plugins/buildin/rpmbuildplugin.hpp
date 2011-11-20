@@ -25,8 +25,9 @@
 
 #include "plugins/buildplugin.hpp"
 
-class QPushButton;
 class QGridLayout;
+class QPlainTextEdit;
+class QPushButton;
 class QProgressBar;
 
 class RpmBuildPlugin: public BuildPlugin
@@ -36,18 +37,19 @@ class RpmBuildPlugin: public BuildPlugin
 
     RpmBuildPlugin(const RpmBuildPlugin&);
     void operator=(const RpmBuildPlugin&);
-    
+
     enum Type
     {
-      Normal, 
+      Normal,
       Fast
     };
 
     QGridLayout  *buttons;
+    QPlainTextEdit *log;
     QPushButton  *buildButton;
     QPushButton  *fastBuildButton;
     QProgressBar *progressBar;
-    
+
     void build(Type);
 
   private slots:
@@ -59,6 +61,7 @@ class RpmBuildPlugin: public BuildPlugin
     virtual ~RpmBuildPlugin();
 
     virtual QLayout* getBuildButtons() const;
+    virtual QWidget* getBuildLog() const;
     virtual void updateProgress(int);
 };
 

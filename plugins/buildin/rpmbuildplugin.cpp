@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QtPlugin>
 #include <QGridLayout>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QProcess>
 #include <QProgressBar>
@@ -43,6 +44,7 @@ RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
 {
     //construct layout
     buttons = new QGridLayout;
+    log = new QPlainTextEdit;
     buildButton = new QPushButton(tr("Build"));
     fastBuildButton = new QPushButton(tr("Fast build"));
     progressBar = new QProgressBar;
@@ -209,6 +211,12 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 QLayout* RpmBuildPlugin::getBuildButtons() const
 {
     return buttons;
+}
+
+
+QWidget* RpmBuildPlugin::getBuildLog() const
+{
+    return log;
 }
 
 
