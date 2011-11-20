@@ -75,7 +75,8 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         typedef std::map<ReleaseInfo*, BuildProcess*> BuildsInfo;
 
         QString getBuilderName() const;               //return builder name
-        virtual QLayout *getBuildButtons() const = 0; //return layout with button(s) for managing build process
+        virtual QLayout* getBuildButtons() const = 0; //return layout with button(s) for managing build process
+        virtual QWidget* getBuildLog() const = 0;     //return widget with build messages
         virtual void updateProgress(int) = 0;         //set build progress (-1 means that progress is unknown)
 
     protected:
