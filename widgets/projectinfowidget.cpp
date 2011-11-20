@@ -154,9 +154,6 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 
     releaseInfo = ri;
     connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(refresh(int)));
-    connect(releaseInfo, SIGNAL(logWillChange()), this, SLOT(logWillChange()));
-
-    //   ui->buildMessages->setDocument(releaseInfo->getBuildMesages());
     refresh(ReleaseInfo::AllChanged);
 }
 
