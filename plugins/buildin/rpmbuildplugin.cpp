@@ -72,7 +72,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
         return;                     //no release ich choosen
 
     //get info about this release
-    BuildProcess *const buildProcess = findBuildProcess(releaseInfo);
+    BuildProcess *buildProcess = findBuildProcess(releaseInfo);
     if (buildProcess)   //there is an info about build? then stop it
     {
         buildProcess->stop();
@@ -183,6 +183,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     args << specFile;
 
+    buildProcess = new BuildProcess(releaseInfo);
     buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
 
     addBuildProcess("rpmbuild", args, buildProcess);
