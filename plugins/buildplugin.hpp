@@ -21,9 +21,10 @@
 #ifndef BUILDPLUGIN_HPP
 #define BUILDPLUGIN_HPP
 
+#include <map>
+
 #include <QObject>
 #include <QStringList>
-#include <QHash>
 
 class QProcess;
 class QTextDocument;
@@ -71,7 +72,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         BuildPlugin(const char *);
         virtual ~BuildPlugin();
 
-        typedef QHash<ReleaseInfo*, BuildProcess*> BuildsInfo;
+        typedef std::map<ReleaseInfo*, BuildProcess*> BuildsInfo;
 
         QString getBuilderName() const;               //return builder name
         virtual QLayout *getBuildButtons() const = 0; //return layout with button(s) for managing build process

@@ -132,19 +132,24 @@ void BuildPlugin::addBuildProcess(const QString &program, const QStringList &arg
 
 BuildProcess* BuildPlugin::findBuildProcess(ReleaseInfo *releaseInfo)
 {
-    return *(buildsInfo.find(releaseInfo));
+    BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
+    
+    return (it != buildsInfo.end()) ? (it->second) : 0;
 }
 
 
 void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
 {
-    BuildProcess *buildProcess=findBuildProcess(releaseInfo);
+    BuildProcess *buildProcess = findBuildProcess(releaseInfo);
     if (buildProcess)
     {
-        assert(buildProcess->process->state()==QProcess::NotRunning);  //process should be halted
+        assert(buildProcess->process->state() == QProcess::NotRunning);  //process should be halted
 
         //remove all data
-        delete buildsInfo.take(buildProcess->releaseInfo);
+        BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
+        assert (it != buildsInfo.end());
+        buildsInfo.erase(it);
+        
         delete buildProcess;
     }
 }
