@@ -37,15 +37,15 @@ class ProjectInfoWidget:public QWidget
 
     Ui_ProjectInfoForm *ui;
     ReleaseInfo *releaseInfo;
-    
-    bool autoScrool;                 //this value is set to true if build log should scroll to bottom automatically
+
+//    bool autoScrool;                 //this value is set to true if build log should scroll to bottom automatically
 
     //info o projekcie
     QListView *localInfoView;
     QListView *remoteInfoView;
     QStringListModel *localInfoModel;
-    QStringListModel *remoteInfoModel;   
-    
+    QStringListModel *remoteInfoModel;
+
   private slots:
     void refresh(int type);
     void editDowloadScriptButtonPressed();
@@ -59,12 +59,12 @@ class ProjectInfoWidget:public QWidget
   public:
     explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
     virtual ~ProjectInfoWidget();
-    
+
     void addBuildPluginButtons(QLayout* buttons, const QString&);     //function which adds provided (by plugin) layout
     ReleaseInfo *getCurrentRelease() const;
 
     void setRelease(ReleaseInfo *);
-    
+
   public slots:
     void setReleaseInfo(ReleaseInfo *);
 };

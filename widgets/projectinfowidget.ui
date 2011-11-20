@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>414</width>
-    <height>314</height>
+    <width>412</width>
+    <height>312</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -191,20 +191,6 @@ p, li { white-space: pre-wrap; }
        </item>
        <item>
         <layout class="QVBoxLayout" name="buildPluginsLayout"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="buildLogTab">
-      <attribute name="title">
-       <string>Build log</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
-       <item>
-        <widget class="QPlainTextEdit" name="buildMessages">
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

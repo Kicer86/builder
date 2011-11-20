@@ -62,7 +62,7 @@ static class HtmlDelegate: public QStyledItemDelegate
 
 
 ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
-        QWidget(p, f), releaseInfo(0), autoScrool(true)
+        QWidget(p, f), releaseInfo(0)/*, autoScrool(true)*/
 {
     //nothing usefull -> just protector (to be sure that only one ProjectInfoWidget has been declared)
     static bool declared;
@@ -105,7 +105,7 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
-    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
+//    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 }
 
 
@@ -172,8 +172,8 @@ void ProjectInfoWidget::refresh(int type)
 
             //dodatkowe iformacje progressBara
             ReleaseInfo::State state = releaseInfo->getState();
-            int d = releaseInfo->getProgressDone();
-            int t = releaseInfo->getProgressTotal();
+//            const int d = releaseInfo->getProgressDone();
+            const int t = releaseInfo->getProgressTotal();
             if (t > 0)
             {
                 if (state == ReleaseInfo::State::Downloading )
@@ -197,7 +197,7 @@ void ProjectInfoWidget::refresh(int type)
 
         if (type & ReleaseInfo::StateChange)
         {
-            ReleaseInfo::State state = releaseInfo->getState();
+            const ReleaseInfo::State state = releaseInfo->getState();
             ui->updateButton->setEnabled(state == ReleaseInfo::State::Nothing);
             ui->progressBar->setEnabled(state != ReleaseInfo::State::Nothing);
             ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
@@ -244,19 +244,19 @@ void ProjectInfoWidget::refresh(int type)
 
 void ProjectInfoWidget::logWillChange()
 {
-    QScrollBar *bar = ui->buildMessages->verticalScrollBar();
+//    QScrollBar *bar = ui->buildMessages->verticalScrollBar();
 
-    autoScrool = bar->value() == bar->maximum();
+//    autoScrool = bar->value() == bar->maximum();
 }
 
 
 void ProjectInfoWidget::logChanged()
 {
-    if (autoScrool)
-    {
-        QScrollBar *bar = ui->buildMessages->verticalScrollBar();
-        bar->setValue(bar->maximum());
-    }
+//    if (autoScrool)
+//    {
+//        QScrollBar *bar = ui->buildMessages->verticalScrollBar();
+//        bar->setValue(bar->maximum());
+//    }
 }
 
 
