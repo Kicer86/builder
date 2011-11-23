@@ -207,6 +207,14 @@ void ProjectInfoWidget::refresh(int type)
         if (type & ReleaseInfo::StateChange)
         {
             const ReleaseInfo::State state = releaseInfo->getState();
+
+            if (state == ReleaseInfo::State::Nothing)
+            {
+                //ui->progressBar->reset();
+                ui->progressBar->setMaximum(100);
+                ui->progressBar->setValue(0);
+            }
+
             ui->updateButton->setEnabled(state == ReleaseInfo::State::Nothing);
             ui->progressBar->setEnabled(state != ReleaseInfo::State::Nothing);
             ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
@@ -219,7 +227,7 @@ void ProjectInfoWidget::refresh(int type)
             localInfoModel->removeRows(0, localInfoModel->rowCount());
 
             foreach(ProjectVersion pV, localVersion)
-            list << QString("%1: %2").arg(pV.getName()).arg(pV.getVersion());
+                list << QString("%1: %2").arg(pV.getName()).arg(pV.getVersion());
 
             localInfoModel->setStringList(list);
 
@@ -243,9 +251,6 @@ void ProjectInfoWidget::refresh(int type)
             ui->downloadButton->setEnabled(state == ReleaseInfo::State::Nothing &&
                                            releaseInfo->getCurrentVersions()->isEmpty() == false &&
                                            *(releaseInfo->getCurrentVersions()) != *(releaseInfo->getLocalVersions()) );
-
-            if (state == ReleaseInfo::State::Nothing)
-                ui->progressBar->reset();
         }
     }
 }
