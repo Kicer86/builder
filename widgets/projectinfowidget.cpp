@@ -201,6 +201,8 @@ void ProjectInfoWidget::refresh(int type)
                                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
                                                    )
                                               );
+                else
+                    ui->progressBar->setFormat("%p%");
             }
         }
 
