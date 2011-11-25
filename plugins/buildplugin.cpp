@@ -148,9 +148,9 @@ void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
         //remove all data
         BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
         assert (it != buildsInfo.end());
-        buildsInfo.erase(it);
+        //buildsInfo.erase(it);
 
-        delete buildProcess;
+        //buildProcess->deleteLater();
 
         releaseInfo->buildStopped();
     }
