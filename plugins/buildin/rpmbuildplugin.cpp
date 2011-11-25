@@ -77,10 +77,14 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     //get info about this release
     BuildProcess *buildProcess = findBuildProcess(releaseInfo);
-    if (buildProcess)   //there is an info about build? then stop it
+    if (buildProcess)   //there is an info about build?
     {
-        buildProcess->stop();
-        return;
+        //if it's running then stop it
+        if (buildProcess->getProcess()->state() == QProcess::Running) //running?
+        {
+            buildProcess->stop();
+            return;
+        }
     }
 
     //włącz progress bar
@@ -187,7 +191,10 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     args << specFile;
 
-    buildProcess = new BuildProcess(releaseInfo);
+    //not created yet?
+    if (buildProcess == 0)
+        buildProcess = new BuildProcess(releaseInfo);
+
     buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
 
     addBuildProcess("rpmbuild", args, buildProcess);
