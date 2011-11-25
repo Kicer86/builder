@@ -230,13 +230,9 @@ void RpmBuildPlugin::updateTab()
     ReleaseInfo *currentRelease = ProjectsManager::instance()->getCurrentRelease();
     if (currentRelease)
     {
-        if (currentRelease->getState() == ReleaseInfo::State::Building)
-        {
-            BuildProcess *const bP = findBuildProcess(currentRelease);
-            assert(bP);  //because ReleaseInfo is in "building" state, there must be BuildProcess
-
+        BuildProcess *const bP = findBuildProcess(currentRelease);
+        if (bP)
             log->setDocument(bP->getLog());
-        }
         else
             log->setDocument(0);
     }
