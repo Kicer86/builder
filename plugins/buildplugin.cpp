@@ -111,19 +111,21 @@ const QString& BuildPlugin::getBuilderName() const
 
 void BuildPlugin::addBuildProcess(const QString &program, const QStringList &args, BuildProcess* buildProcess)
 {
-    //make sure there is no such process already in base
-    assert(findBuildProcess(buildProcess->releaseInfo)==0);
-
     debug(DebugLevel::Info) << "Starting new build process for project "
                             << buildProcess->releaseInfo->getProjectInfo()->getName()
                             << ", release: "
                             << buildProcess->releaseInfo->getName();
 
-    connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, SLOT(removeBuildProcess(ReleaseInfo*)));
+    //make sure there is no such process already in base
+    if (findBuildProcess(buildProcess->releaseInfo)==0)
+    {
+        connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, SLOT(removeBuildProcess(ReleaseInfo*)));
 
-    buildsInfo[buildProcess->releaseInfo] = buildProcess;
+        buildsInfo[buildProcess->releaseInfo] = buildProcess;
+    }
+
 //   buildProcess->process->start();
-    QString infoMsg=SandboxProcess::runProcess(program, args, buildProcess->process);
+    QString infoMsg = SandboxProcess::runProcess(program, args, buildProcess->process);
 
     debug(DebugLevel::Info) << QString ("Starting: %1").arg(infoMsg);
     buildProcess->appendToLog(tr("Starting: %1\n").arg(infoMsg));
