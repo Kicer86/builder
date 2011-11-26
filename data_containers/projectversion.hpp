@@ -25,53 +25,62 @@
 
 class QSettings;
 
-class ProjectVersion
+struct ProjectVersion
 {
-    bool empty;
-    
-    int majorN;
-    int minorN;
-    int release;
-    int build;
-    int len;         //długość (liczba elementów) wersji (1: x; 2:x.y; 3: x.y.z; 4: x.y.z.t)
-    QString phase;   //beta, alpha etc
-    QString ext;     //rozszerzenie
-    QUrl url;        //url to package
-    QString relativePath; //scieżka do pliku na dysku (względem katalogu z projektami)
-    QString rawVersion;   //wersja taka jaką pobraliśmy z netu, nieobrobiona
-    QString name;    /** Nazwa (człon przed wersją) pliku. 
-                         Serwowana jest przez skrypt lua, więc użytkownik może sobie nadać dowolną.
-                         Używane do rozrózniania kilku paczek w obrębie tego samego projektu (w tym do uzupełniania pól w plikach spec).
-                         Jedna z paczek powinna mieć nazwę taką jak nazwa projektu. Potrzeby aby działało
-                         autouzupełnianie pliku spec \see ProjectInfoWidget::specButtonPressed() */
-    
-    int compare(const ProjectVersion &pV) const;
-    int extCompare(const ProjectVersion &pV) const;
-    
-    void setValues(const QString &p);
+        ProjectVersion(const QUrl &url);
+        ProjectVersion(const QString &filePart);
+        ProjectVersion();
 
-  public:
-    ProjectVersion(const QUrl &url);
-    ProjectVersion(const QString &filePart);
-    ProjectVersion();
-    
-    void setLocalFile(const QFileInfo &file);
-    void setName(const QString &n);
-    QFileInfo getLocalFile() const;
-    QString text() const;  //zwraca to, co podano jako parametr konstruktora
-    QString getVersion() const;
-    QString getExtension() const;
-    QString getName() const;
-    QUrl getPkgUrl() const;
-    void setPkgUrl(const QUrl& url);
-    bool isEmpty() const;
-    bool save(QSettings* settings) const;  //zapisz ustawienia
-    void load(QSettings *);        //wczytaj ustawienia
+        void setLocalFile(const QFileInfo &file);
+        void setName(const QString &n);
+        QFileInfo getLocalFile() const;
+        QString text() const;  //zwraca to, co podano jako parametr konstruktora
+        QString getVersion() const;
+        QString getExtension() const;
+        QString getName() const;
+        QUrl getPkgUrl() const;
+        void setPkgUrl(const QUrl& url);
+        bool isEmpty() const;
+        bool save(QSettings* settings) const;  //zapisz ustawienia
+        void load(QSettings *);        //wczytaj ustawienia
 
-    bool operator>(const ProjectVersion &pV) const;
-    bool operator<(const ProjectVersion &pV) const;
-    bool operator==(const ProjectVersion &pV) const;
-    bool operator!=(const ProjectVersion &pV) const;
+        bool operator>(const ProjectVersion &pV) const;
+        bool operator<(const ProjectVersion &pV) const;
+        bool operator==(const ProjectVersion &pV) const;
+        bool operator!=(const ProjectVersion &pV) const;
+
+        //status of data
+        enum class Status
+        {
+            Empty,             //no data provided
+            Filled,            //data filled
+            Error              //there was an error while filling data (ie server error, path no found etc)
+        };
+
+    private:
+        bool empty __attribute__((__deprecated__));
+        Status status;
+
+        int majorN;
+        int minorN;
+        int release;
+        int build;
+        int len;         //długość (liczba elementów) wersji (1: x; 2:x.y; 3: x.y.z; 4: x.y.z.t)
+        QString phase;   //beta, alpha etc
+        QString ext;     //rozszerzenie
+        QUrl url;        //url to package
+        QString relativePath; //scieżka do pliku na dysku (względem katalogu z projektami)
+        QString rawVersion;   //wersja taka jaką pobraliśmy z netu, nieobrobiona
+        QString name;    /** Nazwa (człon przed wersją) pliku.
+                             Serwowana jest przez skrypt lua, więc użytkownik może sobie nadać dowolną.
+                             Używane do rozrózniania kilku paczek w obrębie tego samego projektu (w tym do uzupełniania pól w plikach spec).
+                             Jedna z paczek powinna mieć nazwę taką jak nazwa projektu. Potrzeby aby działało
+                             autouzupełnianie pliku spec \see ProjectInfoWidget::specButtonPressed() */
+
+        int compare(const ProjectVersion &pV) const;
+        int extCompare(const ProjectVersion &pV) const;
+
+        void setValues(const QString &p);
 };
 
 
