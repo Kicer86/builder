@@ -161,6 +161,11 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 void ProjectInfoWidget::setReleaseInfo(ReleaseInfo* rI)
 {
     setRelease(rI);
+
+    //Update log in build tab
+    //There is no need to update notactive tabs, becouse they will be updated when activated :)
+
+    tabChanged(ui->tabWidget->currentIndex());
 }
 
 
@@ -363,7 +368,7 @@ void ProjectInfoWidget::tabChanged(int index)
 
     RefreshFunctions::const_iterator it = refreshFunctions.constFind(tab);   //find refresh function for this widget
 
-    if (it != refreshFunctions.end())
+    if (it != refreshFunctions.end())  //it may be not found -> for example when "main" or "non build" tab is chosen
     {
         BuildPlugin *bP = it.value();
 
