@@ -87,7 +87,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
 
     protected:
         //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
-        void addBuildProcess(const QString &, const QStringList &, BuildProcess *);
+        void startBuildProcess(const QString &, const QStringList &, BuildProcess *);
         BuildProcess *findBuildProcess(ReleaseInfo *releaseInfo);
 
     protected slots:

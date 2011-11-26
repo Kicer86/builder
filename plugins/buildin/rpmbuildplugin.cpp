@@ -197,7 +197,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
 
-    addBuildProcess("rpmbuild", args, buildProcess);
+    startBuildProcess("rpmbuild", args, buildProcess);
 
     releaseInfo->buildStarted();
 }

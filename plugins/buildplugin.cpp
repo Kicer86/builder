@@ -109,7 +109,7 @@ const QString& BuildPlugin::getBuilderName() const
 }
 
 
-void BuildPlugin::addBuildProcess(const QString &program, const QStringList &args, BuildProcess* buildProcess)
+void BuildPlugin::startBuildProcess(const QString &program, const QStringList &args, BuildProcess* buildProcess)
 {
     debug(DebugLevel::Info) << "Starting new build process for project "
                             << buildProcess->releaseInfo->getProjectInfo()->getName()
