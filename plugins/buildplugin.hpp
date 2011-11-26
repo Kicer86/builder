@@ -65,7 +65,7 @@ class BuildProcess: public QObject
         }
 
     signals:
-        void removeBuildProcess(ReleaseInfo *);
+        void stopBuildProcess(ReleaseInfo *);
 };
 
 
@@ -91,7 +91,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         BuildProcess *findBuildProcess(ReleaseInfo *releaseInfo);
 
     protected slots:
-        void removeBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
+        void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
 
     private:
         BuildPlugin(const BuildPlugin& other);

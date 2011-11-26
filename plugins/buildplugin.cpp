@@ -81,7 +81,7 @@ void BuildProcess::read() const
 
 void BuildProcess::close(int)
 {
-    emit removeBuildProcess(releaseInfo);
+    emit stopBuildProcess(releaseInfo);
 }
 
 
@@ -119,7 +119,7 @@ void BuildPlugin::addBuildProcess(const QString &program, const QStringList &arg
     //make sure there is no such process already in base
     if (findBuildProcess(buildProcess->releaseInfo)==0)
     {
-        connect(buildProcess, SIGNAL(removeBuildProcess(ReleaseInfo*)), this, SLOT(removeBuildProcess(ReleaseInfo*)));
+        connect(buildProcess, SIGNAL(stopBuildProcess(ReleaseInfo*)), this, SLOT(stopBuildProcess(ReleaseInfo*)));
 
         buildsInfo[buildProcess->releaseInfo] = buildProcess;
     }
@@ -142,7 +142,7 @@ BuildProcess* BuildPlugin::findBuildProcess(ReleaseInfo *releaseInfo)
 }
 
 
-void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
+void BuildPlugin::stopBuildProcess(ReleaseInfo *releaseInfo)
 {
     BuildProcess *buildProcess = findBuildProcess(releaseInfo);
     assert(buildProcess);
