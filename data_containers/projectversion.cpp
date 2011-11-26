@@ -40,13 +40,12 @@ ProjectVersion::ProjectVersion(const QUrl& u):
 
 
 ProjectVersion::ProjectVersion():
-    empty(true), status(Status::Empty), majorN(0), minorN(0),release(0), build(0)
+    status(Status::Empty), majorN(0), minorN(0),release(0), build(0)
 {}
 
 
 void ProjectVersion::setValues(const QString& partialUrl)
 {
-    empty = false;
     status = Status::Filled;
 
     rawVersion=partialUrl;             //partialUrl to częsciowy (wersja + rozszerzenie]) lub cały url do pliku
@@ -108,11 +107,11 @@ QFileInfo ProjectVersion::getLocalFile() const
 // 0 jeśli równe
 int ProjectVersion::compare(const ProjectVersion& pV) const
 {
-    if (isEmpty() && pV.isEmpty()==false)
+    if (getStatus() != Status::Filled && pV.getStatus() == Status::Filled)
         return -1;
-    if (isEmpty()==false && pV.isEmpty())
+    if (getStatus() == Status::Filled && pV.getStatus() != Status::Filled)
         return 1;
-    if (isEmpty() && pV.isEmpty())
+    if (getStatus() != Status::Filled && pV.getStatus() != Status::Filled)
         return 0;
 
     if (majorN<pV.majorN)
@@ -191,7 +190,7 @@ QString ProjectVersion::getVersion() const
 
 QString ProjectVersion::getExtension() const
 {
-    if (isEmpty() || len==0)
+    if (getStatus() != Status::Filled || len==0)
         return "-";
     else
         return ext;
@@ -216,15 +215,15 @@ void ProjectVersion::setPkgUrl(const QUrl &u)
 }
 
 
-bool ProjectVersion::isEmpty() const
+ProjectVersion::Status ProjectVersion::getStatus() const
 {
-    return empty;
+    return status;
 }
 
 
 bool ProjectVersion::save(QSettings* settings) const
 {
-    if (empty==false)
+    if (status == Status::Filled)
     {
         settings->setValue("name", name);
         settings->setValue("major", majorN);
@@ -237,7 +236,8 @@ bool ProjectVersion::save(QSettings* settings) const
         settings->setValue("url", url);
         settings->setValue("localPath", relativePath);
     }
-    return empty==false;
+
+    return status == Status::Filled;
 }
 
 
@@ -254,7 +254,7 @@ void ProjectVersion::load(QSettings* settings)
     url=settings->value("url").toUrl();
     relativePath=settings->value("localPath").toString();
 
-    empty=name=="";
+    status = name == ""? Status::Empty : Status::Filled;
 }
 
 

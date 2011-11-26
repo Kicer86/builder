@@ -27,6 +27,14 @@ class QSettings;
 
 struct ProjectVersion
 {
+        //status of data
+        enum class Status
+        {
+            Empty,             //no data provided
+            Filled,            //data filled
+            Error              //there was an error while filling data (ie server error, path no found etc)
+        };
+
         ProjectVersion(const QUrl &url);
         ProjectVersion(const QString &filePart);
         ProjectVersion();
@@ -40,7 +48,7 @@ struct ProjectVersion
         QString getName() const;
         QUrl getPkgUrl() const;
         void setPkgUrl(const QUrl& url);
-        bool isEmpty() const;
+        Status getStatus() const;
         bool save(QSettings* settings) const;  //zapisz ustawienia
         void load(QSettings *);        //wczytaj ustawienia
 
@@ -49,17 +57,9 @@ struct ProjectVersion
         bool operator==(const ProjectVersion &pV) const;
         bool operator!=(const ProjectVersion &pV) const;
 
-        //status of data
-        enum class Status
-        {
-            Empty,             //no data provided
-            Filled,            //data filled
-            Error              //there was an error while filling data (ie server error, path no found etc)
-        };
-
     private:
-        bool empty __attribute__((__deprecated__));
         Status status;
+        QString statusError;   //is status == Status::Error, this variable contains information about it
 
         int majorN;
         int minorN;

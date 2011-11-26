@@ -91,12 +91,12 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
 
         DownloaderHelper downloadHelper;
         const int status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
-        
+
         //everything went ok?
         if (status == 0)
         {
             ProjectVersion maxVersion;  //wersja zero
-            
+
             foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
             {
                 QString toMatch;
@@ -146,8 +146,8 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
                         .arg(version.text());
                 }
             }
-            
-            if (maxVersion.isEmpty() == false)
+
+            if (maxVersion.getStatus() == ProjectVersion::Status::Filled)
             {
                 const QByteArray ret = maxVersion.text().toUtf8();
                 qDebug() << "current version:" << ret;
@@ -158,28 +158,28 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
             {
                 qWarning() << "current version: could not find any matching file :(";
                 lua_pushstring(state, "none of files matched");
-            
+
                 goto error;  //go out of {} to destroy all objects
-            }        
+            }
         }
         else //problems with download
         {
             if (status == 1)
                 lua_pushstring(state, "connection problems");
-            else 
+            else
                 lua_pushstring(state, "connection killed");
-            
+
             goto error;
         }
-        
-        return 0; 
+
+        return 0;
     }
-    
+
     //calling error is out of main block of function.
     //we need to be sure that DownloaderHelper is destroyed (be leaving it's scope)
 error:
     lua_error(state);        //raise an error
-    
+
     assert(!"bug in searchForPkg, calling lua_error failed");
     return 0;                //lua_error never returns, so this return will be never called
 }
@@ -198,7 +198,7 @@ int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, Downloade
 {
     mode = m;
     type = t;
-    
+
     switch (mode)
     {
         case Check:
@@ -257,7 +257,7 @@ void DownloaderHelper::killConnections()
 void DownloaderHelper::stateChanged(int st)
 {
     if ( (ftp && st == QFtp::Unconnected) ||
-         (http && st == QHttp::Unconnected) 
+         (http && st == QHttp::Unconnected)
        )
         qDebug() << "conenction closed";
 }
@@ -267,7 +267,7 @@ void DownloaderHelper::commandFinished(int id, bool error)
 {
     assert (ftp || http || wget);
     int state = 0;
-    
+
     if (error)   //błąd?
     {
         state = 1; //ustaw status
@@ -339,9 +339,9 @@ DownloaderHelper::~DownloaderHelper()
     //remove helper from list of helpers
     HelpersSet::iterator helper = helpers.find(this);
     assert(helper != helpers.end());
-    
+
     helpers.erase(helper);
-    
+
     qDebug() << "killing downloader, closing connections";
 
     if (ftp)
@@ -405,9 +405,9 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
         if (lua_pcall(luaState, 0, LUA_MULTRET, 0) == 0)  //it's ok?
         {
             const int retValues = lua_gettop(luaState);
-            
+
             assert(retValues % 2 == 0);
-            
+
             for (int i = 0; i < retValues; i += 2)
             {
                 const QUrl url(lua_tostring(luaState, i + 2));
@@ -415,7 +415,7 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
                 QString name = lua_tostring(luaState, i + 1);
                 pV.setName(name);
                 retList[name] = pV;
-            }            
+            }
         }
         else
             qDebug() << "lua error: " << lua_tostring(luaState, -1) << "\n";
