@@ -123,6 +123,8 @@ void BuildPlugin::addBuildProcess(const QString &program, const QStringList &arg
 
         buildsInfo[buildProcess->releaseInfo] = buildProcess;
     }
+    else
+        buildProcess->getLog()->clear();  //we start new build, clear log
 
 //   buildProcess->process->start();
     QString infoMsg = SandboxProcess::runProcess(program, args, buildProcess->process);
@@ -143,6 +145,8 @@ BuildProcess* BuildPlugin::findBuildProcess(ReleaseInfo *releaseInfo)
 void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
 {
     BuildProcess *buildProcess = findBuildProcess(releaseInfo);
+    assert(buildProcess);
+
     if (buildProcess)
     {
         assert(buildProcess->process->state() == QProcess::NotRunning);  //process should be halted
@@ -155,5 +159,7 @@ void BuildPlugin::removeBuildProcess(ReleaseInfo *releaseInfo)
         //buildProcess->deleteLater();
 
         releaseInfo->buildStopped();
+
+        updateProgress(0);  //stop progress
     }
 }
