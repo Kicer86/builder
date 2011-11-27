@@ -28,7 +28,8 @@
 #include "data_containers/releaseinfo.hpp"
 
 class WgetWrapper;
-class QHttp;
+class QNetworkAccessManager;
+class QNetworkReply;
 class QFtp;
 class QFile;
 class QEventLoop;
@@ -47,7 +48,7 @@ class DownloaderHelper: public QObject
         enum Mode
         {
             Check,
-            Download,
+            Download
         };
 
         enum ServerType
@@ -66,7 +67,7 @@ class DownloaderHelper: public QObject
 
         DownloaderHelper();
         virtual ~DownloaderHelper();
-        
+
         int fetch(const QUrl&, Mode, ServerType, const QString &l = "", const Downloader * d = 0);  //return: 0 - ok, 1 - error
         void killConnections();
 
@@ -75,18 +76,20 @@ class DownloaderHelper: public QObject
     private:
         QList<DownloaderEntry> elementsList;
         QFtp *ftp;
-        QHttp *http;
+        QNetworkAccessManager *http;
         WgetWrapper *wget;
         QFile *file;
         QEventLoop *localLoop;
-        int awaitingId;
+        int awaitingId;                //for ftp connections
+        QNetworkReply *awaitingReply;  //for http connections
 
         Mode mode;
         ServerType type;
 
     private slots:
         void ftpDirectoryEntry(const QUrlInfo & i);
-        void commandFinished( int id, bool error );
+        void commandFinished( int id, bool error );  //for ftp and wget
+        void commandFinished( QNetworkReply * );     //for http
         void stateChanged(int state);
 };
 
@@ -102,7 +105,7 @@ class Downloader : public QObject
 
         ReleaseInfo::VersionList checkVersion(QByteArray script) const;
         bool download(const QUrl& url, const QString &localFile) const;
-        
+
         static void killDownloadHelpers();
 
     signals:

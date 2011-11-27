@@ -22,7 +22,9 @@
 
 #include <QDebug>
 #include <QFtp>
-#include <QHttp>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QDir>
 #include <QEventLoop>
 
@@ -32,8 +34,6 @@ extern "C"
 #include <lauxlib.h>
 #include <lualib.h>
 }
-
-LUA_API int   (lua_error) (lua_State *L) __attribute__((noreturn));
 
 #include <htmlparser.hpp>
 #include <std_macros.hpp>
@@ -83,7 +83,7 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
             if (url.host() == "sourceforge.net" || url.host() == "www.sourceforge.net")  //SF?
                 type = DownloaderHelper::SourceForge;
 
-            if (url.host() == "code.google.com" || url.host() == "code.google.com")  //CG?
+            if (url.host() == "code.google.com" || url.host() == "www.code.google.com")  //CG?
                 type = DownloaderHelper::CodeGoogle;
 
             //... jakieś inne
@@ -215,9 +215,9 @@ int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, Downloade
             }
             else if (url.scheme() == "http")
             {
-                http = new QHttp(url.host(), url.port(80));
-                connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(commandFinished(int, bool)));
-                awaitingId = http->get(url.path());             //pobierz stronę z linkami do paczek
+                http = new QNetworkAccessManager();
+                connect(http, SIGNAL(requestFinished(QNetworkReply *)), this, SLOT(commandFinished(QNetworkReply *)));
+                awaitingReply = http->get(QNetworkRequest(url));   //pobierz stronę z linkami do paczek
             }
             break;
 
@@ -256,16 +256,14 @@ void DownloaderHelper::killConnections()
 
 void DownloaderHelper::stateChanged(int st)
 {
-    if ( (ftp && st == QFtp::Unconnected) ||
-         (http && st == QHttp::Unconnected)
-       )
-        qDebug() << "conenction closed";
+    if (ftp && st == QFtp::Unconnected)
+        qDebug() << "ftp connection closed";
 }
 
 
 void DownloaderHelper::commandFinished(int id, bool error)
 {
-    assert (ftp || http || wget);
+    assert ( (ftp || wget) && http == 0);   //here we get only if ftp/wget is used
     int state = 0;
 
     if (error)   //błąd?
@@ -273,15 +271,14 @@ void DownloaderHelper::commandFinished(int id, bool error)
         state = 1; //ustaw status
         if (ftp)
             qWarning() << "ftp command finished:" << error << ftp->errorString();
-        if (http)
-            qWarning() << "http command finished:" << error << http->errorString();
-        localLoop->exit(1);
+
+        localLoop->exit(state);
     }
     else if (id == awaitingId)     //to na co czekaliśmy? (lista plików całkowicie pobrana lub zamknięcie połączenia)
     {
         switch (mode)
         {
-            case Check:           //wyszukiwanie paczki
+            case Check:            //wyszukiwanie paczki
                 if (ftp)
                 {
                     //czekalismy na dane, przyszły, wiec koncz
@@ -289,38 +286,7 @@ void DownloaderHelper::commandFinished(int id, bool error)
                 }
                 else if (http)
                 {
-                    assert(type != None);
-                    //parsuj html
-                    HtmlParser parser(http->readAll().data());
 
-                    //wyłuskaj wszystkie linki
-                    std::vector<HtmlTag*> links;
-                    switch (type)
-                    {
-                        case Index:
-                            links = parser.findAll("a[href]");
-                            break;
-
-                        case SourceForge:
-                            links = parser.findAll("a[class=name][href]");
-                            break;
-
-                        case CodeGoogle:
-                            links = parser.findAll("td[class='vt id col_0'] a");
-
-                        case None:
-                            break;
-                    }
-
-                    for (uint i = 0; i < links.size(); i++)
-                    {
-                        DownloaderEntry entry;
-                        entry.name = Strings::stripBlanks(links[i]->getText()).c_str();
-                        entry.url = Strings::stripBlanks(links[i]->getAttr("href").value).c_str();
-
-                        elementsList << entry;
-                        qDebug() << QString("found package: %1 (%2)").arg(entry.name, entry.url);
-                    }
                 }
                 break;
 
@@ -330,6 +296,59 @@ void DownloaderHelper::commandFinished(int id, bool error)
 
         //zamykamy połaczenie, zakoncz pętlę fazową ;)
         localLoop->exit(state);
+    }
+}
+
+
+void DownloaderHelper::commandFinished(QNetworkReply *reply)
+{
+    assert ( ftp ==0 && wget == 0 && http != 0);   //here we get only when http is used
+
+    if (reply->error() != QNetworkReply::NoError )
+    {
+        reply->deleteLater();
+        qWarning() << "http command finished:" << reply->errorString();
+        localLoop->exit(1);
+    }
+    else if ( reply == awaitingReply ) //this is what we are waiting for?
+    {
+        assert(type != None);
+        //parsuj html
+        HtmlParser parser(reply->readAll().data());
+
+        //wyłuskaj wszystkie linki
+        std::vector<HtmlTag*> links;
+        switch (type)
+        {
+            case Index:
+                links = parser.findAll("a[href]");
+                break;
+
+            case SourceForge:
+                links = parser.findAll("a[class=name][href]");
+                break;
+
+            case CodeGoogle:
+                links = parser.findAll("td[class='vt id col_0'] a");
+
+            case None:
+                break;
+        }
+
+        for (uint i = 0; i < links.size(); i++)
+        {
+            DownloaderEntry entry;
+            entry.name = Strings::stripBlanks(links[i]->getText()).c_str();
+            entry.url = Strings::stripBlanks(links[i]->getAttr("href").value).c_str();
+
+            elementsList << entry;
+            qDebug() << QString("found package: %1 (%2)").arg(entry.name, entry.url);
+        }
+
+        //zamykamy połaczenie, zakoncz pętlę fazową ;)
+        localLoop->exit(0);
+
+        reply->deleteLater();
     }
 }
 
