@@ -200,6 +200,7 @@ DownloaderHelper::FetchStatus DownloaderHelper::fetch(const QUrl& url, Downloade
     type = t;
 
     fetchStatus = FetchStatus::Ok;
+    errorMessage = "Ok";
 
     switch (mode)
     {
@@ -251,6 +252,7 @@ DownloaderHelper::FetchStatus DownloaderHelper::fetch(const QUrl& url, Downloade
 void DownloaderHelper::killConnections()
 {
     fetchStatus = FetchStatus::Killed;   //quit with error (unfinished jobs)
+    errorMessage = "connection killed";
     localLoop->exit(0);
 }
 
@@ -271,6 +273,7 @@ void DownloaderHelper::commandFinished(int id, bool error)
     {
         if (ftp)
             qWarning() << "ftp command finished:" << error << ftp->errorString();
+        errorMessage = ftp->errorString();
         fetchStatus = FetchStatus::Error;
         localLoop->exit(0);
     }
@@ -290,7 +293,8 @@ void DownloaderHelper::commandFinished(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError )
     {
         reply->deleteLater();
-        qWarning() << "http command finished:" << reply->errorString();
+        qWarning() << "http command finished with error:" << reply->errorString();
+        errorMessage = reply->errorString();
         fetchStatus = FetchStatus::Error;
         localLoop->exit(0);
     }

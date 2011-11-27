@@ -76,6 +76,12 @@ class DownloaderHelper: public QObject
         virtual ~DownloaderHelper();
 
         FetchStatus fetch(const QUrl&, Mode, ServerType, const QString &l = "", const Downloader * d = 0);
+
+        const QString& getErrorMessage() const
+        {
+            return errorMessage;
+        }
+
         void killConnections();
 
         const QList<DownloaderEntry> *getEntries() const;
@@ -93,6 +99,7 @@ class DownloaderHelper: public QObject
         Mode mode;
         ServerType type;
         FetchStatus fetchStatus;
+        QString errorMessage;          //if 'fetchStatus' is not ok, errorMessage contains more info
 
     private slots:
         void ftpDirectoryEntry(const QUrlInfo & i);
