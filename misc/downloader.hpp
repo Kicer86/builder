@@ -65,10 +65,17 @@ class DownloaderHelper: public QObject
             QString url;
         };
 
+        enum class FetchStatus
+        {
+            Ok,        //everything fine
+            Error,     //connection error
+            Killed     //connection stopped by user
+        };
+
         DownloaderHelper();
         virtual ~DownloaderHelper();
 
-        int fetch(const QUrl&, Mode, ServerType, const QString &l = "", const Downloader * d = 0);  //return: 0 - ok, 1 - error
+        FetchStatus fetch(const QUrl&, Mode, ServerType, const QString &l = "", const Downloader * d = 0);
         void killConnections();
 
         const QList<DownloaderEntry> *getEntries() const;
@@ -85,6 +92,7 @@ class DownloaderHelper: public QObject
 
         Mode mode;
         ServerType type;
+        FetchStatus fetchStatus;
 
     private slots:
         void ftpDirectoryEntry(const QUrlInfo & i);

@@ -90,10 +90,10 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
         }
 
         DownloaderHelper downloadHelper;
-        const int status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
+        const DownloaderHelper::FetchStatus status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
 
         //everything went ok?
-        if (status == 0)
+        if (status == DownloaderHelper::FetchStatus::Ok)
         {
             ProjectVersion maxVersion;  //wersja zero
 
@@ -164,7 +164,7 @@ static int searchForPkg(lua_State *state)  //search for package. "" is returned 
         }
         else //problems with download
         {
-            if (status == 1)
+            if (status == DownloaderHelper::FetchStatus::Error)
                 lua_pushstring(state, "connection problems");
             else
                 lua_pushstring(state, "connection killed");
@@ -194,10 +194,12 @@ DownloaderHelper::DownloaderHelper():
 }
 
 
-int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, DownloaderHelper::ServerType t, const QString& localFile, const Downloader* downloader)
+DownloaderHelper::FetchStatus DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, DownloaderHelper::ServerType t, const QString& localFile, const Downloader* downloader)
 {
     mode = m;
     type = t;
+
+    fetchStatus = FetchStatus::Ok;
 
     switch (mode)
     {
@@ -216,7 +218,7 @@ int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, Downloade
             else if (url.scheme() == "http")
             {
                 http = new QNetworkAccessManager();
-                connect(http, SIGNAL(requestFinished(QNetworkReply *)), this, SLOT(commandFinished(QNetworkReply *)));
+                connect(http, SIGNAL(finished(QNetworkReply *)), this, SLOT(commandFinished(QNetworkReply *)));
                 awaitingReply = http->get(QNetworkRequest(url));   //pobierz stronę z linkami do paczek
             }
             break;
@@ -239,17 +241,17 @@ int DownloaderHelper::fetch(const QUrl& url, DownloaderHelper::Mode m, Downloade
 
     if (ftp)
         connect(ftp, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
-    else if (http)
-        connect(http, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
 
     localLoop = new QEventLoop;  //lokalna pętla potrzebna do wyczekiwania na połączenie
-    return localLoop->exec();
+    localLoop->exec();
+    return fetchStatus;
 }
 
 
 void DownloaderHelper::killConnections()
 {
-    localLoop->exit(2);   //quit with error (unfinished jobs)
+    fetchStatus = FetchStatus::Killed;   //quit with error (unfinished jobs)
+    localLoop->exit(0);
 }
 
 
@@ -264,38 +266,19 @@ void DownloaderHelper::stateChanged(int st)
 void DownloaderHelper::commandFinished(int id, bool error)
 {
     assert ( (ftp || wget) && http == 0);   //here we get only if ftp/wget is used
-    int state = 0;
 
     if (error)   //błąd?
     {
-        state = 1; //ustaw status
         if (ftp)
             qWarning() << "ftp command finished:" << error << ftp->errorString();
-
-        localLoop->exit(state);
+        fetchStatus = FetchStatus::Error;
+        localLoop->exit(0);
     }
     else if (id == awaitingId)     //to na co czekaliśmy? (lista plików całkowicie pobrana lub zamknięcie połączenia)
     {
-        switch (mode)
-        {
-            case Check:            //wyszukiwanie paczki
-                if (ftp)
-                {
-                    //czekalismy na dane, przyszły, wiec koncz
-                    //(nic nie trzeba robić)
-                }
-                else if (http)
-                {
-
-                }
-                break;
-
-            case Download:                 //pobieranie paczki
-                break;
-        }
-
-        //zamykamy połaczenie, zakoncz pętlę fazową ;)
-        localLoop->exit(state);
+        //everything downloaded, quit
+        fetchStatus = FetchStatus::Ok;
+        localLoop->exit(0);
     }
 }
 
@@ -308,7 +291,8 @@ void DownloaderHelper::commandFinished(QNetworkReply *reply)
     {
         reply->deleteLater();
         qWarning() << "http command finished:" << reply->errorString();
-        localLoop->exit(1);
+        fetchStatus = FetchStatus::Error;
+        localLoop->exit(0);
     }
     else if ( reply == awaitingReply ) //this is what we are waiting for?
     {
@@ -346,6 +330,7 @@ void DownloaderHelper::commandFinished(QNetworkReply *reply)
         }
 
         //zamykamy połaczenie, zakoncz pętlę fazową ;)
+        fetchStatus = FetchStatus::Ok;
         localLoop->exit(0);
 
         reply->deleteLater();
@@ -447,8 +432,8 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
 bool Downloader::download(const QUrl& url, const QString &localFile) const
 {
     DownloaderHelper dH;
-    const int status = dH.fetch(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
-    return status == 0;
+    const DownloaderHelper::FetchStatus status = dH.fetch(url, DownloaderHelper::Download, DownloaderHelper::None, localFile, this);
+    return status == DownloaderHelper::FetchStatus::Ok;
 }
 
 
