@@ -227,12 +227,11 @@ void ProjectInfoWidget::refresh(int type)
             ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));
 
             const ReleaseInfo::VersionList localVersion = *releaseInfo->getLocalVersions();
-            const ReleaseInfo::VersionList currentVersion = *releaseInfo->getCurrentVersions();
-
-            QStringList list;
+            const ReleaseInfo::VersionList currentVersions = *releaseInfo->getCurrentVersions();
 
             localInfoModel->removeRows(0, localInfoModel->rowCount());
 
+            QStringList list;
             foreach(ProjectVersion pV, localVersion)
                 list << QString("%1: %2").arg(pV.getName()).arg(pV.getVersion());
 
@@ -240,20 +239,34 @@ void ProjectInfoWidget::refresh(int type)
 
             list.clear();
             remoteInfoModel->removeRows(0, remoteInfoModel->rowCount());
-            foreach(ProjectVersion pV, currentVersion)
+
+            foreach(ProjectVersion pV, currentVersions)
             {
                 QString pkgName = pV.getName();
-                QString element = QString("%1: %2").arg(pkgName).arg(pV.getVersion());
-                if (localVersion.contains(pkgName))
+                QString element;
+
+                if (pV.getStatus() != ProjectVersion::Status::Filled)   //not filled? error or empty
                 {
+                    element = QString("%1: %2").arg(pkgName).arg(pV.getErrorMsg());
+                    element = setColour(element, Qt::red);
+                }
+                else if (localVersion.contains(pkgName))
+                {
+                    element = QString("%1: %2").arg(pkgName).arg(pV.getVersion());
                     if ( localVersion[pkgName].getVersion() == pV.getVersion() )
                         element = setColour(element, Qt::darkGreen);
                     else
-                        element = setColour(element, Qt::red);
+                        element = setColour(element, Qt::darkYellow);
+                }
+                else
+                {
+                    element = QString("%1: %2").arg(pkgName).arg(pV.getVersion());
+                    element = setColour(element, Qt::darkYellow);
                 }
 
                 list << element;
             }
+
             remoteInfoModel->setStringList(list);
             ui->downloadButton->setEnabled(state == ReleaseInfo::State::Nothing &&
                                            releaseInfo->getCurrentVersions()->isEmpty() == false &&
