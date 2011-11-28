@@ -265,8 +265,13 @@ void DownloaderHelper::commandFinished(int id, bool error)
     if (error)   //błąd?
     {
         if (ftp)
+        {
             qWarning() << "ftp command finished:" << error << ftp->errorString();
-        errorMessage = ftp->errorString();
+            errorMessage = ftp->errorString();
+        }
+        else if (wget)
+            qWarning() << "wget command finished with error";
+
         fetchStatus = FetchStatus::Error;
         localLoop->exit(0);
     }
