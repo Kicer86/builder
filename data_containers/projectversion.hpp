@@ -46,6 +46,11 @@ struct ProjectVersion
         QString getVersion() const;
         QString getExtension() const;
         QString getName() const;
+        const QString& getErrorMsg() const
+        {
+            return statusError;
+        }
+
         QUrl getPkgUrl() const;
         void setPkgUrl(const QUrl& url);
         Status getStatus() const;
