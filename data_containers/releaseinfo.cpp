@@ -343,26 +343,28 @@ void ReleaseInfo::downloadPkg()
         VersionList::iterator i;
         for (i = currentVersions.begin(); i != currentVersions.end(); ++i)
         {
-            ProjectVersion &pV = i.value();
-            QString pkgName = pV.getName();
+            ProjectVersion &remoteVersion = *i;
+            QString pkgName = remoteVersion.getName();
 
-            if (localVersions.contains(pkgName) == false ||  //pobieraj dany plik tylko jesli różni się od wersji z dysku
-                    localVersions[pkgName].getVersion() != pV.getVersion())
+            if ( remoteVersion.getStatus() == ProjectVersion::Status::Filled &&  //there is any valid data?
+                (localVersions.contains(pkgName) == false ||                          //local version does not contains this file?
+                 localVersions[pkgName].getVersion() != remoteVersion.getVersion())   //or versions are different?
+               )
             {
-                QFileInfo fileInfo(pV.getPkgUrl().toString()); //potrzebne do wyodrębnienia nazwy pliku z urlu sieciowego
+                QFileInfo fileInfo(remoteVersion.getPkgUrl().toString()); //potrzebne do wyodrębnienia nazwy pliku z urlu sieciowego
                 QFileInfo localFile(releasePath() + "/src/" + fileInfo.fileName()); //plik lokalny
 
                 downloadedPkg = pkgName;       //ustaw nazwę pobieranej paczki
                 setState(State::Downloading);  //zmien status (żeby interfejs się odświeżył)
 
-                if (downloader.download(pV.getPkgUrl(), localFile.absoluteFilePath()) == true)
+                if (downloader.download(remoteVersion.getPkgUrl(), localFile.absoluteFilePath()) == true)
                 {
-                    pV.setLocalFile(localFile);
+                    remoteVersion.setLocalFile(localFile);
                     localVersions[pkgName] = currentVersions[pkgName]; //synchronizuj dane
                 }
                 else
                 {
-                    qWarning() << QString ("Could not download file: %1").arg(pV.getPkgUrl().toString());
+                    qWarning() << QString ("Could not download file: %1").arg(remoteVersion.getPkgUrl().toString());
                     break;
                 }
             }
