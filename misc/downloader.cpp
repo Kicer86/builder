@@ -52,136 +52,129 @@ static HelpersSet helpers;
 //lua "extensions"
 static int searchForPkg(lua_State *state)  //search for package. "" is returned when something went wrong
 {
-    //extra block must be used, because we may call lua_error which does not return
-    //and in this case, destructors of objects are not called (http://lua-users.org/lists/lua-l/1998-06/msg00026.html).
-    //calling lea_error is done after this block, so all object are destroyed
+    //dostaniemy 2/3 parametry od lua: url, to czego szukać, i ew parametry dodatkowe :]
+    int c = lua_gettop(state); //liczba parametrów
+    if (c < 2 || c > 3)
     {
-        //dostaniemy 2/3 parametry od lua: url, to czego szukać, i ew parametry dodatkowe :]
-        int c = lua_gettop(state); //liczba parametrów
-        if (c < 2 || c > 3)
-        {
-            qWarning() << QString("wrong number of parameters (%1) for 'searchForPkg' in LUA script").arg(c);
-            lua_pushstring(state, "");
-            return 0;
-        }
-
-        const QByteArray rawUrl(lua_tostring(state, 1));  //gdzie szukać  (url do ftp lub http)
-        QRegExp searchRegEx(lua_tostring(state, 2));      //czego szukać  (wyrażenie regularne)
-
-        bool matchExt = false;                            //dopasowywać rozszerzenia? (czasem się przydaje - odfiltruje tylko te paczki które rozumiemy)
-        if (c == 3)
-            matchExt = lua_toboolean(state, 3);
-
-        qDebug() << "fetching:" << rawUrl << "Looking for:" << searchRegEx.pattern();
-
-        //rozpoznaj (w miarę możliwości) co to za typ serwera
-        const QUrl url(rawUrl);
-        DownloaderHelper::ServerType type = DownloaderHelper::Index;
-
-        if (url.scheme() == "http")
-        {
-            if (url.host() == "sourceforge.net" || url.host() == "www.sourceforge.net")  //SF?
-                type = DownloaderHelper::SourceForge;
-
-            if (url.host() == "code.google.com" || url.host() == "www.code.google.com")  //CG?
-                type = DownloaderHelper::CodeGoogle;
-
-            //... jakieś inne
-        }
-
-        DownloaderHelper downloadHelper;
-        const DownloaderHelper::FetchStatus status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
-
-        //everything went ok?
-        if (status == DownloaderHelper::FetchStatus::Ok)
-        {
-            ProjectVersion maxVersion;  //wersja zero
-
-            foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
-            {
-                QString toMatch;
-                switch (type)
-                {
-                    case DownloaderHelper::Index:       toMatch=entry.url;  break;
-                    case DownloaderHelper::SourceForge: toMatch=entry.name; break;
-                    case DownloaderHelper::CodeGoogle:  toMatch=entry.name; break;
-                    case DownloaderHelper::None: break;
-                }
-
-                if (searchRegEx.exactMatch(toMatch))  //przeszukaj wpisy pod kątem tych, pasujących do wzorca
-                {
-                    ProjectVersion version;
-                    //sortowanie zalezy od typu serwera
-                    //w SF to nazwa linku się liczy, w przypadku indexów - link
-
-                    switch (type)
-                    {
-                        case DownloaderHelper::Index:
-                            version = ProjectVersion(entry.url);   //jeśli element spasował, to dodaj go do listy
-                            break;
-
-                        case DownloaderHelper::SourceForge:
-                            version = ProjectVersion(entry.name);
-                            version.setPkgUrl(QUrl(entry.url));    //zapisz element docelowy (w przypadku linków - href)
-                            break;
-
-                        case DownloaderHelper::CodeGoogle:
-                            version = ProjectVersion(entry.name);  //name of package is enought
-                            break;
-
-                        case DownloaderHelper::None:
-                            break;
-                    }
-
-                    //check if file extension matches
-                    if (matchExt == false || Settings::instance()->getExtList().contains(version.getExtension()))
-                    {
-                        qDebug() << QString("matched package: %1").arg(version.text());
-
-                        if (maxVersion < version)
-                            maxVersion = version;
-                    }
-                    else
-                        qDebug() << QString("%1 is matching regex in findPkg, but has unsufficient extension")
-                        .arg(version.text());
-                }
-            }
-
-            if (maxVersion.getStatus() == ProjectVersion::Status::Filled)
-            {
-                const QByteArray ret = maxVersion.text().toUtf8();
-                qDebug() << "current version:" << ret;
-                lua_pushstring(state, ret.data());
-                return 1;
-            }
-            else
-            {
-                qWarning() << "current version: could not find any matching file :(";
-                lua_pushstring(state, "none of files matched");
-
-                goto error;  //go out of {} to destroy all objects
-            }
-        }
-        else //problems with download
-        {
-            if (status == DownloaderHelper::FetchStatus::Error)
-                lua_pushstring(state, "connection problems");
-            else
-                lua_pushstring(state, "connection killed");
-
-            goto error;
-        }
-
-        return 0;
+        qWarning() << QString("wrong number of parameters (%1) for 'searchForPkg' in LUA script").arg(c);
+        lua_pushstring(state, "");
+        lua_pushinteger(state, 1);
+        return 2;
     }
 
-    //calling error is out of main block of function.
-    //we need to be sure that DownloaderHelper is destroyed (be leaving it's scope)
-error:
-    lua_error(state);        //raise an error
+    const QByteArray rawUrl(lua_tostring(state, 1));  //gdzie szukać  (url do ftp lub http)
+    QRegExp searchRegEx(lua_tostring(state, 2));      //czego szukać  (wyrażenie regularne)
 
-    assert(!"bug in searchForPkg, calling lua_error failed");
-    return 0;                //lua_error never returns, so this return will be never called
+    bool matchExt = false;                            //dopasowywać rozszerzenia? (czasem się przydaje - odfiltruje tylko te paczki które rozumiemy)
+    if (c == 3)
+        matchExt = lua_toboolean(state, 3);
+
+    qDebug() << "fetching:" << rawUrl << "Looking for:" << searchRegEx.pattern();
+
+    //rozpoznaj (w miarę możliwości) co to za typ serwera
+    const QUrl url(rawUrl);
+    DownloaderHelper::ServerType type = DownloaderHelper::Index;
+
+    if (url.scheme() == "http")
+    {
+        if (url.host() == "sourceforge.net" || url.host() == "www.sourceforge.net")  //SF?
+            type = DownloaderHelper::SourceForge;
+
+        if (url.host() == "code.google.com" || url.host() == "www.code.google.com")  //CG?
+            type = DownloaderHelper::CodeGoogle;
+
+        //... jakieś inne
+    }
+
+    DownloaderHelper downloadHelper;
+    const DownloaderHelper::FetchStatus status = downloadHelper.fetch(url, DownloaderHelper::Check, type); //wylistuj dostępne wersje
+
+    //everything went ok?
+    if (status == DownloaderHelper::FetchStatus::Ok)
+    {
+        ProjectVersion maxVersion;  //wersja zero
+
+        foreach(DownloaderHelper::DownloaderEntry entry, *(downloadHelper.getEntries()))
+        {
+            QString toMatch;
+            switch (type)
+            {
+                case DownloaderHelper::Index:       toMatch=entry.url;  break;
+                case DownloaderHelper::SourceForge: toMatch=entry.name; break;
+                case DownloaderHelper::CodeGoogle:  toMatch=entry.name; break;
+                case DownloaderHelper::None: break;
+            }
+
+            if (searchRegEx.exactMatch(toMatch))  //przeszukaj wpisy pod kątem tych, pasujących do wzorca
+            {
+                ProjectVersion version;
+                //sortowanie zalezy od typu serwera
+                //w SF to nazwa linku się liczy, w przypadku indexów - link
+
+                switch (type)
+                {
+                    case DownloaderHelper::Index:
+                        version = ProjectVersion(entry.url);   //jeśli element spasował, to dodaj go do listy
+                        break;
+
+                    case DownloaderHelper::SourceForge:
+                        version = ProjectVersion(entry.name);
+                        version.setPkgUrl(QUrl(entry.url));    //zapisz element docelowy (w przypadku linków - href)
+                        break;
+
+                    case DownloaderHelper::CodeGoogle:
+                        version = ProjectVersion(entry.name);  //name of package is enought
+                        break;
+
+                    case DownloaderHelper::None:
+                        break;
+                }
+
+                //check if file extension matches
+                if (matchExt == false || Settings::instance()->getExtList().contains(version.getExtension()))
+                {
+                    qDebug() << QString("matched package: %1").arg(version.text());
+
+                    if (maxVersion < version)
+                        maxVersion = version;
+                }
+                else
+                    qDebug() << QString("%1 is matching regex in findPkg, but has unsufficient extension")
+                                .arg(version.text());
+            }
+        }
+
+        if (maxVersion.getStatus() == ProjectVersion::Status::Filled)
+        {
+            const QByteArray ret = maxVersion.text().toUtf8();
+            qDebug() << "current version:" << ret;
+            lua_pushstring(state, ret.data());
+            lua_pushinteger(state, 0);   //ok
+            return 2;
+        }
+        else
+        {
+            qWarning() << "current version: could not find any matching file :(";
+            lua_pushstring(state, "none of files matched");
+            lua_pushinteger(state, 1);
+            return 2;
+        }
+    }
+    else //problems with download
+    {
+        if (status == DownloaderHelper::FetchStatus::Error)
+        {
+            lua_pushstring(state, "connection problems");
+            lua_pushinteger(state, 1);   //error
+        }
+        else
+        {
+            lua_pushstring(state, "connection killed");
+            lua_pushinteger(state, 1);
+        }
+
+        return 2;
+    }
 }
 
 
@@ -414,15 +407,26 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
         {
             const int retValues = lua_gettop(luaState);
 
-            assert(retValues % 2 == 0);
+            assert(retValues % 3 == 0);
 
-            for (int i = 0; i < retValues; i += 2)
+            for (int i = 0; i < retValues; i += 3)
             {
-                const QUrl url(lua_tostring(luaState, i + 2));
-                ProjectVersion pV(url);
-                QString name = lua_tostring(luaState, i + 1);
-                pV.setName(name);
-                retList[name] = pV;
+                const int status =  lua_tointeger(luaState, i + 3);   //status (0 - ok, 1 - error)
+                const char * rawUrl = lua_tostring(luaState, i + 2);  //url or error (if status == 1)
+                const QString name = lua_tostring(luaState, i + 1);
+                if ( status == 0 ) //everything fine?
+                {
+                    const QUrl url(rawUrl);
+                    ProjectVersion pV(url);
+                    pV.setName(name);
+                    retList[name] = pV;
+                }
+                else
+                {
+                    ProjectVersion pV;
+                    pV.setError(rawUrl);
+                    retList[name] = pV;  //empty version
+                }
             }
         }
         else
