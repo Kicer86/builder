@@ -50,7 +50,12 @@ struct ProjectVersion
         void setPkgUrl(const QUrl& url);
         Status getStatus() const;
         bool save(QSettings* settings) const;  //zapisz ustawienia
-        void load(QSettings *);        //wczytaj ustawienia
+        void load(QSettings *);                //wczytaj ustawienia
+        void setError(const QString &msg)      //mark 'this' as invalid and set error message
+        {
+            status = Status::Error;
+            statusError = msg;
+        }
 
         bool operator>(const ProjectVersion &pV) const;
         bool operator<(const ProjectVersion &pV) const;
