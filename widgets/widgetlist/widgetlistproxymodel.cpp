@@ -30,6 +30,7 @@ WidgetListProxyModel::WidgetListProxyModel(QObject* p): QSortFilterProxyModel(p)
 WidgetListProxyModel::~WidgetListProxyModel()
 {}
 
+
 //http://doc.qt.nokia.com/latest/qsortfilterproxymodel.html#details
 bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
@@ -47,11 +48,11 @@ bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& 
 
   //same project?
   if (lpi == rpi)
-  {    
+  {
     //build state
     bool buildLeft = lri->getBuildFlag();
     bool buildRight = rri->getBuildFlag();
-  
+
     if (buildLeft == buildRight)  //same status of build?
     {
       //check download state

@@ -22,6 +22,7 @@
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QModelIndex>
 #include <QLabel>
 
 #include "data_containers/releaseinfo.hpp"
@@ -34,9 +35,8 @@
 #include "data_containers/imagesmanager.hpp"
 #include "data_containers/projectsmanager.hpp"
 
-WidgetListItem::WidgetListItem(ReleaseInfo* pI, const QModelIndex &mI):
+WidgetListItem::WidgetListItem(ReleaseInfo* pI):
         QWidget(),
-        modelIndex(mI),
         editor(false),
         origins(0),
         releaseInfo(pI)
@@ -77,7 +77,7 @@ void WidgetListItem::construct()
     projectLayout = new QGridLayout(widget);
 
     //the same project as in prevoius element?
-    QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
+    //QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
 
     {
         //add Title
@@ -143,19 +143,6 @@ void WidgetListItem::updateValues()
 {
     assert(editor == false); //funkcja wywoływana tylko w trybie view
 
-    //the same project as in prevoius element?
-    QModelIndex prevModel = modelIndex.sibling( modelIndex.row() - 1, modelIndex.column() );
-    const bool prevIsValid = prevModel.isValid();
-
-    const int prevModelData = prevIsValid? prevModel.data(Qt::UserRole + 1).toInt() : -1;
-    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
-    const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
-
-    if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
-        title->setEnabled(true);
-    else
-        title->setDisabled(true);
-
     //print release info
     bool dwl = releaseInfo->getDownloadFlag();
     bool bld = releaseInfo->getBuildFlag();
@@ -213,5 +200,25 @@ QRect WidgetListItem::childPos(int position)
 
 void WidgetListItem::internalRepaint()
 {
-    emit rerender(modelIndex);
+    emit rerender(this);
+}
+
+
+void WidgetListItem::prePaintEvent(const QModelIndex &index)
+{
+    //Widget is going to be painted.
+    //Before it update some values according to current data of model
+
+    //the same project as in prevoius element?
+    QModelIndex prevModel = index.sibling( index.row() - 1, index.column() );
+    const bool prevIsValid = prevModel.isValid();
+
+    const int prevModelData = prevIsValid? prevModel.data(Qt::UserRole + 1).toInt() : -1;
+    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
+    const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
+
+    if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
+        title->setEnabled(true);
+    else
+        title->setDisabled(true);
 }

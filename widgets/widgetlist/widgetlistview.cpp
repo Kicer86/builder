@@ -62,7 +62,7 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
     const int id = ch.data(Qt::UserRole + 1).toInt();  //rola: void ProjectsManager::registerProject(ProjectInfo* project)
     const QString name = ch.data(Qt::DisplayRole).toString();
 
-    qDebug() << QString("inserting row in view for project %1 with id %2").arg(name).arg(id);
+    qDebug() << QString("inserting row in view for release %1 with id %2").arg(name).arg(id);
 
     if (widgets->contains(id) == false)  // nie ma takiego elementu w bazie widgetów?
     {
@@ -70,20 +70,20 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
       ReleaseInfo *releaseInfo = ProjectsManager::instance()->findRelease(id);
 
       //stwórz na jego podstawie widget
-      WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo, ch);
+      WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo);
       connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
       //connect(releaseInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
 
       //zapisz widget w bazie
       widgets->insert(id, widgetListItem);
     }
+//    dumpModel(model()->index(0,0));
   }
-  
+
   QAbstractItemView::rowsInserted(modelIndex, start, end);
   itemChanged();              //potraktuj to także jako edycję elementu -> odświeżymy widok
 
 //   qDebug() << "mark";
-//   dumpModel(model()->index(0,0));
 }
 
 
@@ -98,15 +98,15 @@ void WidgetListView::dumpModel(const QModelIndex& index) const
   if (index.isValid() == false)
     return;
 
-  qDebug() << QString("Item %1 r:%2 c:%3").arg(index.data().toString()).arg(index.row()).arg(index.column());
+  qDebug() << QString("Item %1 r:%2 c:%3 data:%4").arg(index.data().toString()).arg(index.row()).arg(index.column()).arg(index.data(Qt::UserRole + 1).toInt());
 
   //zejdź w głąb
-//   dumpModel(index.child(0, 0));    //zejdź w dół - dziecko
-//   dumpModel(index.child(index.row()+1,index.column()));   //zejdź w dół - dziecko
-//   dumpModel(index.child(index.row(), index.column()+1));  //zejdź w dół - dziecko
+  dumpModel(index.child(0, 0));    //zejdź w dół - dziecko
+  dumpModel(index.child(index.row()+1,index.column()));   //zejdź w dół - dziecko
+  dumpModel(index.child(index.row(), index.column()+1));  //zejdź w dół - dziecko
 
-//   dumpModel(index.sibling(index.row()+1, index.column())); //zejdź w dół - wiersz niżej
-//   dumpModel(index.sibling(index.row(), index.column()+1)); //zejdź w dół - kolumna w prawo
+  dumpModel(index.sibling(index.row()+1, index.column())); //zejdź w dół - wiersz niżej
+  dumpModel(index.sibling(index.row(), index.column()+1)); //zejdź w dół - kolumna w prawo
 }
 
 
