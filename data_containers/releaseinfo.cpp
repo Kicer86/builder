@@ -36,10 +36,7 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
         name(n), builds(0), total(100), done(0), projectInfo(p),
         state(State::Nothing)
 {
-//   buildProcess=new QProcess(this);
-//   buildingLog=new QTextDocument(this);
     estimator = new Estimator(this);
-
 
     qDebug() << QString("adding release %1").arg(name);
     QSettings settings;
@@ -66,12 +63,6 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
     settings.endGroup();
     settings.endGroup();
     settings.endGroup();
-
-//   connect(buildProcess, SIGNAL(readyRead()), this, SLOT(buildMessages()));
-//   connect(buildProcess, SIGNAL(finished( int, QProcess::ExitStatus )),
-//           this, SLOT(buildFinished(int, QProcess::ExitStatus)));
-//   connect(buildProcess, SIGNAL(error(QProcess::ProcessError)),
-//           this, SLOT(buildError(QProcess::ProcessError)));
 }
 
 
@@ -145,70 +136,10 @@ void ReleaseInfo::updateProgress(qint64 d, qint64 t)
 void ReleaseInfo::setState(ReleaseInfo::State st)
 {
     state = st;
-//   if (state==Nothing)
-//     updateProgress(0,100);
 
     //status has changed
-
     emit statusChanged(ChangeType::StateChange);
 }
-
-
-// void ReleaseInfo::appendTextToLog(const QString& msg)
-// {
-//   //dopisz text do logu
-//   QTextCursor cursor(buildingLog);
-//   cursor.movePosition(QTextCursor::End);
-//   cursor.insertText(msg);
-//
-//   if (state==Building)  //cmake daje %, użyjemy ich :]
-//   {
-//     QStringList lines=msg.split("\n");
-//     foreach(QString line, lines)
-//     {
-//       QRegExp cmakeRegEx("^\\[([0-9 ]{3})\\%\\].*");
-//       if (cmakeRegEx.exactMatch(line))
-//         updateProgress(cmakeRegEx.capturedTexts()[1].toInt(), 100);
-//     }
-//   }
-// }
-
-
-// void ReleaseInfo::buildMessages()
-// {
-//   //emit signal
-//   emit logWillChange();
-//
-//   //append text to log
-//   appendTextToLog(buildProcess->readAll()); //dopisz wszystko co zostało wyplute przez proces
-// }
-
-
-// void ReleaseInfo::buildFinished(int exitCode, QProcess::ExitStatus exitStatus)
-// {
-//   qDebug() << QString("Build process for %1:%2 finished with exit code: %3 and status: %4")
-//   .arg(projectInfo->getName())
-//   .arg(name)
-//   .arg(exitCode)
-//   .arg(exitStatus);
-//
-//   appendTextToLog(tr("Process finished normally with exit code: %1 and status: %2")
-//                   .arg(exitCode)
-//                   .arg(exitStatus));
-//   setState(Nothing);
-// }
-
-
-// void ReleaseInfo::buildError(QProcess::ProcessError error)
-// {
-//   qDebug() << QString("Build process for %1:%2 finished with error code: %3")
-//   .arg(projectInfo->getName())
-//   .arg(name)
-//   .arg(error);
-//
-//   appendTextToLog(tr("Process finished with error code %1").arg(error));
-//   setState(Nothing);
-// }
 
 
 int ReleaseInfo::getId() const
@@ -257,12 +188,6 @@ const ProjectInfo* ReleaseInfo::getProjectInfo() const
 {
     return projectInfo;
 }
-
-
-// QTextDocument* ReleaseInfo::getBuildMesages()
-// {
-//   return buildingLog;
-// }
 
 
 const QString& ReleaseInfo::getDownloadedPkg() const
@@ -389,128 +314,3 @@ void ReleaseInfo::buildStopped()
     if (--builds == 0)
         setState(State::Nothing);   //last build process finished? set state to nothing
 }
-
-/*
-void ReleaseInfo::buildPkg(BuildMode buildMode)
-{
-
-  if (buildProcess->state()!=QProcess::NotRunning) //chodzi?
-  {
-    //przerwij
-    buildProcess->terminate();
-    return;
-  }
-
-  //włącz progress bar
-  updateProgress(0,0);  //powinien migać czy coś
-
-  QString homePath=getenv("HOME");
-  if (Settings::instance()->getEnvType()==Settings::External)
-    homePath="/root";
-
-  QString specFile= homePath + "/rpmbuild/SPECS/" + projectInfo->getName() + ".spec";
-  QString specSrc=releasePath() + "/" + projectInfo->getName() + ".spec";
-  QString specDst=SandboxProcess::decoratePath(specFile);
-
-  qDebug() << QString("copying %1 to %2").arg(specSrc).arg(specDst);
-
-  //skopiuj plik spec do SPECS (po uzupełnieniach)
-  QFile src(specSrc);
-  QFile dst(specDst);
-  src.open(QIODevice::ReadOnly);
-  dst.open(QIODevice::WriteOnly);
-
-  while (src.atEnd()==false)
-  {
-    QString line=src.readLine();
-    QRegExp version("(.*)__VERSION_([a-zA-Z0-9_-]+)__(.*)");
-    if (version.exactMatch(line))
-    {
-      line=version.capturedTexts()[1];
-      QString pkgName=version.capturedTexts()[2];
-      if (localVersions.contains(pkgName))
-        line+=localVersions[pkgName].getVersion();
-      line+=version.capturedTexts()[3];
-    }
-
-    QRegExp extension("(.*)__EXTENSION_([a-zA-Z0-9_-]+)__(.*)");
-    if (extension.exactMatch(line))
-    {
-      line=extension.capturedTexts()[1];
-      QString pkgName=extension.capturedTexts()[2];
-      if (localVersions.contains(pkgName))
-        line+=localVersions[pkgName].getExtension();
-      line+=extension.capturedTexts()[3];
-    }
-
-    QRegExp fileurl("(.*)__FILEURL_([a-zA-Z0-9_-]+)__(.*)");
-    if (fileurl.exactMatch(line))
-    {
-      line=fileurl.capturedTexts()[1];
-      QString pkgName=fileurl.capturedTexts()[2];
-      if (localVersions.contains(pkgName))
-        line+=localVersions[pkgName].getPkgUrl().toString();
-      line+=fileurl.capturedTexts()[3];
-    }
-
-    dst.write(line.toUtf8());
-  }
-
-  src.close();
-  dst.close();
-
-  //skopiuj źródła
-  foreach(ProjectVersion pV, localVersions)
-  {
-    qDebug() << QString("copying %1 to %2").arg(pV.getLocalFile().absoluteFilePath())
-    .arg(SandboxProcess::decoratePath(homePath+"/rpmbuild/SOURCES/")+pV.getLocalFile().fileName());
-
-    QFile::copy(pV.getLocalFile().absoluteFilePath(),
-                SandboxProcess::decoratePath(
-                  homePath+
-                  "/rpmbuild/SOURCES/"+
-                  pV.getLocalFile().fileName())
-               );
-  }
-
-  //skopiuj patche
-  QDir patchesDir(releasePath()+"/patches");
-  patchesDir.cd(name);
-  QStringList patches=patchesDir.entryList( QDir::Files, QDir::Name | QDir::IgnoreCase );
-
-  foreach(QString patch, patches)
-  {
-    qDebug() << QString("copying %1 to %2").arg(releasePath()+"/patches/" + patch)
-    .arg(SandboxProcess::decoratePath(homePath+"/rpmbuild/SOURCES/"+patch));
-
-    QFile::copy(releasePath()+"/patches/" + patch,
-                SandboxProcess::decoratePath(
-                  homePath+
-                  "/rpmbuild/SOURCES/"+
-                  patch)
-               );
-  }
-
-  buildingLog->clear();
-
-  //zapuść maszynerię
-  QStringList args;
-
-  assert(buildMode==Normal || buildMode==Fast);
-
-  if (buildMode==Normal)
-    args << "-ba";
-  else if (buildMode==Fast)
-    args << "-bi" << "--short-circuit";
-
-  args << specFile;
-
-  buildProcess->setWorkingDirectory(SandboxProcess::decoratePath(""));
-  buildProcess->setProcessChannelMode(QProcess::MergedChannels);
-
-  QString infoMsg=SandboxProcess::runProcess("rpmbuild", args, buildProcess);
-  qDebug() << QString ("Starting: %1").arg(infoMsg);
-  appendTextToLog(tr("Starting: %1\n").arg(infoMsg));
-
-  setState(Building);
-}*/

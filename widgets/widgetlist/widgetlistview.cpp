@@ -72,18 +72,14 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
       //stwórz na jego podstawie widget
       WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo);
       connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
-      //connect(releaseInfo, SIGNAL(changed()), this, SLOT(itemChanged()));  //some data inside of projectInfo has changed, refresh
 
       //zapisz widget w bazie
       widgets->insert(id, widgetListItem);
     }
-//    dumpModel(model()->index(0,0));
   }
 
   QAbstractItemView::rowsInserted(modelIndex, start, end);
   itemChanged();              //potraktuj to także jako edycję elementu -> odświeżymy widok
-
-//   qDebug() << "mark";
 }
 
 
@@ -123,13 +119,6 @@ void WidgetListView::itemClicked(const QModelIndex& index)
 {
   ReleaseInfo *rI = getProjectWidget(index)->getReleaseInfo();
   emit itemClicked(rI);
-  /*
-    //first release  TODO: something smarter here
-    if (pI->getReleasesList()->size()>0)
-    {
-      ReleaseInfo *rI=pI->getReleasesList()->at(0);
-      ProjectsManager::instance()->showInfo(rI);
-    }*/
 }
 
 
@@ -142,112 +131,4 @@ void WidgetListView::itemChanged()
 void WidgetListView::itemReload(const QModelIndex& index)
 {
   dataChanged(index, index); //only this one works :/
-  //update(index);
 }
-
-
-/*
-void WidgetListView::drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const
-{
-//   QTreeView::drawBranches(painter, rect, index);
-}
-
-
-QRect WidgetListView::itemSize(const QModelIndex& index) const  //oblicz pozycję elementu (łącznie z dziećmi)
-{
-  int h=0;
-  for (int i=0;i<index.row(); i++)
-  {
-    QModelIndex s=index.sibling(i, index.column());
-    if (s.isValid())
-      h+=itemDelegate()->sizeHint(QStyleOptionViewItem(), s).height();
-  }
-  QRect ret;
-  ret.setSize(itemDelegate()->sizeHint(QStyleOptionViewItem(), index));  //wymiar
-  ret.setTopLeft(QPoint(0,h));                                         //pozycja
-  return ret;
-}
-
-
-int WidgetListView::horizontalOffset() const
-{
-  return horizontalScrollBar()->value ();
-}
-
-
-QModelIndex WidgetListView::indexAt(const QPoint& point) const
-{
-  //
-  // very sleazy temporary implementation
-  //
-  for (int i = 0; i < model()->rowCount(rootIndex()); ++i)
-  {
-    QModelIndex index = model()->index (i, 0, rootIndex());
-
-    if (visualRect(index).contains (point))
-    {
-      return index;
-    }
-  }
-
-  return QModelIndex ();
-}
-
-
-bool WidgetListView::isIndexHidden(const QModelIndex& index) const
-{
-  return false;
-}
-
-
-QModelIndex WidgetListView::moveCursor(QAbstractItemView::CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
-{
-  return QModelIndex ();
-}
-
-
-void WidgetListView::scrollTo(const QModelIndex& index, QAbstractItemView::ScrollHint hint)
-{
-
-}
-
-
-void WidgetListView::setSelection(const QRect& rect, QItemSelectionModel::SelectionFlags command)
-{
-
-}
-
-
-int WidgetListView::verticalOffset() const
-{
-  return verticalScrollBar()->value ();
-}
-
-
-QRect WidgetListView::visualRect(const QModelIndex& index) const
-{
-  QRect ret;
-
-  //sprawdź czy to parent czy dziecko (WidgetListView obsługuje tylko 2 poziomowe drzewa)
-  QModelIndex parent=index.parent();
-  qDebug() << index << parent << rootIndex();
-  if (parent.isValid() && parent!=rootIndex()) //jesteśmy dzieckiem
-  {
-    //wyznacz pozycję wewnatrz rodzica (QGroupBox)
-    WidgetDelegate *wD=dynamic_cast<WidgetDelegate *>(itemDelegate());
-    assert(wD>0);
-    ret=wD->childPos(parent, index);
-  }
-  else                  //jesteśmy rodzicem
-    ret=itemSize(index);
-
-  return ret;
-}
-
-
-QRegion WidgetListView::visualRegionForSelection(const QItemSelection& selection) const
-{
-  return QRegion();
-}
-
-*/

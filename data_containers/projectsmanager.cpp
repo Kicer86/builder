@@ -47,22 +47,14 @@ void ProjectsManager::registerProject(ProjectInfo* project)
 {
     projectsList.append(project);
 
-    //zaktualizuj model
-//   QStandardItem *projectItem=new QStandardItem(project->getName());
-
-    //zapisz id projektu
-//   projectItem->setData(project->getId());
-
     qDebug() << QString("registering project %1 with id %2").arg(project->getName()).arg(project->getId());
 
     foreach(const ReleaseInfo *release, *project->getReleasesList())
     {
         QStandardItem *releaseItem = new QStandardItem(release->getName());
         releaseItem->setData(release->getId());  //zapisz id wydania
-//     projectItem->appendRow(releaseItem);     //dopisz wydanie do projektu
         model->appendRow(releaseItem);
     }
-//   model->appendRow(projectItem);             //dopisz projekt do modelu
 }
 
 

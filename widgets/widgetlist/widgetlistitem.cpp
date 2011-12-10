@@ -58,7 +58,6 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
     construct();
     resize(w->size());
     setAutoFillBackground(true);  //tło musi być!
-//   setFocusPolicy(Qt::StrongFocus);
 }
 
 
@@ -76,14 +75,9 @@ void WidgetListItem::construct()
     widget = new QWidget();
     projectLayout = new QGridLayout(widget);
 
-    //the same project as in prevoius element?
-    //QModelIndex prevModel = modelIndex.sibling(modelIndex.column(), modelIndex.row() - 1);
-
-    {
-        //add Title
-        title = new QLabel(releaseInfo->getProjectInfo()->getName());
-        projectLayout->addWidget(title, 0, 0);
-    }
+    //add Title
+    title = new QLabel(releaseInfo->getProjectInfo()->getName());
+    projectLayout->addWidget(title, 0, 0);
 
     QLabel *releaseName = new QLabel(releaseInfo->getName());
 
@@ -184,17 +178,6 @@ void WidgetListItem::updateValues()
 ReleaseInfo* WidgetListItem::getReleaseInfo() const
 {
     return releaseInfo;
-}
-
-
-QRect WidgetListItem::childPos(int position)
-{
-    QRect ret;
-    QWidget *w ;//= projectLayout->ititemAtPosition(position, 0)->widget();  //znajdź widget w danym rzędzie 0. kolumnie (będzie to releaseName QLabel)
-    ret.setTopLeft(w->pos());                                        //pozycja etykiety
-    ret.setSize(QSize(width(), w->height()));                        //szerokość QGroupBoxa, wysokość etykiety
-
-    return ret;
 }
 
 

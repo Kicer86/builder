@@ -78,7 +78,7 @@ void WidgetDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   */
 
   QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
-//     QStyledItemDelegate::paint(painter, option, index);   //nie wyrysuje nic poza tłem, gdyż item nie zawiera zadnych danych
+
   paintItem(painter, option, index);
 }
 
@@ -99,9 +99,3 @@ QWidget* WidgetDelegate::createEditor(QWidget* p, const QStyleOptionViewItem& , 
   return editor;
 }
 
-/*
-QRect WidgetDelegate::childPos(const QModelIndex& parent, const QModelIndex& child)
-{
-  ProjectWidget *pW=getProjectWidget(parent);
-  return pW->childPos(child.row()-parent.row()-1);  //pozycja childrena względem parenta
-}*/

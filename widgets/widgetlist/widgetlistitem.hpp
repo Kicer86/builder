@@ -57,7 +57,6 @@ class WidgetListItem:public QWidget
 
     ReleaseInfo *getReleaseInfo() const;
 
-    QRect childPos(int);                          //odnajduje pozycję wydania wewnątrz QGroupBoxu
     void prePaintEvent(const QModelIndex &);
 
   signals:
