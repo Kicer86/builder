@@ -20,6 +20,7 @@
 #include <assert.h>
 
 #include <QDebug>
+#include <QContextMenuEvent>
 
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
@@ -83,9 +84,11 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
 }
 
 
-void WidgetListView::contextMenuEvent(QContextMenuEvent *)
+void WidgetListView::contextMenuEvent(QContextMenuEvent *e)
 {
-    //create menu over element of list
+    //find item at position of click
+    currentItem = indexAt(e->pos());
+
 }
 
 

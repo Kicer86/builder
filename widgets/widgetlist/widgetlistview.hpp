@@ -32,6 +32,7 @@ class WidgetListView: public QListView
 
     QHash<int, WidgetListItem *> *widgets;   //lista wydgetów które są wyświetlane na liście
     QWidget *backgroundWidget;
+    QModelIndex currentItem;                 //variable actualized in some rare ocasions like right click on item ;)
 
     QRect itemSize(const QModelIndex &index) const;
     void dumpModel(const QModelIndex &index) const;
@@ -40,6 +41,9 @@ class WidgetListView: public QListView
     void itemClicked(const QModelIndex& index);
     void itemChanged();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
     void itemReload(const QModelIndex &index);
+
+    //context menu:
+    void copyItem();
 
   protected:
     virtual void rowsAboutToBeRemoved(const QModelIndex& parent, int start, int end);
