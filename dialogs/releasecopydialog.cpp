@@ -23,5 +23,5 @@ ReleaseCopyDialog::~ReleaseCopyDialog()
 
 QString ReleaseCopyDialog::getNewName() const
 {
-    return ui->newReleaseName();
+    return ui->newReleaseName->text();
 }
