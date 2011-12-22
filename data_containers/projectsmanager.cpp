@@ -144,5 +144,8 @@ void ProjectsManager::copyRelease(const ReleaseInfo &releaseInfo)
                             << " of project " << releaseInfo.getProjectInfo()->getName();
 
     ReleaseCopyDialog dialog(releaseInfo);
-    dialog.exec();
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        //do copy operation
+    }
 }
