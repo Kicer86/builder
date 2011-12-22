@@ -23,8 +23,10 @@
 
 #include "projectinfo.hpp"
 #include "projectsmanager.hpp"
-#include "widgets/projectinfowidget.hpp"
 #include "releaseinfo.hpp"
+#include "dialogs/releasecopydialog.hpp"
+#include "widgets/projectinfowidget.hpp"
+
 
 ProjectsManager::ProjectsManager(): id(0)
 {
@@ -140,4 +142,7 @@ void ProjectsManager::copyRelease(const ReleaseInfo &releaseInfo)
 {
     debug(DebugLevel::Info) << "copying release " << releaseInfo.getName()
                             << " of project " << releaseInfo.getProjectInfo()->getName();
+
+    ReleaseCopyDialog dialog(releaseInfo);
+    dialog.exec();
 }
