@@ -19,16 +19,16 @@
 
 #include <assert.h>
 
-#include <QDebug>
 #include <QContextMenuEvent>
+#include <QDebug>
+#include <QMenu>
 
-#include "data_containers/projectinfo.hpp"
-#include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectsmanager.hpp"
 #include "widgetlistitem.hpp"
 #include "widgetdelegate.hpp"
 #include "widgetlistproxymodel.hpp"
 #include "widgetlistview.hpp"
+#include "misc/functions.hpp"
 
 
 WidgetListView::WidgetListView(QWidget* p): QListView(p)
@@ -72,7 +72,7 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
 
             //stwórz na jego podstawie widget
             WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo);
-            connect(widgetListItem, SIGNAL(rerender(QModelIndex)), this, SLOT(itemReload(QModelIndex)));  //update index which needs it
+            connect(widgetListItem, SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
 
             //zapisz widget w bazie
             widgets->insert(id, widgetListItem);
@@ -89,6 +89,9 @@ void WidgetListView::contextMenuEvent(QContextMenuEvent *e)
     //find item at position of click
     currentItem = indexAt(e->pos());
 
+    QMenu menu(tr("Release actions"), this);
+    menu.addAction(tr("Copy release"), this, SLOT(copyItem()));
+    menu.exec(e->globalPos());
 }
 
 
@@ -126,6 +129,7 @@ WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 
 void WidgetListView::itemClicked(const QModelIndex& index)
 {
+    currentItem = index;
     ReleaseInfo *rI = getProjectWidget(index)->getReleaseInfo();
     emit itemClicked(rI);
 }
@@ -137,7 +141,17 @@ void WidgetListView::itemChanged()
 }
 
 
-void WidgetListView::itemReload(const QModelIndex& index)
+void WidgetListView::itemReload(WidgetListItem *item)
 {
-    dataChanged(index, index); //only this one works :/
+    ///TODO: implement
+
+    //dataChanged(index, index); //only this one works :/
+}
+
+
+void WidgetListView::copyItem()
+{
+    ReleaseInfo *releaseInfo = getReleaseInfo(currentItem);
+
+    ProjectsManager::instance()->copyRelease(*releaseInfo);
 }

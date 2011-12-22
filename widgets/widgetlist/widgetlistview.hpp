@@ -40,7 +40,7 @@ class WidgetListView: public QListView
   private slots:
     void itemClicked(const QModelIndex& index);
     void itemChanged();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
-    void itemReload(const QModelIndex &index);
+    void itemReload(WidgetListItem *item);
 
     //context menu:
     void copyItem();
