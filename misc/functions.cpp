@@ -18,9 +18,11 @@
 
 #include <QString>
 #include <QColor>
+#include <QModelIndex>
 
 #include "builder-config.h"
 #include "functions.hpp"
+#include "data_containers/projectsmanager.hpp"
 
 
 QString sizeToString(int value)
@@ -51,4 +53,14 @@ QString setColour(const QString &str, const QColor &colour)
 QString dataPath(const QString &path)
 {
   return QString("%1/%2").arg(BUILDER_DATADIR, path);
+}
+
+
+ReleaseInfo* getReleaseInfo(const QModelIndex &index)
+{
+    const int id = index.data(Qt::UserRole + 1).toInt();  //get id
+
+    ReleaseInfo *ret = ProjectsManager::instance()->findRelease(id);
+
+    return ret;
 }

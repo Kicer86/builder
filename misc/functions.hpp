@@ -18,7 +18,12 @@
 
 class QColor;
 class QString;
+class QModelIndex;
+
+class ReleaseInfo;
 
 QString sizeToString(int value);
 QString setColour(const QString &str, const QColor &colour);
 QString dataPath(const QString &path);
+
+ReleaseInfo* getReleaseInfo(const QModelIndex &);
