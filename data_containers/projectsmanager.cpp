@@ -19,6 +19,8 @@
 #include <QDebug>
 #include <QStandardItem>
 
+#include <debug.hpp>
+
 #include "projectinfo.hpp"
 #include "projectsmanager.hpp"
 #include "widgets/projectinfowidget.hpp"
@@ -115,12 +117,12 @@ ReleaseInfo* ProjectsManager::findRelease(int releaseId)
     ReleaseInfo *ret = 0;
 
     foreach( ProjectInfo *projectInfo, projectsList )
-    foreach( ReleaseInfo *releaseInfo, *(projectInfo->getReleasesList()) )
-    if (releaseInfo->getId() == releaseId)
-    {
-        ret = releaseInfo;
-        goto quit;
-    }
+        foreach( ReleaseInfo *releaseInfo, *(projectInfo->getReleasesList()) )
+            if (releaseInfo->getId() == releaseId)
+            {
+                ret = releaseInfo;
+                goto quit;
+            }
 
 quit:
     return ret;
@@ -131,4 +133,11 @@ void ProjectsManager::destroyProjects()
 {
     while (projectsList.count() > 0)
         delete projectsList.takeFirst();
+}
+
+
+void ProjectsManager::copyRelease(const ReleaseInfo &releaseInfo)
+{
+    debug(DebugLevel::Info) << "copying release " << releaseInfo.getName()
+                            << " of project " << releaseInfo.getProjectInfo()->getName();
 }

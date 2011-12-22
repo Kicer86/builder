@@ -44,8 +44,9 @@ class ProjectsManager
     virtual ~ProjectsManager();
 
     static ProjectsManager *instance();
+
     void registerProject(ProjectInfo *project);
-    void destroyProjects();    
+    void destroyProjects();
     void setProjectInfoWidget(ProjectInfoWidget *piW);  //connect ProjectsManager with ProjectInfoWidget
     ProjectInfo *findProject(int projectId);
     ReleaseInfo *findRelease(int releaseId);
@@ -53,6 +54,8 @@ class ProjectsManager
     int getId();
     QStandardItemModel *getModel() const ;
     ReleaseInfo *getCurrentRelease() const;
+
+    void copyRelease(const ReleaseInfo &);
 };
 
 #endif // PROJECTSMANAGER_HPP
