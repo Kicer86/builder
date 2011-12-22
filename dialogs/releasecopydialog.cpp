@@ -19,3 +19,9 @@ ReleaseCopyDialog::~ReleaseCopyDialog()
 {
     delete ui;
 }
+
+
+QString ReleaseCopyDialog::getNewName() const
+{
+    return ui->newReleaseName();
+}

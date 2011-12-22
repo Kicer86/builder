@@ -13,12 +13,13 @@ class ReleaseCopyDialog : public QDialog
 {
     Q_OBJECT
 
+    Ui::ReleaseCopyDialog *ui;
+
 public:
     explicit ReleaseCopyDialog(const ReleaseInfo &, QWidget *parent = 0);
     ~ReleaseCopyDialog();
 
-private:
-    Ui::ReleaseCopyDialog *ui;
+    QString getNewName() const;
 };
 
 #endif // RELEASECOPYDIALOG_HPP
