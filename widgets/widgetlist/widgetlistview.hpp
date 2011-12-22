@@ -40,21 +40,11 @@ class WidgetListView: public QListView
     void itemClicked(const QModelIndex& index);
     void itemChanged();         //slot wywoływany przez widgetDelegate przez destrukcją edytora (celem odświeżenia modelu)
     void itemReload(const QModelIndex &index);
-    
-  protected:
-//     virtual QRect visualRect(const QModelIndex& index) const;
-//     virtual void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
-//     virtual QModelIndex indexAt(const QPoint& point) const;
-//     virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
-//     virtual int horizontalOffset() const;
-//     virtual int verticalOffset() const;
-//     virtual bool isIndexHidden(const QModelIndex& index) const;
-//     virtual void setSelection(const QRect& rect, QItemSelectionModel::SelectionFlags command);
-//     virtual QRegion visualRegionForSelection(const QItemSelection& selection) const;
 
+  protected:
     virtual void rowsAboutToBeRemoved(const QModelIndex& parent, int start, int end);
     virtual void rowsInserted(const QModelIndex& parent, int start, int end);
-//     virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
+    virtual void contextMenuEvent(QContextMenuEvent *);
 
   public:
     explicit WidgetListView(QWidget* parent = 0);
@@ -62,7 +52,7 @@ class WidgetListView: public QListView
 
     WidgetListItem* getProjectWidget(const QModelIndex& idx) const;
     const QHash< int, WidgetListItem* >* getWidgets() const;
-    
+
   signals:
     void itemClicked(ReleaseInfo *) const;
 };
