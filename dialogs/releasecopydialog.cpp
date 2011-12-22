@@ -5,8 +5,8 @@
 #include "releasecopydialog.hpp"
 #include "ui_releasecopydialog.h"
 
-ReleaseCopyDialog::ReleaseCopyDialog(const ReleaseInfo &releaseInfo, QWidget *parent):
-    QDialog(parent),
+ReleaseCopyDialog::ReleaseCopyDialog(const ReleaseInfo &releaseInfo, QWidget *p):
+    QDialog(p),
     ui(new Ui::ReleaseCopyDialog)
 {
     ui->setupUi(this);
