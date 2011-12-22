@@ -41,6 +41,7 @@ set(builder_SRCS
   data_containers/releaseinfo.cpp
   dialogs/configdialog.cpp
   dialogs/newprojectwizard.cpp 
+  dialogs/releasecopydialog.cpp
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
@@ -64,6 +65,7 @@ set(builder_MOC
   data_containers/releaseinfo.hpp
   dialogs/configdialog.hpp
   dialogs/newprojectwizard.hpp
+  dialogs/releasecopydialog.hpp
   misc/downloader.hpp
   misc/editfile.hpp
   misc/estimator.hpp
@@ -78,6 +80,7 @@ set(builder_MOC
 set(builder_UIS
   dialogs/configdialog.ui
   dialogs/newprojectwizard.ui
+  dialogs/releasecopydialog.ui
   widgets/projectinfowidget.ui
 )
 
