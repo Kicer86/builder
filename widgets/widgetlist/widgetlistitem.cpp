@@ -84,12 +84,12 @@ void WidgetListItem::construct()
     bool dwl = releaseInfo->getDownloadFlag();
     bool bld = releaseInfo->getBuildFlag();
 
-    projectLayout->addWidget(releaseName, 0, 1);
+    projectLayout->addWidget(releaseName, 1, 0);
+
+    QVBoxLayout *lineLayout = new QVBoxLayout();
 
     if (editor)
     {
-        QHBoxLayout *lineLayout = new QHBoxLayout();
-
         QCheckBox *downloadEditor = new QCheckBox(tr("download"));
         QCheckBox *buildEditor = new QCheckBox(tr("build"));
 
@@ -102,22 +102,19 @@ void WidgetListItem::construct()
         lineLayout->addWidget(downloadEditor);
         lineLayout->addWidget(buildEditor);
 
-        projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
     }
     else  //view
     {
-        QHBoxLayout *lineLayout = new QHBoxLayout();
-
         download = new QLabel();
         build = new QLabel();
 
         lineLayout->addWidget(download);
         lineLayout->addWidget(build);
 
-        projectLayout->addLayout(lineLayout, 1, 0, 1, 2);
-
         //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
     }
+
+    projectLayout->addLayout(lineLayout, 0, 1, 2, 1);
 
     pixmap = new ImageWidget(this);
     connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
@@ -201,7 +198,7 @@ void WidgetListItem::prePaintEvent(const QModelIndex &index)
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
     if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
-        title->setEnabled(true);
+        title->setVisible(true);
     else
-        title->setDisabled(true);
+        title->setHidden(true);
 }
