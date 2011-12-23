@@ -54,6 +54,8 @@ Builder::Builder()
         ProjectsManager::instance()->registerProject(projectInfo);
     }
 
+    //todo: compare data in config file with database. some projects may missing (ie removed from hdd)
+
     //menu
     QMenuBar *mainMenu=new QMenuBar();
     setMenuBar(mainMenu);
