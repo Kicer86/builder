@@ -35,7 +35,6 @@
 ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), name(n)
 {
     qDebug() << QString("creating project %1 with id %2").arg(name).arg(id);
-    QSettings setting;
 
     QDir releaseDir(Settings::instance()->getProjectsPath());
     releaseDir.cd(name);
@@ -44,7 +43,7 @@ ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), n
     foreach(QString release, releases)
     {
         ReleaseInfo *releaseInfo = new ReleaseInfo(release, this);
-        releasesList.append(releaseInfo);
+        releasesList.push_back(releaseInfo);
 
         //update itself when release has changed
         connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(releaseChanged()));
@@ -63,14 +62,14 @@ ProjectInfo::~ProjectInfo()
 {
     qDebug() << QString("destroying project %1 with %2 releases").arg(name).arg(releasesList.size());
 
-    while (releasesList.size() > 0)
-        delete releasesList.takeFirst();
+    for(size_t i = 0; i < releasesList.size(); i++)
+        delete releasesList[i];
 }
 
 
-const QList<ReleaseInfo*> *ProjectInfo::getReleasesList() const
+const std::vector<ReleaseInfo *>& ProjectInfo::getReleasesList() const
 {
-    return &releasesList;
+    return releasesList;
 }
 
 

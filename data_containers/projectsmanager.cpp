@@ -46,14 +46,13 @@ ProjectsManager* ProjectsManager::instance()
 }
 
 
-///TODO: przywrócić nazwy itemów oraz uczynić wydania childrenami (patrz widgetlist.cpp)
 void ProjectsManager::registerProject(ProjectInfo* project)
 {
     projectsList.append(project);
 
     qDebug() << QString("registering project %1 with id %2").arg(project->getName()).arg(project->getId());
 
-    foreach(const ReleaseInfo *release, *project->getReleasesList())
+    foreach(const ReleaseInfo *release, project->getReleasesList())
     {
         QStandardItem *releaseItem = new QStandardItem(release->getName());
         releaseItem->setData(release->getId());  //zapisz id wydania
@@ -119,7 +118,7 @@ ReleaseInfo* ProjectsManager::findRelease(int releaseId)
     ReleaseInfo *ret = 0;
 
     foreach( ProjectInfo *projectInfo, projectsList )
-        foreach( ReleaseInfo *releaseInfo, *(projectInfo->getReleasesList()) )
+        foreach( ReleaseInfo *releaseInfo, projectInfo->getReleasesList() )
             if (releaseInfo->getId() == releaseId)
             {
                 ret = releaseInfo;

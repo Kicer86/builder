@@ -20,6 +20,8 @@
 #ifndef PROJECTINFO_HPP
 #define PROJECTINFO_HPP
 
+#include <vector>
+
 #include <QString>
 
 #include "projectversion.hpp"
@@ -46,7 +48,7 @@ class ProjectInfo: public QObject
             AllInProgress
         };
 
-        const QList<ReleaseInfo*> *getReleasesList() const;
+        const std::vector<ReleaseInfo*>& getReleasesList() const;
         QString getName() const;
         int getId() const;
         Status getStatus() const;
@@ -54,7 +56,7 @@ class ProjectInfo: public QObject
     private:
         const int id;         //id projektu
         const QString name;
-        QList <ReleaseInfo *> releasesList;
+        std::vector<ReleaseInfo *> releasesList;
         mutable Status status;
         QTimer *timer;
 
