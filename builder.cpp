@@ -25,14 +25,14 @@
 
 Builder::Builder()
 {
-    WidgetListView *projectList=new WidgetListView(this);
+    WidgetListView *projectList = new WidgetListView(this);
     proxy=new WidgetListProxyModel(this);
 
     proxy->setSourceModel(ProjectsManager::instance()->getModel());
     projectList->setModel(proxy);
 
-    projectInfoWidget=new ProjectInfoWidget();
-    QDockWidget *projectListWidgetDock=new QDockWidget(tr("project info"));
+    projectInfoWidget = new ProjectInfoWidget();
+    QDockWidget *projectListWidgetDock = new QDockWidget(tr("project info"));
     projectListWidgetDock->setWidget(projectList);
     projectListWidgetDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
@@ -43,7 +43,7 @@ Builder::Builder()
     //scan projects dir
     QDir directory(Settings::instance()->getProjectsPath());
     qDebug() << QString("scanning %1 for projects").arg(Settings::instance()->getProjectsPath());
-    QStringList dirs=directory.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase);
+    QStringList dirs = directory.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase);
 
     setCentralWidget(projectInfoWidget);
     addDockWidget(Qt::LeftDockWidgetArea, projectListWidgetDock);
