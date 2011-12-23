@@ -17,6 +17,7 @@
 */
 
 #include <QDebug>
+#include <QDir>
 #include <QStandardItem>
 
 #include <debug.hpp>
@@ -139,12 +140,24 @@ void ProjectsManager::destroyProjects()
 
 void ProjectsManager::copyRelease(const ReleaseInfo &releaseInfo)
 {
+    const ProjectInfo *projectInfo = releaseInfo.getProjectInfo();
     debug(DebugLevel::Info) << "copying release " << releaseInfo.getName()
-                            << " of project " << releaseInfo.getProjectInfo()->getName();
+                            << " of project " << projectInfo->getName();
 
     ReleaseCopyDialog dialog(releaseInfo);
     if (dialog.exec() == QDialog::Accepted)
     {
         //do copy operation
+        const QString newName = dialog.getNewName();
+        const QString projectPath = projectInfo->getPath();
+        const QString sourceReleasePath = releaseInfo.getReleasePath();
+
+        const QDir dir(projectPath);
+        dir.mkdir(newName);
+
+        QFile::copy(sourceReleasePath + "/download.lua",
+                    projectPath + "/" + newName + "/download.lua");
+        QFile::copy(sourceReleasePath + "/" + projectInfo->getName() + ".spec",
+                    projectPath + "/" + newName + "/" + projectInfo->getName() + ".spec");
     }
 }
