@@ -73,6 +73,13 @@ const std::vector<ReleaseInfo *>& ProjectInfo::getReleasesList() const
 }
 
 
+QString ProjectInfo::getPath() const
+{
+    return QString("%1/%2").arg(Settings::instance()->getProjectsPath())
+                           .arg(name);
+}
+
+
 QString ProjectInfo::getName() const
 {
     return name;
