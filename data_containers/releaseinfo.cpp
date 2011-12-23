@@ -18,9 +18,10 @@
 
 #include <assert.h>
 
-#include <QDebug>
 #include <QSettings>
 #include <QDir>
+
+#include <debug.hpp>
 
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
@@ -38,7 +39,7 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
 {
     estimator = new Estimator(this);
 
-    qDebug() << QString("adding release %1").arg(name);
+    debug(DebugLevel::Debug) << QString("adding release %1").arg(name);
     QSettings settings;
     settings.beginGroup("Projects");
     settings.beginGroup(projectInfo->getName());
@@ -68,7 +69,7 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
 
 ReleaseInfo::~ReleaseInfo()
 {
-    qDebug() << QString("deleting release %1").arg(name);
+    debug(DebugLevel::Debug) << QString("deleting release %1").arg(name);
     QSettings settings;
     settings.beginGroup("Projects");
     settings.beginGroup(projectInfo->getName());
@@ -247,10 +248,10 @@ void ReleaseInfo::update()
             script.close();
         }
         else
-            qWarning() << QString("Could not open lua script file: %1").arg(downloadScript);
+            debug(DebugLevel::Warning) << QString("Could not open lua script file: %1").arg(downloadScript);
 
         foreach (ProjectVersion pV, currentVersions)
-            qDebug() << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
+            debug(DebugLevel::Info) << "url to new version of" << projectInfo->getName() << "is" << pV.text() << pV.getExtension() << pV.getVersion();
     }
     setState(State::Nothing);
 }
@@ -288,14 +289,14 @@ void ReleaseInfo::downloadPkg()
                 }
                 else
                 {
-                    qWarning() << QString ("Could not download file: %1").arg(remoteVersion.getPkgUrl().toString());
+                    debug(DebugLevel::Warning) << QString ("Could not download file: %1").arg(remoteVersion.getPkgUrl().toString());
                     break;
                 }
             }
         }
     }
     else
-        qWarning() << "local and current versions are the same or current version not checked";
+        debug(DebugLevel::Warning) << "local and current versions are the same or current version not checked";
 
     setState(State::Nothing);
 }
