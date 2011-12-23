@@ -25,3 +25,13 @@ void SpecConstansDialog::addConstant(const QString &name, const QString &value)
     ui->constantLayout->addWidget(nameWidget);
     ui->valueLayout->addWidget(valueWidget);
 }
+
+
+void SpecConstansDialog::exec()
+{
+    //finish list
+    ui->constantLayout->addStretch(1);
+    ui->valueLayout->addStretch(1);
+
+    QDialog::exec();
+}

@@ -19,6 +19,8 @@ public:
     ~SpecConstansDialog();
 
     void addConstant(const QString &name, const QString &value);
+
+    void exec();
 };
 
 #endif // SPECCONSTANSDIALOG_HPP
