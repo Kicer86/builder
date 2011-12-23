@@ -10,13 +10,15 @@ class SpecConstansDialog;
 class SpecConstansDialog : public QDialog
 {
     Q_OBJECT
-    
+
+
+    Ui::SpecConstansDialog *ui;
+
 public:
     explicit SpecConstansDialog(QWidget *parent = 0);
     ~SpecConstansDialog();
-    
-private:
-    Ui::SpecConstansDialog *ui;
+
+    void addConstant(const QString &name, const QString &value);
 };
 
 #endif // SPECCONSTANSDIALOG_HPP
