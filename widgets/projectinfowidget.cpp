@@ -31,7 +31,9 @@
 #include "projectinfowidget.hpp"
 #include "data_containers/editorsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
+#include "data_containers/projectversion.hpp"
 #include "data_containers/releaseinfo.hpp"
+#include "dialogs/specconstansdialog.hpp"
 #include "misc/settings.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/estimator.hpp"
@@ -341,7 +343,17 @@ void ProjectInfoWidget::specButtonPressed()
 
 void ProjectInfoWidget::specConstansButtonPressed()
 {
+    SpecConstansDialog dialog;
 
+    foreach(ProjectVersion projectVersion, *releaseInfo->getLocalVersions())
+    {
+        const QString &name = projectVersion.getName();
+        const QString url = QString("__FILEURL_%1__").arg(name);
+
+        dialog.addConstant(url, projectVersion.getPkgUrl().toString());
+    }
+
+    dialog.exec();
 }
 
 
