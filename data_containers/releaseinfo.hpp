@@ -95,7 +95,7 @@ class ReleaseInfo: public QObject
         QTextDocument *getBuildMesages();
         QString getDownloadScriptFile() const;          //zwraca scieżkę do pliku lua
         QString getSpecFile() const;
-        QString getReleasePath() const;                 //rlease path (dir)
+        QString getReleasePath() const;                 //release path (dir)
         const QString &getDownloadedPkg() const;
         const ProjectInfo *getProjectInfo() const;
         const VersionList *getLocalVersions() const;    //zwraca wskaźnik na wersję projektu na dysku

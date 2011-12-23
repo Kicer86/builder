@@ -95,9 +95,8 @@ ReleaseInfo::~ReleaseInfo()
 
 QString ReleaseInfo::releasePath() const
 {
-    return QString("%1/%2/%3").arg(Settings::instance()->getProjectsPath())
-           .arg(projectInfo->getName())
-           .arg(name);
+    return QString("%1/%2").arg(projectInfo->getPath())
+                           .arg(name);
 }
 
 
