@@ -53,6 +53,7 @@ class ProjectInfoWidget:public QWidget
     void refresh(int type);
     void editDowloadScriptButtonPressed();
     void specButtonPressed();
+    void specConstansButtonPressed();
     void showMacrosButtonPressed();
     void updateButtonPressed();
     void downloadButtonPressed();

@@ -74,12 +74,6 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     ui = new Ui_ProjectInfoForm();
     ui->setupUi(this);
 
-    //disable buttons by default
-    ui->editDowloadScriptButton->setDisabled(true);
-    ui->specButton->setDisabled(true);
-    ui->luaDebugButton->setDisabled(true);
-    ui->showMacrosButton->setDisabled(true);
-
     //fill up local and remote boxes
     localInfoModel = new QStringListModel(this);
     remoteInfoModel = new QStringListModel(this);
@@ -104,6 +98,7 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
 
     connect(ui->editDowloadScriptButton, SIGNAL(pressed()), this, SLOT(editDowloadScriptButtonPressed()));
     connect(ui->specButton, SIGNAL(pressed()), this, SLOT(specButtonPressed()));
+    connect(ui->specConstansButton, SIGNAL(pressed()), this, SLOT(specConstansButtonPressed()));
     connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
@@ -145,6 +140,7 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
     {
         ui->editDowloadScriptButton->setEnabled(true);
         ui->specButton->setEnabled(true);
+        ui->specConstansButton->setEnabled(true);
         ui->luaDebugButton->setEnabled(true);
         ui->showMacrosButton->setEnabled(true);
 
@@ -340,6 +336,12 @@ void ProjectInfoWidget::specButtonPressed()
     }
 
     EditorsManager::instance()->editFile(fileInfo.absoluteFilePath());
+}
+
+
+void ProjectInfoWidget::specConstansButtonPressed()
+{
+
 }
 
 
