@@ -45,13 +45,13 @@ struct ProjectVersion
         QString text() const;  //zwraca to, co podano jako parametr konstruktora
         QString getVersion() const;
         QString getExtension() const;
-        QString getName() const;
+        const QString& getName() const;
         const QString& getErrorMsg() const
         {
             return statusError;
         }
 
-        QUrl getPkgUrl() const;
+        const QUrl& getPkgUrl() const;
         void setPkgUrl(const QUrl& url);
         Status getStatus() const;
         bool save(QSettings* settings) const;  //zapisz ustawienia

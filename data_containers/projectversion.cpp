@@ -197,13 +197,13 @@ QString ProjectVersion::getExtension() const
 }
 
 
-QString ProjectVersion::getName() const
+const QString& ProjectVersion::getName() const
 {
     return name;
 }
 
 
-QUrl ProjectVersion::getPkgUrl() const
+const QUrl& ProjectVersion::getPkgUrl() const
 {
     return url;
 }
