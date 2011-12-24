@@ -33,7 +33,7 @@
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/projectversion.hpp"
 #include "data_containers/releaseinfo.hpp"
-#include "dialogs/specconstansdialog.hpp"
+#include "dialogs/specconstantsdialog.hpp"
 #include "misc/settings.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/estimator.hpp"
@@ -343,7 +343,7 @@ void ProjectInfoWidget::specButtonPressed()
 
 void ProjectInfoWidget::specConstansButtonPressed()
 {
-    SpecConstansDialog dialog;
+    SpecConstantsDialog dialog;
 
     foreach(ProjectVersion projectVersion, *releaseInfo->getLocalVersions())
     {

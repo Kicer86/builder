@@ -7,7 +7,7 @@ namespace Ui {
 class SpecConstansDialog;
 }
 
-class SpecConstansDialog : public QDialog
+class SpecConstantsDialog : public QDialog
 {
     Q_OBJECT
 
@@ -15,8 +15,8 @@ class SpecConstansDialog : public QDialog
     Ui::SpecConstansDialog *ui;
 
 public:
-    explicit SpecConstansDialog(QWidget *parent = 0);
-    ~SpecConstansDialog();
+    explicit SpecConstantsDialog(QWidget *parent = 0);
+    ~SpecConstantsDialog();
 
     void addConstant(const QString &name, const QString &value);
 

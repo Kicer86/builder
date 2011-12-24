@@ -43,7 +43,7 @@ set(builder_SRCS
   dialogs/newprojectwizard.cpp 
   dialogs/releasecopydialog.cpp
   dialogs/progressdialog.cpp
-  dialogs/specconstansdialog.cpp
+  dialogs/specconstantsdialog.cpp
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
@@ -69,7 +69,7 @@ set(builder_MOC
   dialogs/newprojectwizard.hpp
   dialogs/releasecopydialog.hpp
   dialogs/progressdialog.hpp
-  dialogs/specconstansdialog.hpp
+  dialogs/specconstantsdialog.hpp
   misc/downloader.hpp
   misc/editfile.hpp
   misc/estimator.hpp
@@ -86,7 +86,7 @@ set(builder_UIS
   dialogs/newprojectwizard.ui
   dialogs/releasecopydialog.ui
   dialogs/progressdialog.ui
-  dialogs/specconstansdialog.ui
+  dialogs/specconstantsdialog.ui
   widgets/projectinfowidget.ui
 )
 
