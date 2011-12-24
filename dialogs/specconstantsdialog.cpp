@@ -1,5 +1,6 @@
 
 #include <QLabel>
+#include <QScrollBar>
 
 #include "specconstantsdialog.hpp"
 #include "ui_specconstantsdialog.h"
@@ -9,7 +10,15 @@ SpecConstantsDialog::SpecConstantsDialog(QWidget *parent) :
     ui(new Ui::SpecConstansDialog)
 {
     ui->setupUi(this);
+
+    //turn on synchro between scrolareas
+    connect(ui->constansScrollArea->verticalScrollBar(), SIGNAL(valueChanged(int)),
+            ui->valuesScrollArea->verticalScrollBar(), SLOT(setValue(int)));
+
+    connect(ui->valuesScrollArea->verticalScrollBar(), SIGNAL(valueChanged(int)),
+            ui->constansScrollArea->verticalScrollBar(), SLOT(setValue(int)));
 }
+
 
 SpecConstantsDialog::~SpecConstantsDialog()
 {

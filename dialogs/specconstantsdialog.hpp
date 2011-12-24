@@ -7,10 +7,9 @@ namespace Ui {
 class SpecConstansDialog;
 }
 
-class SpecConstantsDialog : public QDialog
+class SpecConstantsDialog: public QDialog
 {
     Q_OBJECT
-
 
     Ui::SpecConstansDialog *ui;
 
