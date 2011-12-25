@@ -36,48 +36,48 @@ WidgetDelegate::~WidgetDelegate()
 
 WidgetListItem* WidgetDelegate::getProjectWidget(const QModelIndex &idx) const
 {
-  return view->getProjectWidget(idx);
+    return view->getProjectWidget(idx);
 }
 
 
 void WidgetDelegate::paintItem(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  painter->save();
-  painter->translate(option.rect.topLeft());
-  WidgetListItem *pW = getProjectWidget(index);
+    painter->save();
+    painter->translate(option.rect.topLeft());
+    WidgetListItem *pW = getProjectWidget(index);
 
-  //dostosuj szerokość widgetu do szerokości listy
-  pW->resize(option.rect.width(), pW->sizeHint().height());
+    //dostosuj szerokość widgetu do szerokości listy
+    pW->resize(option.rect.width(), pW->sizeHint().height());
 
-  //draw the widget
-  pW->prePaintEvent(index);
-  pW->render(painter, QPoint() );
+    //draw the widget
+    pW->prePaintEvent(index);
+    pW->render(painter, QPoint() );
 
-  painter->restore();
+    painter->restore();
 }
 
 
 void WidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
-  paintItem(painter, option, index);
+    paintItem(painter, option, index);
 }
 
 
 QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  const WidgetListItem *pW = getProjectWidget(index);
-  const QSize result( pW->sizeHint().width(), pW->sizeHint().height() );
+    const WidgetListItem *pW = getProjectWidget(index);
+    const QSize result( pW->sizeHint().width(), pW->sizeHint().height() );
 
-  return result;
+    return result;
 }
 
 
 QWidget* WidgetDelegate::createEditor(QWidget *p, const QStyleOptionViewItem & , const QModelIndex &index) const
 {
-  WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
-  editor->setParent(p);
-  return editor;
+    WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
+    editor->setParent(p);
+    return editor;
 }
 
