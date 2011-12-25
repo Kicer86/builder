@@ -26,7 +26,7 @@
 #include "widgetlistitem.hpp"
 #include "widgetlistview.hpp"
 
-WidgetDelegate::WidgetDelegate(WidgetListView* p): QStyledItemDelegate(p), view(p)
+WidgetDelegate::WidgetDelegate(WidgetListView *p): QStyledItemDelegate(p), view(p)
 {}
 
 
@@ -34,13 +34,13 @@ WidgetDelegate::~WidgetDelegate()
 {}
 
 
-WidgetListItem* WidgetDelegate::getProjectWidget(const QModelIndex& idx) const
+WidgetListItem* WidgetDelegate::getProjectWidget(const QModelIndex &idx) const
 {
   return view->getProjectWidget(idx);
 }
 
 
-void WidgetDelegate::paintItem(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void WidgetDelegate::paintItem(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
   painter->save();
   painter->translate(option.rect.topLeft());
@@ -57,42 +57,24 @@ void WidgetDelegate::paintItem(QPainter* painter, const QStyleOptionViewItem& op
 }
 
 
-void WidgetDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void WidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  /* option.state:
-   65537 /1       rysowany
-   73729 /8193    najechany
-   106753 / 98561 kliknięty najechany/nienajechany
-
-   10001/1
-   1            QStyle::State_Active
-       1        QStyle::State_Enabled
-
-   12001/2001
-    2           QStyle::State_MouseOver
-
-   1A101/18101
-    8           QStyle::State_Selected
-    2
-     1          QStyle::State_HasFocus
-  */
-
   QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
   paintItem(painter, option, index);
 }
 
 
-QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
+QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
 {
   const WidgetListItem *pW = getProjectWidget(index);
-  const QSize result( option.rect.width(), pW->sizeHint().height() );
+  const QSize result( pW->sizeHint().width(), pW->sizeHint().height() );
 
   return result;
 }
 
 
-QWidget* WidgetDelegate::createEditor(QWidget* p, const QStyleOptionViewItem& , const QModelIndex& index) const
+QWidget* WidgetDelegate::createEditor(QWidget *p, const QStyleOptionViewItem & , const QModelIndex &index) const
 {
   WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
   editor->setParent(p);
