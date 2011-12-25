@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
-    <height>296</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,9 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QScrollArea" name="constansScrollArea">
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -34,8 +37,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>169</width>
-            <height>217</height>
+            <width>171</width>
+            <height>206</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="constantsLayout"/>
@@ -54,6 +57,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -62,8 +68,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>168</width>
-            <height>217</height>
+            <width>170</width>
+            <height>206</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="valuesLayout"/>
