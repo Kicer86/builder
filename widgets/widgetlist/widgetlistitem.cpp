@@ -37,8 +37,8 @@
 
 WidgetListItem::WidgetListItem(ReleaseInfo* pI):
         QWidget(),
-        editor(false),
-        origins(0),
+        origins(nullptr),
+        editor(nullptr),            //edtor does not exist at this moment
         releaseInfo(pI)
 {
     construct();
@@ -51,10 +51,11 @@ WidgetListItem::WidgetListItem(ReleaseInfo* pI):
 //copying constructor -> editor widget is being created
 WidgetListItem::WidgetListItem(WidgetListItem* w):
         QWidget(),
-        editor(true),
         origins(w),
+        editor(nullptr),            //we are editor itself
         releaseInfo(w->getReleaseInfo())
 {
+    origins->editor = this;             //set as as editor of our origin
     construct();
     resize(w->size());
     setAutoFillBackground(true);  //tło musi być!
@@ -63,9 +64,13 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
 
 WidgetListItem::~WidgetListItem()
 {
-    assert(editor == (origins > 0)); //jesli origins to editor (i vice versa)
+    assert( (editor != nullptr) == (origins != nullptr) ); //jesli origins to editor (i vice versa)
+    
+    assert(origins->editor != nullptr);                    //origins has to have us
 //   if (origins)
 //     origins->updateValues();       //niech się widget wizualny zaktualizuje
+
+    origins->editor = nullptr;
 }
 
 
@@ -114,7 +119,7 @@ void WidgetListItem::construct()
         //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
     }
 
-    projectLayout->addLayout(lineLayout, 0, 1, 2, 1);
+    projectLayout->addLayout(lineLayout, 0, 1, 2, 1, Qt::AlignJustify);
 
     pixmap = new ImageWidget(this);
     connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
