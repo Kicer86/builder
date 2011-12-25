@@ -76,11 +76,14 @@ Builder::Builder()
     //restore window geometry
     QSettings settings;
     settings.beginGroup("windows");
+    
     const QByteArray windowData = settings.value("builder", QByteArray()).toByteArray();
     if (windowData.size() > 0)
         restoreGeometry(windowData);
-//    const QByteArray splitterData = settings.value("splitter", QByteArray());
-//    if (splitterData.size() > 0)
+    
+    const QByteArray mainWindowState = settings.value("state", QByteArray()).toByteArray();
+    if (mainWindowState.size() > 0)
+        restoreState(mainWindowState);
 
     settings.endGroup();
 }
@@ -91,8 +94,12 @@ Builder::~Builder()
     //save windows
     QSettings settings;
     settings.beginGroup("windows");
+    
     const QByteArray windowData = saveGeometry();
     settings.setValue("builder", windowData);
+    
+    const QByteArray mainWindowState = saveState();
+    settings.setValue("state", mainWindowState);
 
     settings.endGroup();
 
