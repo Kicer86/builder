@@ -22,6 +22,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QModelIndex>
 
 class QTimer;
 class QStandardItemModel;
@@ -48,8 +49,9 @@ class ProjectsManager
     void registerProject(ProjectInfo *project);
     void destroyProjects();
     void setProjectInfoWidget(ProjectInfoWidget *piW);  //connect ProjectsManager with ProjectInfoWidget
-    ProjectInfo *findProject(int projectId);
-    ReleaseInfo *findRelease(int releaseId);
+    ProjectInfo* findProject(int projectId) const;
+    ReleaseInfo* findRelease(int releaseId) const;
+    QModelIndex findIndex(ReleaseInfo *) const;
     void showInfo(ReleaseInfo *releaseInfo);
     int getId();
     QStandardItemModel *getModel() const ;

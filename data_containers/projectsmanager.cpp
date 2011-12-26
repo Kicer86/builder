@@ -97,7 +97,7 @@ ReleaseInfo* ProjectsManager::getCurrentRelease() const
 
 
 
-ProjectInfo* ProjectsManager::findProject(int projectId)
+ProjectInfo* ProjectsManager::findProject(int projectId) const
 {
     ProjectInfo *ret = 0;
 
@@ -114,7 +114,7 @@ ProjectInfo* ProjectsManager::findProject(int projectId)
 }
 
 
-ReleaseInfo* ProjectsManager::findRelease(int releaseId)
+ReleaseInfo* ProjectsManager::findRelease(int releaseId) const
 {
     ReleaseInfo *ret = 0;
 
@@ -128,6 +128,18 @@ ReleaseInfo* ProjectsManager::findRelease(int releaseId)
 
 quit:
     return ret;
+}
+
+
+QModelIndex ProjectsManager::findIndex(ReleaseInfo *releaseInfo) const
+{
+    QList<QStandardItem *> elements = model->takeColumn(0);   //take all items
+
+    foreach (QStandardItem *element, elements)
+    {
+        if ( element->data(Qt::UserRole + 1) == releaseInfo->getId() )  //does id match?
+            return element->index();
+    }
 }
 
 
