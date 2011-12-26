@@ -56,6 +56,11 @@ class WidgetListItem:public QWidget
     virtual ~WidgetListItem();
 
     ReleaseInfo *getReleaseInfo() const;
+    
+    const WidgetListItem *getEditor() const
+    {
+        return editor;
+    }
 
     void prePaintEvent(const QModelIndex &);
 

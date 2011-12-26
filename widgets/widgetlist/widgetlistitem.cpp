@@ -64,8 +64,6 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
 
 WidgetListItem::~WidgetListItem()
 {
-    assert( (editor != nullptr) == (origins != nullptr) ); //jesli origins to editor (i vice versa)
-    
     assert(origins->editor != nullptr);                    //origins has to have us
 //   if (origins)
 //     origins->updateValues();       //niech się widget wizualny zaktualizuje
@@ -76,6 +74,8 @@ WidgetListItem::~WidgetListItem()
 
 void WidgetListItem::construct()
 {
+    download = build = nullptr;
+    
     //setup view
     widget = new QWidget();
     projectLayout = new QGridLayout(widget);
@@ -93,7 +93,7 @@ void WidgetListItem::construct()
 
     QVBoxLayout *lineLayout = new QVBoxLayout();
 
-    if (editor)
+    if (origins != nullptr)
     {
         QCheckBox *downloadEditor = new QCheckBox(tr("download"));
         QCheckBox *buildEditor = new QCheckBox(tr("build"));
@@ -130,14 +130,14 @@ void WidgetListItem::construct()
     mainLayout->addWidget(pixmap);
     mainLayout->addWidget(widget, 1);
 
-    if (editor == false)
+    if (origins == nullptr)
         updateValues();   //zaktualizuj widok
 }
 
 
 void WidgetListItem::updateValues()
 {
-    assert(editor == false); //funkcja wywoływana tylko w trybie view
+    assert(origins == nullptr); //funkcja wywoływana tylko w trybie view
 
     //print release info
     bool dwl = releaseInfo->getDownloadFlag();
