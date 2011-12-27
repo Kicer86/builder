@@ -48,7 +48,6 @@ class ProjectsManager
     void registerProject(ProjectInfo *project);
     void destroyProjects();
     void setProjectInfoWidget(ProjectInfoWidget *piW);  //connect ProjectsManager with ProjectInfoWidget
-    QModelIndex findIndex(ReleaseInfo *) const;
     void showInfo(ReleaseInfo *releaseInfo);
     QStandardItemModel *getModel() const ;
     ReleaseInfo *getCurrentRelease() const;

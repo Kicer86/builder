@@ -91,18 +91,6 @@ ReleaseInfo* ProjectsManager::getCurrentRelease() const
 }
 
 
-QModelIndex ProjectsManager::findIndex(ReleaseInfo *releaseInfo) const
-{
-    QList<QStandardItem *> elements = model->takeColumn(0);   //take all items
-
-    foreach (QStandardItem *element, elements)
-    {
-        if ( element->data(Qt::UserRole + 1) == releaseInfo->getId() )  //does id match?
-            return element->index();
-    }
-}
-
-
 void ProjectsManager::destroyProjects()
 {
     while (projectsList.count() > 0)
