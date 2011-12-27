@@ -198,7 +198,7 @@ void WidgetListItem::prePaintEvent(const QModelIndex &index)
     QModelIndex prevModel = index.sibling( index.row() - 1, index.column() );
     const bool prevIsValid = prevModel.isValid();
 
-    const ProjectInfo *prevProjectInfo = prevIsValid? Functions::getProjectInfo(prevIsValid): nullptr;
+    const ProjectInfo *prevProjectInfo = prevIsValid? Functions::getProjectInfo(prevModel): nullptr;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
     if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
