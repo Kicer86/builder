@@ -145,16 +145,16 @@ void WidgetListItem::updateValues()
 
     download->setText(QString(tr("download: %1")
                               .arg(dwl ?
-                                   setColour(tr("yes"), Qt::darkGreen) :
-                                   setColour(tr("no"),  Qt::red)
+                                   Functions::setColour(tr("yes"), Qt::darkGreen) :
+                                   Functions::setColour(tr("no"),  Qt::red)
                                   )
                              )
                      );
 
     build->setText(QString(tr("build: %1")
                            .arg(bld ?
-                                setColour(tr("yes"), Qt::darkGreen) :
-                                setColour(tr("no"),  Qt::red)
+                                Functions::setColour(tr("yes"), Qt::darkGreen) :
+                                Functions::setColour(tr("no"),  Qt::red)
                                )
                           )
                   );
@@ -198,8 +198,7 @@ void WidgetListItem::prePaintEvent(const QModelIndex &index)
     QModelIndex prevModel = index.sibling( index.row() - 1, index.column() );
     const bool prevIsValid = prevModel.isValid();
 
-    const int prevModelData = prevIsValid? prevModel.data(Qt::UserRole + 1).toInt() : -1;
-    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
+    const ProjectInfo *prevProjectInfo = prevIsValid? Functions::getProjectInfo(prevIsValid): nullptr;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
     if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
