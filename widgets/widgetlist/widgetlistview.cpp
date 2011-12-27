@@ -43,6 +43,9 @@ WidgetListView::WidgetListView(QWidget* p): QListView(p)
 
 WidgetListView::~WidgetListView()
 {
+    //foreach(WidgetListItem *widgetListItem, widgets)
+    //    delete widgetListItem;
+
     delete widgets;
 }
 
@@ -143,9 +146,9 @@ void WidgetListView::itemChanged()
 
 void WidgetListView::itemReload(WidgetListItem *item)
 {
-    ///TODO: implement
+    QModelIndex index = ProjectsManager::instance()->findIndex(item->getReleaseInfo());
 
-    //dataChanged(index, index); //only this one works :/
+    dataChanged(index, index); //only this one works :/
 }
 
 

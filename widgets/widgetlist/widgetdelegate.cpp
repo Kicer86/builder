@@ -68,7 +68,14 @@ void WidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
 {
     const WidgetListItem *pW = getProjectWidget(index);
-    const QSize result( pW->sizeHint().width(), pW->sizeHint().height() );
+
+    const QSize viewSize( pW->sizeHint() );
+    const QSize editorSize = pW->getEditor() == nullptr? viewSize : pW->getEditor()->sizeHint();  //create also editor's size
+
+    QSize result;
+
+    result.setHeight( viewSize.height() > editorSize.height()? viewSize.height(): editorSize.height() );
+    result.setWidth( viewSize.width() > editorSize.width()? viewSize.width(): editorSize.width() );
 
     return result;
 }
@@ -78,6 +85,11 @@ QWidget* WidgetDelegate::createEditor(QWidget *p, const QStyleOptionViewItem & ,
 {
     WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
     editor->setParent(p);
+
+    QWidget *list = dynamic_cast<QWidget *>(this->parent());
+    if (list != nullptr)
+        list->update();
+
     return editor;
 }
 

@@ -20,6 +20,8 @@
 #ifndef PROJECTWIDGET_HPP
 #define PROJECTWIDGET_HPP
 
+#include <assert.h>
+
 #include <QWidget>
 
 class QGridLayout;
@@ -56,6 +58,18 @@ class WidgetListItem:public QWidget
     virtual ~WidgetListItem();
 
     ReleaseInfo *getReleaseInfo() const;
+
+    const WidgetListItem* getEditor() const
+    {
+        //assert(editor != nullptr);
+        return editor;
+    }
+
+    const WidgetListItem* getOrigins() const
+    {
+        assert(origins != nullptr);
+        return origins;
+    }
 
     void prePaintEvent(const QModelIndex &);
 
