@@ -22,8 +22,11 @@
 
 #include "builder-config.h"
 #include "functions.hpp"
-#include "data_containers/projectsmanager.hpp"
+#include "data_containers/releaseinfo.hpp"
+#include "data_containers/projectinfo.hpp"
 
+namespace Builder
+{
 
 QString sizeToString(int value)
 {
@@ -58,9 +61,19 @@ QString dataPath(const QString &path)
 
 ReleaseInfo* getReleaseInfo(const QModelIndex &index)
 {
-    const int id = index.data(Qt::UserRole + 1).toInt();  //get id
+    ReleaseInfo *result;
 
-    ReleaseInfo *ret = ProjectsManager::instance()->findRelease(id);
+    result = reinterpret_cast<ReleaseInfo *>(index.data(Qt::UserRole + 1).value<void *>());
 
-    return ret;
+    return result;
 }
+
+
+const ProjectInfo* getProjectInfo(const QModelIndex &index)
+{
+    const ProjectInfo *result = getReleaseInfo(index)->getProjectInfo();
+
+    return result;
+}
+
+} //namespace Builder
