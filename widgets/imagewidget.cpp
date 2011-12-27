@@ -23,12 +23,12 @@
 
 #include "imagewidget.hpp"
 
-ImageLayer::ImageLayer(const QString& imagePath):QPixmap(imagePath), renderer(0), path(imagePath)
+ImageLayer::ImageLayer(const QString &imagePath):QPixmap(imagePath), renderer(0), path(imagePath)
 {
 }
 
 
-ImageLayer::ImageLayer(const QString& imagePath, int w, int h):QPixmap(w, h), renderer(0), path(imagePath)
+ImageLayer::ImageLayer(const QString &imagePath, int w, int h):QPixmap(w, h), renderer(0), path(imagePath)
 {
   setAlphaChannel(*this);
   fill(Qt::transparent);
@@ -41,17 +41,17 @@ ImageLayer::ImageLayer(const QString& imagePath, int w, int h):QPixmap(w, h), re
 }
 
 
-ImageLayer::ImageLayer(const QByteArray& imageData): QPixmap(), renderer(0)
+ImageLayer::ImageLayer(const QByteArray &): QPixmap(), renderer(0)
 {
 }
 
 
-ImageLayer::ImageLayer(const QPixmap& image): QPixmap(image), renderer(0)
+ImageLayer::ImageLayer(const QPixmap &image): QPixmap(image), renderer(0)
 {
 }
 
 
-ImageLayer::ImageLayer(const ImageLayer& il): QPixmap(il), renderer(0), path(il.path)
+ImageLayer::ImageLayer(const ImageLayer &il): QPixmap(il), renderer(0), path(il.path)
 {
   if (il.renderer)
   {
@@ -99,7 +99,7 @@ int ImageWidget::addLayer(ImageLayer* layer)
 {
   if (layer->getRenderer())
     connect(layer->getRenderer(), SIGNAL(repaintNeeded()), this, /*SLOT(update()*/ SIGNAL(rerender()) );
-  
+
   if (layer->size().width()<size.width())
     size.setWidth(layer->size().width());
 
