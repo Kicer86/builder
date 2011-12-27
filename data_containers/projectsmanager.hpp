@@ -34,7 +34,6 @@ class ProjectInfo;
 
 class ProjectsManager
 {
-    int id;                                 //id nadawane kolejnym projektom
     ProjectInfoWidget *projectInfoWidget;
     QList<ProjectInfo *> projectsList;      //lista projektów. Powiązana z modelem za pomocą id
     QStandardItemModel *model;              //model zawierający projekty
@@ -49,11 +48,8 @@ class ProjectsManager
     void registerProject(ProjectInfo *project);
     void destroyProjects();
     void setProjectInfoWidget(ProjectInfoWidget *piW);  //connect ProjectsManager with ProjectInfoWidget
-    ProjectInfo* findProject(int projectId) const;
-    ReleaseInfo* findRelease(int releaseId) const;
     QModelIndex findIndex(ReleaseInfo *) const;
     void showInfo(ReleaseInfo *releaseInfo);
-    int getId();
     QStandardItemModel *getModel() const ;
     ReleaseInfo *getCurrentRelease() const;
 
