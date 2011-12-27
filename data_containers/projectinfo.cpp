@@ -32,9 +32,9 @@
 #include "projectinfo.hpp"
 
 
-ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), name(n), status(Nothing)
+ProjectInfo::ProjectInfo(QString n): name(n), status(Nothing)
 {
-    qDebug() << QString("creating project %1 with id %2").arg(name).arg(id);
+    qDebug() << QString("creating project %1").arg(name);
 
     QDir releaseDir(Settings::instance()->getProjectsPath());
     releaseDir.cd(name);
@@ -85,12 +85,6 @@ QString ProjectInfo::getPath() const
 QString ProjectInfo::getName() const
 {
     return name;
-}
-
-
-int ProjectInfo::getId() const
-{
-    return id;
 }
 
 
