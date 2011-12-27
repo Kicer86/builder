@@ -34,12 +34,12 @@ ImagesManager* ImagesManager::instance()
 }
 
 
-ImageLayer* ImagesManager::getImage(const QString& name, int res)
+ImageWidget::ImageLayerPtr ImagesManager::getImage(const QString& name, int res)
 {
   bool svg=name.right(4).toLower()==".svg";
 
   if (svg)
-    return new ImageLayer(Functions::dataPath(QString("icons/svg/%1").arg(name)), res, res);
+    return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath(QString("icons/svg/%1").arg(name)), res, res));
   else
-    return new ImageLayer(Functions::dataPath( QString("icons/%1x%1/%2").arg(res).arg(name) ));
+    return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath( QString("icons/%1x%1/%2").arg(res).arg(name) )));
 }

@@ -28,8 +28,8 @@ class ImagesManager
 
   public:
     static ImagesManager *instance();
-    
-    ImageLayer *getImage(const QString& name, int res);
+
+    ImageWidget::ImageLayerPtr getImage(const QString& name, int res);
 };
 
 #endif // ICONSMANAGER_HPP

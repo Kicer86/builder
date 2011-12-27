@@ -64,11 +64,12 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
 
 WidgetListItem::~WidgetListItem()
 {
-    assert(origins->editor != nullptr);                    //origins has to have us
+    assert(origins == nullptr || origins->editor != nullptr);      //origins has to have us
 //   if (origins)
 //     origins->updateValues();       //niech się widget wizualny zaktualizuje
 
-    origins->editor = nullptr;
+    if (origins != nullptr)
+        origins->editor = nullptr;
 }
 
 

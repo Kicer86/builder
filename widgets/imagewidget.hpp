@@ -20,6 +20,8 @@
 #ifndef IMAGEWIDGET_HPP
 #define IMAGEWIDGET_HPP
 
+#include <tr1/memory>
+
 #include <QWidget>
 #include <QPixmap>
 
@@ -39,32 +41,35 @@ class ImageLayer: public QPixmap
     ImageLayer(const ImageLayer& il );
     virtual ~ImageLayer();
 
-    QSvgRenderer *getRenderer() const;  
+    QSvgRenderer *getRenderer() const;
 };
 
 class ImageWidget : public QWidget
-{  
+{
     Q_OBJECT
-  
-    QList<ImageLayer*> layers;
+
+public:
+    typedef std::tr1::shared_ptr<ImageLayer> ImageLayerPtr;
+
+  explicit ImageWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
+  virtual ~ImageWidget();
+
+  int prependLayer(ImageLayerPtr layer);
+  int appendLayer(ImageLayerPtr layer);
+  void clear();
+
+signals:
+  //TODO: add some option to turn on automatic repaint
+  void rerender();             //signal emited when widget requires to be updated
+
+protected:
+  virtual void paintEvent(QPaintEvent* );
+
+private:
     QSize size;
-    
-    int addLayer(ImageLayer *layer);
-    
-  protected:
-    virtual void paintEvent(QPaintEvent* );
 
-  public:
-    explicit ImageWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
-    virtual ~ImageWidget();
-
-    int prependLayer(ImageLayer* layer);
-    int appendLayer(ImageLayer* layer);
-    void clear();
-    
-  signals:
-    //TODO: add some option to turn on automatic repaint
-    void rerender();             //signal emited when widget requires to be updated
+    QList<ImageLayerPtr> layers;
+    int addLayer(ImageLayerPtr layer);
 };
 
 #endif // IMAGEWIDGET_HPP

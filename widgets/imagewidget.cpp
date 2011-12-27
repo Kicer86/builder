@@ -85,7 +85,7 @@ ImageWidget::~ImageWidget()
 void ImageWidget::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
-  foreach(const ImageLayer *layer, layers)
+  foreach(const ImageLayerPtr layer, layers)
   {
     if (layer->getRenderer())
       layer->getRenderer()->render(&painter, rect());
@@ -95,7 +95,7 @@ void ImageWidget::paintEvent(QPaintEvent*)
 }
 
 
-int ImageWidget::addLayer(ImageLayer* layer)
+int ImageWidget::addLayer(ImageLayerPtr layer)
 {
   if (layer->getRenderer())
     connect(layer->getRenderer(), SIGNAL(repaintNeeded()), this, /*SLOT(update()*/ SIGNAL(rerender()) );
@@ -111,14 +111,14 @@ int ImageWidget::addLayer(ImageLayer* layer)
 }
 
 
-int ImageWidget::prependLayer(ImageLayer *layer)
+int ImageWidget::prependLayer(ImageLayerPtr layer)
 {
   layers.prepend(layer);
   return addLayer(layer);
 }
 
 
-int ImageWidget::appendLayer(ImageLayer *layer)
+int ImageWidget::appendLayer(ImageLayerPtr layer)
 {
   layers.append(layer);
   return addLayer(layer);

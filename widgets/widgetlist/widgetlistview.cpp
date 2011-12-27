@@ -19,6 +19,8 @@
 
 #include <assert.h>
 
+#include <tr1/memory>
+
 #include <QContextMenuEvent>
 #include <QDebug>
 #include <QMenu>
@@ -37,18 +39,12 @@ WidgetListView::WidgetListView(QWidget* p): QListView(p)
     WidgetDelegate *delegate = new WidgetDelegate(this);
     setItemDelegate(delegate);
 
-    widgets = new QHash<ReleaseInfo *, WidgetListItem *>;
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(const QModelIndex)));
 }
 
 
 WidgetListView::~WidgetListView()
-{
-    //foreach(WidgetListItem *widgetListItem, widgets)
-    //    delete widgetListItem;
-
-    delete widgets;
-}
+{}
 
 
 void WidgetListView::rowsAboutToBeRemoved(const QModelIndex& p, int start, int end)
@@ -69,14 +65,14 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
 
         qDebug() << QString("inserting row in view for release %1").arg(releaseInfo->getName());
 
-        if (widgets->contains(releaseInfo) == false)  // nie ma takiego elementu w bazie widgetów?
+        if (widgets.contains(releaseInfo) == false)  // nie ma takiego elementu w bazie widgetów?
         {
             //create widget widget
-            WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo);
-            connect(widgetListItem, SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
+            WidgetListItemPtr widgetListItem(new WidgetListItem(releaseInfo));
+            connect(widgetListItem.get(), SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
 
             //zapisz widget w bazie
-            widgets->insert(releaseInfo, widgetListItem);
+            widgets.insert(releaseInfo, widgetListItem);
         }
     }
 
@@ -96,9 +92,9 @@ void WidgetListView::contextMenuEvent(QContextMenuEvent *e)
 }
 
 
-const QHash<ReleaseInfo *, WidgetListItem*> *WidgetListView::getWidgets() const
+const WidgetListView::WidgetListView_List *WidgetListView::getWidgets() const
 {
-    return widgets;
+    return &widgets;
 }
 
 
@@ -123,9 +119,9 @@ WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 {
     //odnajdź ten element na liście
     ReleaseInfo *releaseInfo = Functions::getReleaseInfo(index);
-    assert(widgets->contains(releaseInfo));
+    assert(widgets.contains(releaseInfo));
 
-    return (*widgets)[releaseInfo];
+    return (widgets.value(releaseInfo)).get();
 }
 
 
