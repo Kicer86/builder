@@ -29,17 +29,17 @@ ImagesManager::ImagesManager()
 
 ImagesManager* ImagesManager::instance()
 {
-  static ImagesManager _instance;
-  return &_instance;
+    static ImagesManager _instance;
+    return &_instance;
 }
 
 
 ImageWidget::ImageLayerPtr ImagesManager::getImage(const QString& name, int res)
 {
-  bool svg=name.right(4).toLower()==".svg";
+    bool svg=name.right(4).toLower()==".svg";
 
-  if (svg)
-    return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath(QString("icons/svg/%1").arg(name)), res, res));
-  else
-    return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath( QString("icons/%1x%1/%2").arg(res).arg(name) )));
+    if (svg)
+        return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath(QString("icons/svg/%1").arg(name)), res, res));
+    else
+        return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath( QString("icons/%1x%1/%2").arg(res).arg(name) )));
 }
