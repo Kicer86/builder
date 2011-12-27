@@ -26,6 +26,7 @@
 #include "projectsmanager.hpp"
 #include "releaseinfo.hpp"
 #include "dialogs/releasecopydialog.hpp"
+#include "misc/functions.hpp"
 #include "widgets/projectinfowidget.hpp"
 
 
@@ -53,10 +54,10 @@ void ProjectsManager::registerProject(ProjectInfo* project)
 
     qDebug() << QString("registering project %1").arg(project->getName());
 
-    foreach(const ReleaseInfo *release, project->getReleasesList())
+    foreach(ReleaseInfo *release, project->getReleasesList())
     {
         QStandardItem *releaseItem = new QStandardItem(release->getName());
-        releaseItem->setData(release->getId());  //zapisz id wydania
+        Functions::setReleaseInfo(releaseItem, release);  //save pointer to ReleaseInfo to QStandardItem
         model->appendRow(releaseItem);
     }
 }
