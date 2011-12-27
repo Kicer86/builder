@@ -43,6 +43,9 @@ WidgetListView::WidgetListView(QWidget* p): QListView(p)
 
 WidgetListView::~WidgetListView()
 {
+    //foreach(WidgetListItem *widgetListItem, widgets)
+    //    delete widgetListItem;
+
     delete widgets;
 }
 

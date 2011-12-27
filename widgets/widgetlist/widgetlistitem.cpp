@@ -75,7 +75,7 @@ WidgetListItem::~WidgetListItem()
 void WidgetListItem::construct()
 {
     download = build = nullptr;
-    
+
     //setup view
     widget = new QWidget();
     projectLayout = new QGridLayout(widget);
