@@ -19,6 +19,7 @@
 class QColor;
 class QString;
 class QModelIndex;
+class QStandardItem;
 
 class ReleaseInfo;
 class ProjectInfo;
@@ -32,5 +33,7 @@ namespace Functions
 
     ReleaseInfo* getReleaseInfo(const QModelIndex &index);
     const ProjectInfo* getProjectInfo(const QModelIndex &index);
+
+    void setReleaseInfo(QStandardItem *, ReleaseInfo *);
 
 }

@@ -21,6 +21,7 @@
 #include <QString>
 #include <QColor>
 #include <QModelIndex>
+#include <QStandardItem>
 
 #include "builder-config.h"
 #include "functions.hpp"
@@ -78,6 +79,12 @@ const ProjectInfo* getProjectInfo(const QModelIndex &index)
     const ProjectInfo *result = getReleaseInfo(index)->getProjectInfo();
 
     return result;
+}
+
+
+void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo)
+{
+    item->setData(qVariantFromValue(reinterpret_cast<void *>(releaseInfo)), Qt::UserRole + 1);
 }
 
 } //namespace Functions
