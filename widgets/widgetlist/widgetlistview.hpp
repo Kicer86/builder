@@ -30,7 +30,7 @@ class WidgetListView: public QListView
 {
     Q_OBJECT
 
-    QHash<int, WidgetListItem *> *widgets;   //lista wydgetów które są wyświetlane na liście
+    QHash<ReleaseInfo *, WidgetListItem *> *widgets;   //lista wydgetów które są wyświetlane na liście
     QWidget *backgroundWidget;
     QModelIndex currentItem;                 //variable actualized in some rare ocasions like right click on item ;)
 
@@ -55,7 +55,7 @@ class WidgetListView: public QListView
     virtual ~WidgetListView();
 
     WidgetListItem* getProjectWidget(const QModelIndex& idx) const;
-    const QHash< int, WidgetListItem* >* getWidgets() const;
+    const QHash<ReleaseInfo *, WidgetListItem *> *getWidgets() const;
 
   signals:
     void itemClicked(ReleaseInfo *) const;

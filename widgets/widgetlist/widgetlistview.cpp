@@ -24,6 +24,7 @@
 #include <QMenu>
 
 #include "data_containers/projectsmanager.hpp"
+#include "data_containers/releaseinfo.hpp"
 #include "widgetlistitem.hpp"
 #include "widgetdelegate.hpp"
 #include "widgetlistproxymodel.hpp"
@@ -36,7 +37,7 @@ WidgetListView::WidgetListView(QWidget* p): QListView(p)
     WidgetDelegate *delegate = new WidgetDelegate(this);
     setItemDelegate(delegate);
 
-    widgets = new QHash<int, WidgetListItem *>;
+    widgets = new QHash<ReleaseInfo *, WidgetListItem *>;
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(const QModelIndex)));
 }
 
@@ -63,22 +64,19 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
     {
         QAbstractItemModel *m = model();
         const QModelIndex ch = m->index(i, 0);
-        const int id = ch.data(Qt::UserRole + 1).toInt();  //rola: void ProjectsManager::registerProject(ProjectInfo* project)
-        const QString name = ch.data(Qt::DisplayRole).toString();
 
-        qDebug() << QString("inserting row in view for release %1 with id %2").arg(name).arg(id);
+        ReleaseInfo *releaseInfo = Functions::getReleaseInfo(ch);
 
-        if (widgets->contains(id) == false)  // nie ma takiego elementu w bazie widgetów?
+        qDebug() << QString("inserting row in view for release %1").arg(releaseInfo->getName());
+
+        if (widgets->contains(releaseInfo) == false)  // nie ma takiego elementu w bazie widgetów?
         {
-            //znajdź release o zadanym id
-            ReleaseInfo *releaseInfo = ProjectsManager::instance()->findRelease(id);
-
-            //stwórz na jego podstawie widget
+            //create widget widget
             WidgetListItem *widgetListItem = new WidgetListItem(releaseInfo);
             connect(widgetListItem, SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
 
             //zapisz widget w bazie
-            widgets->insert(id, widgetListItem);
+            widgets->insert(releaseInfo, widgetListItem);
         }
     }
 
@@ -98,7 +96,7 @@ void WidgetListView::contextMenuEvent(QContextMenuEvent *e)
 }
 
 
-const QHash<int, WidgetListItem*> *WidgetListView::getWidgets() const
+const QHash<ReleaseInfo *, WidgetListItem*> *WidgetListView::getWidgets() const
 {
     return widgets;
 }
@@ -124,9 +122,10 @@ void WidgetListView::dumpModel(const QModelIndex& index) const
 WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 {
     //odnajdź ten element na liście
-    int id = index.data(Qt::UserRole + 1).toInt();
-    assert(widgets->contains(id));
-    return (*widgets)[id];
+    ReleaseInfo *releaseInfo = Functions::getReleaseInfo(index);
+    assert(widgets->contains(releaseInfo));
+
+    return (*widgets)[releaseInfo];
 }
 
 
@@ -146,9 +145,9 @@ void WidgetListView::itemChanged()
 
 void WidgetListView::itemReload(WidgetListItem *item)
 {
-    QModelIndex index = ProjectsManager::instance()->findIndex(item->getReleaseInfo());
+   // QModelIndex index = ProjectsManager::instance()->findIndex(item->getReleaseInfo());
 
-    dataChanged(index, index); //only this one works :/
+   // dataChanged(index, index); //only this one works :/
 }
 
 
