@@ -76,11 +76,11 @@ Builder::Builder()
     //restore window geometry
     QSettings settings;
     settings.beginGroup("windows");
-    
+
     const QByteArray windowData = settings.value("builder", QByteArray()).toByteArray();
     if (windowData.size() > 0)
         restoreGeometry(windowData);
-    
+
     const QByteArray mainWindowState = settings.value("state", QByteArray()).toByteArray();
     if (mainWindowState.size() > 0)
         restoreState(mainWindowState);
@@ -94,10 +94,10 @@ Builder::~Builder()
     //save windows
     QSettings settings;
     settings.beginGroup("windows");
-    
+
     const QByteArray windowData = saveGeometry();
     settings.setValue("builder", windowData);
-    
+
     const QByteArray mainWindowState = saveState();
     settings.setValue("state", mainWindowState);
 
@@ -110,7 +110,7 @@ Builder::~Builder()
 
 void Builder::loadPlugins()
 {
-    QDir pluginsDir(dataPath("plugins"));
+    QDir pluginsDir(Functions::dataPath("plugins"));
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));

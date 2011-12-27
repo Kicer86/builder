@@ -154,7 +154,7 @@ void WidgetListView::itemReload(WidgetListItem *item)
 
 void WidgetListView::copyItem()
 {
-    ReleaseInfo *releaseInfo = getReleaseInfo(currentItem);
+    ReleaseInfo *releaseInfo = Functions::getReleaseInfo(currentItem);
 
     ProjectsManager::instance()->copyRelease(*releaseInfo);
 }

@@ -23,7 +23,7 @@ class QModelIndex;
 class ReleaseInfo;
 class ProjectInfo;
 
-namespace Builder
+namespace Functions
 {
 
     QString sizeToString(int value);
@@ -31,6 +31,6 @@ namespace Builder
     QString dataPath(const QString &path);
 
     ReleaseInfo* getReleaseInfo(const QModelIndex &index);
-    ProjectInfo* getProjectInfo(const QModelIndex &index);
+    const ProjectInfo* getProjectInfo(const QModelIndex &index);
 
 }

@@ -39,7 +39,7 @@ ImageLayer* ImagesManager::getImage(const QString& name, int res)
   bool svg=name.right(4).toLower()==".svg";
 
   if (svg)
-    return new ImageLayer(dataPath(QString("icons/svg/%1").arg(name)), res, res);
+    return new ImageLayer(Functions::dataPath(QString("icons/svg/%1").arg(name)), res, res);
   else
-    return new ImageLayer(dataPath( QString("icons/%1x%1/%2").arg(res).arg(name) ));
+    return new ImageLayer(Functions::dataPath( QString("icons/%1x%1/%2").arg(res).arg(name) ));
 }

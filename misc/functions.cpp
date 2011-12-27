@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <assert.h>
+
 #include <QString>
 #include <QColor>
 #include <QModelIndex>
@@ -25,7 +27,7 @@
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
 
-namespace Builder
+namespace Functions
 {
 
 QString sizeToString(int value)
@@ -78,4 +80,4 @@ const ProjectInfo* getProjectInfo(const QModelIndex &index)
     return result;
 }
 
-} //namespace Builder
+} //namespace Functions

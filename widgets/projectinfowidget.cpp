@@ -248,20 +248,20 @@ void ProjectInfoWidget::refresh(int type)
                 if (pV.getStatus() != ProjectVersion::Status::Filled)   //not filled? error or empty
                 {
                     element = QString("%1: %2").arg(pkgName).arg(pV.getErrorMsg());
-                    element = setColour(element, Qt::red);
+                    element = Functions::setColour(element, Qt::red);
                 }
                 else if (localVersion.contains(pkgName))
                 {
                     element = QString("%1: %2").arg(pkgName).arg(pV.getVersion());
                     if ( localVersion[pkgName].getVersion() == pV.getVersion() )
-                        element = setColour(element, Qt::darkGreen);
+                        element = Functions::setColour(element, Qt::darkGreen);
                     else
-                        element = setColour(element, Qt::darkYellow);
+                        element = Functions::setColour(element, Qt::darkYellow);
                 }
                 else
                 {
                     element = QString("%1: %2").arg(pkgName).arg(pV.getVersion());
-                    element = setColour(element, Qt::darkYellow);
+                    element = Functions::setColour(element, Qt::darkYellow);
                 }
 
                 list << element;
@@ -306,10 +306,10 @@ void ProjectInfoWidget::specButtonPressed()
     if (fileInfo.exists() == false || fileInfo.size() == 0) //spec jeszcze nie istnieje? użyj tamplate
     {
         qDebug() << QString("preparing template for spec file (%1 -> %2)")
-        .arg(dataPath("spec_template"), fileInfo.absoluteFilePath() );
+                    .arg(Functions::dataPath("spec_template"), fileInfo.absoluteFilePath() );
 
         //przygotuj spec pod bieżący projekt
-        QFile src(dataPath("spec_template"));
+        QFile src(Functions::dataPath("spec_template"));
         QFile dst(fileInfo.absoluteFilePath());
         src.open(QIODevice::ReadOnly);
         dst.open(QIODevice::WriteOnly);
