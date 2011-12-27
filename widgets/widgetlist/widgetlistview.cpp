@@ -143,7 +143,7 @@ void WidgetListView::itemChanged()
 }
 
 
-void WidgetListView::itemReload(WidgetListItem *item)
+void WidgetListView::itemReload(WidgetListItem *)
 {
    // QModelIndex index = ProjectsManager::instance()->findIndex(item->getReleaseInfo());
 
