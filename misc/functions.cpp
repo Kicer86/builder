@@ -61,6 +61,8 @@ QString dataPath(const QString &path)
 
 ReleaseInfo* getReleaseInfo(const QModelIndex &index)
 {
+    assert(index.isValid());
+
     ReleaseInfo *result;
 
     result = reinterpret_cast<ReleaseInfo *>(index.data(Qt::UserRole + 1).value<void *>());
