@@ -35,8 +35,8 @@ class WidgetListItem:public QWidget
     Q_OBJECT
 
     QWidget *widget;
-    const bool editor;                         //widget moze trwać w jednym z dwóch stanów: edytor i nieedytor ;)
-    WidgetListItem *origins;                   //wskaźnik na widget który jest edytowany
+    WidgetListItem *const origins;                   //wskaźnik na widget który jest edytowany
+    const WidgetListItem *editor;                    //pointer to editor (if exists)
     QLabel *download, *build;
     QLabel *title;
     ImageWidget *pixmap;
@@ -51,8 +51,8 @@ class WidgetListItem:public QWidget
     void internalRepaint();
 
   public:
-    WidgetListItem(ReleaseInfo* pI);
-    WidgetListItem(WidgetListItem* w);
+    WidgetListItem(ReleaseInfo *pI);
+    WidgetListItem(WidgetListItem *w);
     virtual ~WidgetListItem();
 
     ReleaseInfo *getReleaseInfo() const;
