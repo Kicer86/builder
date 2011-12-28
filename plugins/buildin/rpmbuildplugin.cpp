@@ -47,16 +47,31 @@ RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
     log = new QPlainTextEdit;
     buildButton = new QPushButton(tr("Build"));
     fastBuildButton = new QPushButton(tr("Fast build"));
+
+    editSpecButton = new QPushButton(tr("Edit spec file"));
+    showMacrosButton = new QPushButton(tr("Show Rpm macros"));
+    showConstantsButton = new QPushButton(tr("Show spec's constants"));
+
     progressBar = new QProgressBar;
 
+    //1st column - build buttons
     buttons->addWidget(buildButton, 0, 0);
-    buttons->addWidget(fastBuildButton, 0, 1);
-    buttons->addWidget(progressBar, 1, 0, 1, 2);
+    buttons->addWidget(fastBuildButton, 1, 0);
+
+    //2nd column - spacer
+    buttons->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, 1);
+
+
+    //3rd and 4th columns - editing
+    buttons->addWidget(editSpecButton, 0, 2);
+    buttons->addWidget(showMacrosButton, 0, 3);
+    buttons->addWidget(showConstantsButton, 1, 2, 1, 2);
+
+    //3rd row - progress bar
+    buttons->addWidget(progressBar, 2, 0, 1, 4);
 
     connect(buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
     connect(fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
-
-
 }
 
 

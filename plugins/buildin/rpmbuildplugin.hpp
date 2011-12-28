@@ -48,6 +48,9 @@ class RpmBuildPlugin: public BuildPlugin
         QPlainTextEdit *log;
         QPushButton  *buildButton;
         QPushButton  *fastBuildButton;
+        QPushButton  *editSpecButton;
+        QPushButton  *showMacrosButton;
+        QPushButton  *showConstantsButton;
         QProgressBar *progressBar;
 
         void build(Type);
