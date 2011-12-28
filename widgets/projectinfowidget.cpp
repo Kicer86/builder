@@ -98,12 +98,12 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     //progress bar
     ui->progressBar->setDisabled(true);
 
-    connect(ui->editDowloadScriptButton, SIGNAL(pressed()), this, SLOT(editDowloadScriptButtonPressed()));
-    connect(ui->specButton, SIGNAL(pressed()), this, SLOT(specButtonPressed()));
-    connect(ui->specConstansButton, SIGNAL(pressed()), this, SLOT(specConstansButtonPressed()));
-    connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
-    connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
-    connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
+    connect(ui->editDowloadScriptButton, SIGNAL(clicked()), this, SLOT(editDowloadScriptButtonPressed()));
+    connect(ui->specButton, SIGNAL(clicked()), this, SLOT(specButtonPressed()));
+    connect(ui->specConstansButton, SIGNAL(clicked()), this, SLOT(specConstansButtonPressed()));
+    connect(ui->showMacrosButton, SIGNAL(clicked()), this, SLOT(showMacrosButtonPressed()));
+    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateButtonPressed()));
+    connect(ui->downloadButton, SIGNAL(clicked()), this, SLOT(downloadButtonPressed()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 //    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 }
