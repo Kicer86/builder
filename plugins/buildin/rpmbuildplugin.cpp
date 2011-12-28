@@ -28,6 +28,7 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QTemporaryFile>
+#include <QSettings>
 
 #include <debug.hpp>
 
@@ -291,7 +292,18 @@ void RpmBuildPlugin::specButtonPressed()
 void RpmBuildPlugin::specConstantsButtonPressed()
 {
     SpecConstantsDialog dialog;
+
     ReleaseInfo *const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
+
+    //restore dialog's dimenstion
+    QSettings settings;
+    settings.beginGroup("Projects");
+    settings.beginGroup(releaseInfo->getProjectInfo()->getName());
+    settings.beginGroup(releaseInfo->getName());
+
+    QByteArray dialogData = settings.value("Constants dialog").toByteArray();
+    if (dialogData.size() > 0)
+        dialog.restoreGeometry(dialogData);
 
     foreach(ProjectVersion projectVersion, *releaseInfo->getLocalVersions())
     {
@@ -303,9 +315,17 @@ void RpmBuildPlugin::specConstantsButtonPressed()
         const QString version = QString("__VERSION_%1__").arg(name);
 
         dialog.addConstant(version, projectVersion.getVersion());
+
+        dialog.addSeparator();
     }
 
     dialog.exec();
+
+    //save dialog dimension
+    settings.setValue("Constants dialog", dialog.saveGeometry());
+    settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
 }
 
 
