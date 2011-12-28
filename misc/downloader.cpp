@@ -438,6 +438,8 @@ ReleaseInfo::VersionList Downloader::checkVersion(QByteArray script) const
             qDebug() << "lua error: " << lua_tostring(luaState, -1) << "\n";
     }
 
+    lua_close(luaState);
+
     return retList;
 }
 
