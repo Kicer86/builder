@@ -52,9 +52,7 @@ class ProjectInfoWidget:public QWidget
   private slots:
     void refresh(int type);
     void editDowloadScriptButtonPressed();
-    void specButtonPressed();
-    void specConstantsButtonPressed();
-    void showMacrosButtonPressed();
+
     void updateButtonPressed();
     void downloadButtonPressed();
 //    void logWillChange();

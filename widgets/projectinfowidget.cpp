@@ -24,7 +24,6 @@
 #include <QListView>
 #include <QScrollBar>
 #include <QDebug>
-#include <QTemporaryFile>
 
 #include <std_macros.hpp>
 
@@ -33,7 +32,6 @@
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/projectversion.hpp"
 #include "data_containers/releaseinfo.hpp"
-#include "dialogs/specconstantsdialog.hpp"
 #include "misc/settings.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/estimator.hpp"
@@ -99,9 +97,6 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     ui->progressBar->setDisabled(true);
 
     connect(ui->editDowloadScriptButton, SIGNAL(clicked()), this, SLOT(editDowloadScriptButtonPressed()));
-    connect(ui->specButton, SIGNAL(clicked()), this, SLOT(specButtonPressed()));
-    connect(ui->specConstansButton, SIGNAL(clicked()), this, SLOT(specConstantsButtonPressed()));
-    connect(ui->showMacrosButton, SIGNAL(clicked()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(clicked()), this, SLOT(downloadButtonPressed()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
@@ -141,10 +136,7 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
     else  //pierwszy projekt
     {
         ui->editDowloadScriptButton->setEnabled(true);
-        ui->specButton->setEnabled(true);
-        ui->specConstansButton->setEnabled(true);
         ui->luaDebugButton->setEnabled(true);
-        ui->showMacrosButton->setEnabled(true);
 
         ui->updateButton->setEnabled(true);
         ui->downloadButton->setEnabled(true);
@@ -295,88 +287,6 @@ void ProjectInfoWidget::refresh(int type)
 void ProjectInfoWidget::editDowloadScriptButtonPressed()
 {
     EditorsManager::instance()->editFile(releaseInfo->getDownloadScriptFile());
-}
-
-
-void ProjectInfoWidget::specButtonPressed()
-{
-    QFileInfo fileInfo(releaseInfo->getSpecFile());
-    if (fileInfo.exists() == false || fileInfo.size() == 0) //spec jeszcze nie istnieje? użyj tamplate
-    {
-        qDebug() << QString("preparing template for spec file (%1 -> %2)")
-                    .arg(Functions::dataPath("spec_template"), fileInfo.absoluteFilePath() );
-
-        //przygotuj spec pod bieżący projekt
-        QFile src(Functions::dataPath("spec_template"));
-        QFile dst(fileInfo.absoluteFilePath());
-        src.open(QIODevice::ReadOnly);
-        dst.open(QIODevice::WriteOnly);
-
-        QString projName = releaseInfo->getProjectInfo()->getName();
-
-        while (src.atEnd() == false)
-        {
-            QString line = src.readLine();
-
-            QRegExp name("Name:.*$");
-            if (name.exactMatch(line))       //uzupełnij nazwę projektu
-                line = QString("Name:           %1\n").arg(projName);
-
-            QRegExp mainSource("Source0:.*$");
-            if (mainSource.exactMatch(line)) //uzupełnij główne źródło
-                line = QString("Source0:        __FILEURL_%1__\n").arg(projName);
-
-            QRegExp version("%define         version.*$");
-            if (version.exactMatch(line))    //wersja programu
-                line = QString("%define         version __VERSION_%1__\n").arg(projName);
-
-            dst.write(line.toUtf8());
-        }
-
-        src.close();
-        dst.close();
-    }
-
-    EditorsManager::instance()->editFile(fileInfo.absoluteFilePath());
-}
-
-
-void ProjectInfoWidget::specConstantsButtonPressed()
-{
-    SpecConstantsDialog dialog;
-
-    foreach(ProjectVersion projectVersion, *releaseInfo->getLocalVersions())
-    {
-        const QString &name = projectVersion.getName();
-        const QString url = QString("__FILEURL_%1__").arg(name);
-
-        dialog.addConstant(url, projectVersion.getPkgUrl().toString());
-
-        const QString version = QString("__VERSION_%1__").arg(name);
-
-        dialog.addConstant(version, projectVersion.getVersion());
-    }
-
-    dialog.exec();
-}
-
-
-void ProjectInfoWidget::showMacrosButtonPressed()
-{
-    //zapisz makra do pliku tymczasowego
-    QTemporaryFile file;
-    QProcess rpm;
-
-    file.setFileTemplate("macrosXXXXXX");
-    file.open();
-    SandboxProcess::runProcess("rpm", QStringList() << "--showrc", &rpm);
-    rpm.waitForFinished(-1);
-    file.write(rpm.readAll());
-    file.close();
-
-    QProcess editor;
-    editor.start("kwrite", QStringList() << file.fileName());
-    editor.waitForFinished(-1);
 }
 
 
