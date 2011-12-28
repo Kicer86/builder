@@ -5,8 +5,8 @@
 #include "specconstantsdialog.hpp"
 #include "ui_specconstantsdialog.h"
 
-SpecConstantsDialog::SpecConstantsDialog(QWidget *parent) :
-    QDialog(parent),
+SpecConstantsDialog::SpecConstantsDialog(QWidget *p) :
+    QDialog(p),
     ui(new Ui::SpecConstansDialog)
 {
     ui->setupUi(this);
@@ -29,7 +29,10 @@ SpecConstantsDialog::~SpecConstantsDialog()
 void SpecConstantsDialog::addConstant(const QString &name, const QString &value)
 {
     QLabel *nameWidget = new QLabel(name);
+    nameWidget->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
     QLabel *valueWidget = new QLabel(value);
+    valueWidget->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     ui->constantsLayout->addWidget(nameWidget);
     ui->valuesLayout->addWidget(valueWidget);
