@@ -351,6 +351,10 @@ void ProjectInfoWidget::specConstansButtonPressed()
         const QString url = QString("__FILEURL_%1__").arg(name);
 
         dialog.addConstant(url, projectVersion.getPkgUrl().toString());
+
+        const QString version = QString("__VERSION_%1__").arg(name);
+
+        dialog.addConstant(version, projectVersion.getVersion());
     }
 
     dialog.exec();
