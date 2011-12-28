@@ -34,6 +34,7 @@ Builder::Builder()
 
     projectInfoWidget = new ProjectInfoWidget();
     QDockWidget *projectListWidgetDock = new QDockWidget(tr("project info"));
+    projectListWidgetDock->setObjectName("ProjectInfoWidget");
     projectListWidgetDock->setWidget(projectList);
     projectListWidgetDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
