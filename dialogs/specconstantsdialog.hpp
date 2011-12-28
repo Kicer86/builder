@@ -2,10 +2,13 @@
 #define SPECCONSTANSDIALOG_HPP
 
 #include <QDialog>
+#include <QLabel>
+
 
 namespace Ui {
 class SpecConstansDialog;
 }
+
 
 class SpecConstantsDialog: public QDialog
 {

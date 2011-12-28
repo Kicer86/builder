@@ -1,9 +1,84 @@
 
-#include <QLabel>
+#include <assert.h>
+
 #include <QScrollBar>
 
 #include "specconstantsdialog.hpp"
 #include "ui_specconstantsdialog.h"
+#include "misc/functions.hpp"
+
+
+class RichLabel: public QLabel
+{
+        RichLabel *related;                 //a friend
+        QString originalText;
+
+        void setColor();
+        void clearColor();
+
+    protected:
+        virtual void enterEvent (QEvent *);
+        virtual void leaveEvent (QEvent *);
+
+    public:
+        RichLabel(const QString &, QWidget *parent = 0);
+        virtual ~RichLabel();
+
+        void setRelatedLabel(RichLabel *);
+};
+
+
+RichLabel::RichLabel(const QString &t, QWidget *p): QLabel(t, p), related(nullptr), originalText(t)
+{}
+
+
+RichLabel::~RichLabel()
+{}
+
+
+void RichLabel::setColor()
+{
+    const QString newText( Functions::setColour(originalText, Qt::red ));
+
+    setText(newText);
+}
+
+
+void RichLabel::clearColor()
+{
+    setText(originalText);
+}
+
+
+void RichLabel::enterEvent(QEvent *e)
+{
+    assert(related != nullptr);
+
+    setColor();
+    related->setColor();
+
+    QLabel::enterEvent(e);
+}
+
+
+void RichLabel::leaveEvent(QEvent *e)
+{
+    assert(related != nullptr);
+
+    clearColor();
+    related->clearColor();
+
+    QLabel::leaveEvent(e);
+}
+
+
+void RichLabel::setRelatedLabel(RichLabel *label)
+{
+    related = label;
+}
+
+// -----------------------------------------------------------------------------
+
 
 SpecConstantsDialog::SpecConstantsDialog(QWidget *p) :
     QDialog(p),
@@ -28,11 +103,14 @@ SpecConstantsDialog::~SpecConstantsDialog()
 
 void SpecConstantsDialog::addConstant(const QString &name, const QString &value)
 {
-    QLabel *nameWidget = new QLabel(name);
+    RichLabel *nameWidget = new RichLabel(name);
     nameWidget->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
-    QLabel *valueWidget = new QLabel(value);
+    RichLabel *valueWidget = new RichLabel(value);
     valueWidget->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+    nameWidget->setRelatedLabel(valueWidget);
+    valueWidget->setRelatedLabel(nameWidget);
 
     ui->constantsLayout->addWidget(nameWidget);
     ui->valuesLayout->addWidget(valueWidget);
