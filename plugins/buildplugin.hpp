@@ -97,7 +97,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         BuildPlugin(const BuildPlugin& other);
         void operator=(const BuildPlugin&);
 
-        const QString name;
+        const QString pluginName;
 
         BuildsInfo buildsInfo;
 };

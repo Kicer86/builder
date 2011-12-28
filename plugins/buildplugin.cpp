@@ -91,21 +91,21 @@ void BuildProcess::stop() const
 }
 
 
-BuildPlugin::BuildPlugin(const char *n): name(n)
+BuildPlugin::BuildPlugin(const char *n): pluginName(n)
 {
-    debug(DebugLevel::Debug) << "Loading plugin " << name;
+    debug(DebugLevel::Debug) << "Loading plugin " << pluginName;
 }
 
 
 BuildPlugin::~BuildPlugin()
 {
-    debug(DebugLevel::Debug) << "Unloading plugin " << name;
+    debug(DebugLevel::Debug) << "Unloading plugin " << pluginName;
 }
 
 
 const QString& BuildPlugin::getBuilderName() const
 {
-    return name;
+    return pluginName;
 }
 
 

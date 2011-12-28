@@ -348,9 +348,9 @@ void RpmBuildPlugin::updateTab()
     ReleaseInfo *currentRelease = ProjectsManager::instance()->getCurrentRelease();
     if (currentRelease)
     {
-        BuildProcess *const bP = findBuildProcess(currentRelease);
-        if (bP)
-            log->setDocument(bP->getLog());
+        BuildProcess *const buildProcess = findBuildProcess(currentRelease);
+        if (buildProcess)
+            log->setDocument(buildProcess->getLog());
         else
             log->setDocument(0);
     }
