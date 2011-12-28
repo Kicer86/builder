@@ -23,53 +23,53 @@
 
 #include "imagewidget.hpp"
 
-ImageLayer::ImageLayer(const QString& imagePath):QPixmap(imagePath), renderer(0), path(imagePath)
+ImageLayer::ImageLayer(const QString &imagePath):QPixmap(imagePath), renderer(0), path(imagePath)
 {
 }
 
 
-ImageLayer::ImageLayer(const QString& imagePath, int w, int h):QPixmap(w, h), renderer(0), path(imagePath)
+ImageLayer::ImageLayer(const QString &imagePath, int w, int h):QPixmap(w, h), renderer(0), path(imagePath)
 {
-  setAlphaChannel(*this);
-  fill(Qt::transparent);
+    setAlphaChannel(*this);
+    fill(Qt::transparent);
 
-  QPainter painter(this);
-  renderer= new QSvgRenderer(path);
-  renderer->render(&painter, QRectF(0,0,w,h));
+    QPainter painter(this);
+    renderer= new QSvgRenderer(path);
+    renderer->render(&painter, QRectF(0,0,w,h));
 
-  qDebug() << QString("Loading svg layer with%1 animations (%2 fps)").arg(renderer->animated()? "":"out").arg(renderer->framesPerSecond());
+    qDebug() << QString("Loading svg layer with%1 animations (%2 fps)").arg(renderer->animated()? "":"out").arg(renderer->framesPerSecond());
 }
 
 
-ImageLayer::ImageLayer(const QByteArray& imageData): QPixmap(), renderer(0)
-{
-}
-
-
-ImageLayer::ImageLayer(const QPixmap& image): QPixmap(image), renderer(0)
+ImageLayer::ImageLayer(const QByteArray &): QPixmap(), renderer(0)
 {
 }
 
 
-ImageLayer::ImageLayer(const ImageLayer& il): QPixmap(il), renderer(0), path(il.path)
+ImageLayer::ImageLayer(const QPixmap &image): QPixmap(image), renderer(0)
 {
-  if (il.renderer)
-  {
-    renderer=new QSvgRenderer;
-    renderer->load(path);
-  }
+}
+
+
+ImageLayer::ImageLayer(const ImageLayer &il): QPixmap(il), renderer(0), path(il.path)
+{
+    if (il.renderer)
+    {
+        renderer=new QSvgRenderer;
+        renderer->load(path);
+    }
 }
 
 
 ImageLayer::~ImageLayer()
 {
-  delete renderer;
+    delete renderer;
 }
 
 
 QSvgRenderer* ImageLayer::getRenderer() const
 {
-  return renderer;
+    return renderer;
 }
 
 
@@ -84,50 +84,50 @@ ImageWidget::~ImageWidget()
 
 void ImageWidget::paintEvent(QPaintEvent*)
 {
-  QPainter painter(this);
-  foreach(const ImageLayer *layer, layers)
-  {
+    QPainter painter(this);
+    foreach(const ImageLayerPtr layer, layers)
+    {
+        if (layer->getRenderer())
+            layer->getRenderer()->render(&painter, rect());
+        else
+            painter.drawPixmap(rect(), *layer, rect());
+    }
+}
+
+
+int ImageWidget::addLayer(ImageLayerPtr layer)
+{
     if (layer->getRenderer())
-      layer->getRenderer()->render(&painter, rect());
-    else
-      painter.drawPixmap(rect(), *layer, rect());
-  }
+        connect(layer->getRenderer(), SIGNAL(repaintNeeded()), this, /*SLOT(update()*/ SIGNAL(rerender()) );
+
+    if (layer->size().width()<size.width())
+        size.setWidth(layer->size().width());
+
+    if (layer->size().height()<size.height())
+        size.setHeight(layer->size().height());
+
+    setFixedSize(size);
+    return layers.size();
 }
 
 
-int ImageWidget::addLayer(ImageLayer* layer)
+int ImageWidget::prependLayer(ImageLayerPtr layer)
 {
-  if (layer->getRenderer())
-    connect(layer->getRenderer(), SIGNAL(repaintNeeded()), this, /*SLOT(update()*/ SIGNAL(rerender()) );
-  
-  if (layer->size().width()<size.width())
-    size.setWidth(layer->size().width());
-
-  if (layer->size().height()<size.height())
-    size.setHeight(layer->size().height());
-
-  setFixedSize(size);
-  return layers.size();
+    layers.prepend(layer);
+    return addLayer(layer);
 }
 
 
-int ImageWidget::prependLayer(ImageLayer *layer)
+int ImageWidget::appendLayer(ImageLayerPtr layer)
 {
-  layers.prepend(layer);
-  return addLayer(layer);
-}
-
-
-int ImageWidget::appendLayer(ImageLayer *layer)
-{
-  layers.append(layer);
-  return addLayer(layer);
+    layers.append(layer);
+    return addLayer(layer);
 }
 
 
 void ImageWidget::clear()
 {
-  layers.clear();
-  size.setHeight(QWIDGETSIZE_MAX);
-  size.setWidth(QWIDGETSIZE_MAX);
+    layers.clear();
+    size.setHeight(QWIDGETSIZE_MAX);
+    size.setWidth(QWIDGETSIZE_MAX);
 }

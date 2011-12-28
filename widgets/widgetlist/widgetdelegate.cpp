@@ -26,7 +26,7 @@
 #include "widgetlistitem.hpp"
 #include "widgetlistview.hpp"
 
-WidgetDelegate::WidgetDelegate(WidgetListView* p): QStyledItemDelegate(p), view(p)
+WidgetDelegate::WidgetDelegate(WidgetListView *p): QStyledItemDelegate(p), view(p)
 {}
 
 
@@ -34,68 +34,62 @@ WidgetDelegate::~WidgetDelegate()
 {}
 
 
-WidgetListItem* WidgetDelegate::getProjectWidget(const QModelIndex& idx) const
+WidgetListItem* WidgetDelegate::getProjectWidget(const QModelIndex &idx) const
 {
-  return view->getProjectWidget(idx);
+    return view->getProjectWidget(idx);
 }
 
 
-void WidgetDelegate::paintItem(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void WidgetDelegate::paintItem(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  painter->save();
-  painter->translate(option.rect.topLeft());
-  WidgetListItem *pW = getProjectWidget(index);
+    painter->save();
+    painter->translate(option.rect.topLeft());
+    WidgetListItem *pW = getProjectWidget(index);
 
-  //dostosuj szerokość widgetu do szerokości listy
-  pW->resize(option.rect.width(), pW->sizeHint().height());
+    //dostosuj szerokość widgetu do szerokości listy
+    pW->resize(option.rect.width(), pW->sizeHint().height());
 
-  //draw the widget
-  pW->prePaintEvent(index);
-  pW->render(painter, QPoint() );
+    //draw the widget
+    pW->prePaintEvent(index);
+    pW->render(painter, QPoint() );
 
-  painter->restore();
+    painter->restore();
 }
 
 
-void WidgetDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void WidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  /* option.state:
-   65537 /1       rysowany
-   73729 /8193    najechany
-   106753 / 98561 kliknięty najechany/nienajechany
+    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
-   10001/1
-   1            QStyle::State_Active
-       1        QStyle::State_Enabled
-
-   12001/2001
-    2           QStyle::State_MouseOver
-
-   1A101/18101
-    8           QStyle::State_Selected
-    2
-     1          QStyle::State_HasFocus
-  */
-
-  QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
-
-  paintItem(painter, option, index);
+    paintItem(painter, option, index);
 }
 
 
-QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
+QSize WidgetDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  const WidgetListItem *pW = getProjectWidget(index);
-  const QSize result( option.rect.width(), pW->sizeHint().height() );
+    const WidgetListItem *pW = getProjectWidget(index);
 
-  return result;
+    const QSize viewSize( pW->sizeHint() );
+    const QSize editorSize = pW->getEditor() == nullptr? viewSize : pW->getEditor()->sizeHint();  //create also editor's size
+
+    QSize result;
+
+    result.setHeight( viewSize.height() > editorSize.height()? viewSize.height(): editorSize.height() );
+    result.setWidth( viewSize.width() > editorSize.width()? viewSize.width(): editorSize.width() );
+
+    return result;
 }
 
 
-QWidget* WidgetDelegate::createEditor(QWidget* p, const QStyleOptionViewItem& , const QModelIndex& index) const
+QWidget* WidgetDelegate::createEditor(QWidget *p, const QStyleOptionViewItem & , const QModelIndex &index) const
 {
-  WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
-  editor->setParent(p);
-  return editor;
+    WidgetListItem *editor = new WidgetListItem(getProjectWidget(index)); //stwórz klona
+    editor->setParent(p);
+
+    QWidget *list = dynamic_cast<QWidget *>(this->parent());
+    if (list != nullptr)
+        list->update();
+
+    return editor;
 }
 

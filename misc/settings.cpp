@@ -23,7 +23,7 @@
 
 Settings::Settings()
 {
-    settings=new QSettings();
+    settings = new QSettings();
 }
 
 
@@ -62,7 +62,7 @@ QStringList Settings::getExtList() const
 {
     QStringList ret;
     settings->beginGroup("main");
-    int size=settings->beginReadArray("extensions");
+    int size = settings->beginReadArray("extensions");
     for (int i=0; i<size; i++)
     {
         settings->setArrayIndex(i);

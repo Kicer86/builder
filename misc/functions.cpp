@@ -16,14 +16,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <assert.h>
+
 #include <QString>
 #include <QColor>
 #include <QModelIndex>
+#include <QStandardItem>
 
 #include "builder-config.h"
 #include "functions.hpp"
-#include "data_containers/projectsmanager.hpp"
+#include "data_containers/releaseinfo.hpp"
+#include "data_containers/projectinfo.hpp"
 
+namespace Functions
+{
 
 QString sizeToString(int value)
 {
@@ -58,9 +64,27 @@ QString dataPath(const QString &path)
 
 ReleaseInfo* getReleaseInfo(const QModelIndex &index)
 {
-    const int id = index.data(Qt::UserRole + 1).toInt();  //get id
+    assert(index.isValid());
 
-    ReleaseInfo *ret = ProjectsManager::instance()->findRelease(id);
+    ReleaseInfo *result;
 
-    return ret;
+    result = reinterpret_cast<ReleaseInfo *>(index.data(Qt::UserRole + 1).value<void *>());
+
+    return result;
 }
+
+
+const ProjectInfo* getProjectInfo(const QModelIndex &index)
+{
+    const ProjectInfo *result = getReleaseInfo(index)->getProjectInfo();
+
+    return result;
+}
+
+
+void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo)
+{
+    item->setData(qVariantFromValue(reinterpret_cast<void *>(releaseInfo)), Qt::UserRole + 1);
+}
+
+} //namespace Functions

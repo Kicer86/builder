@@ -33,7 +33,7 @@
 
 
 ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
-        QObject(0), id(ProjectsManager::instance()->getId()),
+        QObject(0),
         name(n), builds(0), total(100), done(0), projectInfo(p),
         state(State::Nothing)
 {
@@ -139,12 +139,6 @@ void ReleaseInfo::setState(ReleaseInfo::State st)
 
     //status has changed
     emit statusChanged(ChangeType::StateChange);
-}
-
-
-int ReleaseInfo::getId() const
-{
-    return id;
 }
 
 

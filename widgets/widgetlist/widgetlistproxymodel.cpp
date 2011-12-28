@@ -22,6 +22,7 @@
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
+#include "misc/functions.hpp"
 
 WidgetListProxyModel::WidgetListProxyModel(QObject* p): QSortFilterProxyModel(p)
 {}
@@ -34,11 +35,8 @@ WidgetListProxyModel::~WidgetListProxyModel()
 //http://doc.qt.nokia.com/latest/qsortfilterproxymodel.html#details
 bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
-  int lid = left.data(Qt::UserRole + 1).toInt();    //info w: void ProjectsManager::registerProject(ProjectInfo* project)
-  int rid = right.data(Qt::UserRole + 1).toInt();   //info w: void ProjectsManager::registerProject(ProjectInfo* project)
-
-  ReleaseInfo *lri = ProjectsManager::instance()->findRelease(lid);
-  ReleaseInfo *rri = ProjectsManager::instance()->findRelease(rid);
+  ReleaseInfo *lri = Functions::getReleaseInfo(left);
+  ReleaseInfo *rri = Functions::getReleaseInfo(right);
 
   assert(lri && rri);
 

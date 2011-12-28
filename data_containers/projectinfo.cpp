@@ -32,9 +32,9 @@
 #include "projectinfo.hpp"
 
 
-ProjectInfo::ProjectInfo(QString n): id(ProjectsManager::instance()->getId()), name(n)
+ProjectInfo::ProjectInfo(QString n): name(n), status(Nothing)
 {
-    qDebug() << QString("creating project %1 with id %2").arg(name).arg(id);
+    qDebug() << QString("creating project %1").arg(name);
 
     QDir releaseDir(Settings::instance()->getProjectsPath());
     releaseDir.cd(name);
@@ -64,6 +64,8 @@ ProjectInfo::~ProjectInfo()
 
     for(size_t i = 0; i < releasesList.size(); i++)
         delete releasesList[i];
+
+    delete timer;
 }
 
 
@@ -83,12 +85,6 @@ QString ProjectInfo::getPath() const
 QString ProjectInfo::getName() const
 {
     return name;
-}
-
-
-int ProjectInfo::getId() const
-{
-    return id;
 }
 
 
@@ -128,7 +124,7 @@ void ProjectInfo::updateStatus() const
         }
     }
 
-    bool update = status != st; //current status differs from new one ?
+    const bool update = status != st; //current status differs from new one ?
     status = st;
     if (update)
         emit changed();  //tell the world that needs to update

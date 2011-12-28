@@ -19,11 +19,21 @@
 class QColor;
 class QString;
 class QModelIndex;
+class QStandardItem;
 
 class ReleaseInfo;
+class ProjectInfo;
 
-QString sizeToString(int value);
-QString setColour(const QString &str, const QColor &colour);
-QString dataPath(const QString &path);
+namespace Functions
+{
 
-ReleaseInfo* getReleaseInfo(const QModelIndex &);
+    QString sizeToString(int value);
+    QString setColour(const QString &str, const QColor &colour);
+    QString dataPath(const QString &path);
+
+    ReleaseInfo* getReleaseInfo(const QModelIndex &index);
+    const ProjectInfo* getProjectInfo(const QModelIndex &index);
+
+    void setReleaseInfo(QStandardItem *, ReleaseInfo *);
+
+}

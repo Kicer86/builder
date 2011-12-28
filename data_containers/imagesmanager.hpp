@@ -24,12 +24,12 @@
 
 class ImagesManager
 {
-    ImagesManager();
+        ImagesManager();
 
-  public:
-    static ImagesManager *instance();
-    
-    ImageLayer *getImage(const QString& name, int res);
+    public:
+        static ImagesManager *instance();
+
+        ImageWidget::ImageLayerPtr getImage(const QString& name, int res);
 };
 
 #endif // ICONSMANAGER_HPP

@@ -20,6 +20,8 @@
 #ifndef IMAGEWIDGET_HPP
 #define IMAGEWIDGET_HPP
 
+#include <tr1/memory>
+
 #include <QWidget>
 #include <QPixmap>
 
@@ -27,44 +29,47 @@ class QSvgRenderer;
 
 class ImageLayer: public QPixmap
 {
-    QSize imageSize;
-    QSvgRenderer *renderer;
-    QString path;
+        QSize imageSize;
+        QSvgRenderer *renderer;
+        QString path;
 
-  public:
-    ImageLayer(const QString& imagePath);  //Fixed size images
-    ImageLayer(const QString& imagePath, int w, int h);  //svg
-    ImageLayer(const QByteArray &imageData);
-    ImageLayer(const QPixmap &image);      //QImage, QPixmap, QBitmap and QPicture
-    ImageLayer(const ImageLayer& il );
-    virtual ~ImageLayer();
+    public:
+        ImageLayer(const QString& imagePath);  //Fixed size images
+        ImageLayer(const QString& imagePath, int w, int h);  //svg
+        ImageLayer(const QByteArray &imageData);
+        ImageLayer(const QPixmap &image);      //QImage, QPixmap, QBitmap and QPicture
+        ImageLayer(const ImageLayer& il );
+        virtual ~ImageLayer();
 
-    QSvgRenderer *getRenderer() const;  
+        QSvgRenderer *getRenderer() const;
 };
 
 class ImageWidget : public QWidget
-{  
-    Q_OBJECT
-  
-    QList<ImageLayer*> layers;
-    QSize size;
-    
-    int addLayer(ImageLayer *layer);
-    
-  protected:
-    virtual void paintEvent(QPaintEvent* );
+{
+        Q_OBJECT
 
-  public:
-    explicit ImageWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
-    virtual ~ImageWidget();
+    public:
+        typedef std::tr1::shared_ptr<ImageLayer> ImageLayerPtr;
 
-    int prependLayer(ImageLayer* layer);
-    int appendLayer(ImageLayer* layer);
-    void clear();
-    
-  signals:
-    //TODO: add some option to turn on automatic repaint
-    void rerender();             //signal emited when widget requires to be updated
+        explicit ImageWidget(QWidget *p = 0, Qt::WindowFlags f = 0);
+        virtual ~ImageWidget();
+
+        int prependLayer(ImageLayerPtr layer);
+        int appendLayer(ImageLayerPtr layer);
+        void clear();
+
+    signals:
+        //TODO: add some option to turn on automatic repaint
+        void rerender();             //signal emited when widget requires to be updated
+
+    protected:
+        virtual void paintEvent(QPaintEvent *);
+
+    private:
+        QSize size;
+
+        QList<ImageLayerPtr> layers;
+        int addLayer(ImageLayerPtr layer);
 };
 
 #endif // IMAGEWIDGET_HPP

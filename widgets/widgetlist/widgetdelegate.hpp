@@ -28,17 +28,17 @@ class WidgetListItem;
 class WidgetDelegate: public QStyledItemDelegate
 {
     WidgetListView *view;
-    
-    WidgetListItem *getProjectWidget(const QModelIndex& idx) const; 
-    void paintItem(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+    WidgetListItem *getProjectWidget(const QModelIndex &idx) const;
+    void paintItem(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
   public:
-    explicit WidgetDelegate(WidgetListView* parent);
+    explicit WidgetDelegate(WidgetListView *parent);
     virtual ~WidgetDelegate();
-    
+
 //     QRect childPos(const QModelIndex &parent, const QModelIndex &child);
 };
 

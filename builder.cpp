@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QDockWidget>
 #include <QMenuBar>
+#include <QSettings>
 #include <QStandardItemModel>
 #include <QPluginLoader>
 
@@ -26,7 +27,7 @@
 Builder::Builder()
 {
     WidgetListView *projectList = new WidgetListView(this);
-    proxy=new WidgetListProxyModel(this);
+    proxy = new WidgetListProxyModel(this);
 
     proxy->setSourceModel(ProjectsManager::instance()->getModel());
     projectList->setModel(proxy);
@@ -57,13 +58,13 @@ Builder::Builder()
     //todo: compare data in config file with database. some projects may missing (ie removed from hdd)
 
     //menu
-    QMenuBar *mainMenu=new QMenuBar();
+    QMenuBar *mainMenu = new QMenuBar();
     setMenuBar(mainMenu);
 
-    QMenu *projectsMenu=new QMenu(tr("&Projects"), this);
+    QMenu *projectsMenu = new QMenu(tr("&Projects"), this);
     connect(projectsMenu->addAction(tr("&Add")), SIGNAL(triggered(bool)), this, SLOT(projectsDialog()));
 
-    QMenu *optionsMenu=new QMenu(tr("&Options"), this);
+    QMenu *optionsMenu = new QMenu(tr("&Options"), this);
     connect(optionsMenu->addAction(tr("Configure")), SIGNAL(triggered(bool)), this, SLOT(optionsDialog()));
 
     mainMenu->addMenu(projectsMenu);
@@ -71,11 +72,37 @@ Builder::Builder()
 
     //load plugins
     loadPlugins();
+
+    //restore window geometry
+    QSettings settings;
+    settings.beginGroup("windows");
+
+    const QByteArray windowData = settings.value("builder", QByteArray()).toByteArray();
+    if (windowData.size() > 0)
+        restoreGeometry(windowData);
+
+    const QByteArray mainWindowState = settings.value("state", QByteArray()).toByteArray();
+    if (mainWindowState.size() > 0)
+        restoreState(mainWindowState);
+
+    settings.endGroup();
 }
 
 
 Builder::~Builder()
 {
+    //save windows
+    QSettings settings;
+    settings.beginGroup("windows");
+
+    const QByteArray windowData = saveGeometry();
+    settings.setValue("builder", windowData);
+
+    const QByteArray mainWindowState = saveState();
+    settings.setValue("state", mainWindowState);
+
+    settings.endGroup();
+
     //delete projects
     ProjectsManager::instance()->destroyProjects();
 }
@@ -83,7 +110,7 @@ Builder::~Builder()
 
 void Builder::loadPlugins()
 {
-    QDir pluginsDir(dataPath("plugins"));
+    QDir pluginsDir(Functions::dataPath("plugins"));
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
@@ -160,7 +187,7 @@ void Builder::projectsDialog()
 
             if (ok)
             {
-                ProjectInfo *projectInfo=new ProjectInfo(projectName);
+                ProjectInfo *projectInfo = new ProjectInfo(projectName);
                 ProjectsManager::instance()->registerProject(projectInfo);
             }
             else

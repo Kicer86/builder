@@ -37,8 +37,8 @@
 
 WidgetListItem::WidgetListItem(ReleaseInfo* pI):
         QWidget(),
-        editor(false),
-        origins(0),
+        origins(nullptr),
+        editor(nullptr),            //edtor does not exist at this moment
         releaseInfo(pI)
 {
     construct();
@@ -51,10 +51,11 @@ WidgetListItem::WidgetListItem(ReleaseInfo* pI):
 //copying constructor -> editor widget is being created
 WidgetListItem::WidgetListItem(WidgetListItem* w):
         QWidget(),
-        editor(true),
         origins(w),
+        editor(nullptr),            //we are editor itself
         releaseInfo(w->getReleaseInfo())
 {
+    origins->editor = this;             //set as as editor of our origin
     construct();
     resize(w->size());
     setAutoFillBackground(true);  //tło musi być!
@@ -63,14 +64,19 @@ WidgetListItem::WidgetListItem(WidgetListItem* w):
 
 WidgetListItem::~WidgetListItem()
 {
-    assert(editor == (origins > 0)); //jesli origins to editor (i vice versa)
+    assert(origins == nullptr || origins->editor != nullptr);      //origins has to have us
 //   if (origins)
 //     origins->updateValues();       //niech się widget wizualny zaktualizuje
+
+    if (origins != nullptr)
+        origins->editor = nullptr;
 }
 
 
 void WidgetListItem::construct()
 {
+    download = build = nullptr;
+
     //setup view
     widget = new QWidget();
     projectLayout = new QGridLayout(widget);
@@ -88,7 +94,7 @@ void WidgetListItem::construct()
 
     QVBoxLayout *lineLayout = new QVBoxLayout();
 
-    if (editor)
+    if (origins != nullptr)
     {
         QCheckBox *downloadEditor = new QCheckBox(tr("download"));
         QCheckBox *buildEditor = new QCheckBox(tr("build"));
@@ -114,7 +120,7 @@ void WidgetListItem::construct()
         //connect(releaseInfo, SIGNAL(changed()), this, SLOT(updateValues()));  //update itself when projectInfo signals change
     }
 
-    projectLayout->addLayout(lineLayout, 0, 1, 2, 1);
+    projectLayout->addLayout(lineLayout, 0, 1, 2, 1, Qt::AlignJustify);
 
     pixmap = new ImageWidget(this);
     connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
@@ -125,14 +131,14 @@ void WidgetListItem::construct()
     mainLayout->addWidget(pixmap);
     mainLayout->addWidget(widget, 1);
 
-    if (editor == false)
+    if (origins == nullptr)
         updateValues();   //zaktualizuj widok
 }
 
 
 void WidgetListItem::updateValues()
 {
-    assert(editor == false); //funkcja wywoływana tylko w trybie view
+    assert(origins == nullptr); //funkcja wywoływana tylko w trybie view
 
     //print release info
     bool dwl = releaseInfo->getDownloadFlag();
@@ -140,16 +146,16 @@ void WidgetListItem::updateValues()
 
     download->setText(QString(tr("download: %1")
                               .arg(dwl ?
-                                   setColour(tr("yes"), Qt::darkGreen) :
-                                   setColour(tr("no"),  Qt::red)
+                                   Functions::setColour(tr("yes"), Qt::darkGreen) :
+                                   Functions::setColour(tr("no"),  Qt::red)
                                   )
                              )
                      );
 
     build->setText(QString(tr("build: %1")
                            .arg(bld ?
-                                setColour(tr("yes"), Qt::darkGreen) :
-                                setColour(tr("no"),  Qt::red)
+                                Functions::setColour(tr("yes"), Qt::darkGreen) :
+                                Functions::setColour(tr("no"),  Qt::red)
                                )
                           )
                   );
@@ -193,8 +199,7 @@ void WidgetListItem::prePaintEvent(const QModelIndex &index)
     QModelIndex prevModel = index.sibling( index.row() - 1, index.column() );
     const bool prevIsValid = prevModel.isValid();
 
-    const int prevModelData = prevIsValid? prevModel.data(Qt::UserRole + 1).toInt() : -1;
-    const ProjectInfo *prevProjectInfo = prevIsValid? ProjectsManager::instance()->findRelease(prevModelData)->getProjectInfo() : 0;
+    const ProjectInfo *prevProjectInfo = prevIsValid? Functions::getProjectInfo(prevModel): nullptr;
     const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
 
     if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo

@@ -58,7 +58,6 @@ class ReleaseInfo: public QObject
         };
 
     private:
-        const int id;        //id wydania
         const QString name;
         bool download;
         bool build;
@@ -88,7 +87,6 @@ class ReleaseInfo: public QObject
         explicit ReleaseInfo(const QString &n, ProjectInfo* p);
         virtual ~ReleaseInfo();
 
-        int getId() const;
         QString getName() const;
         bool getBuildFlag() const;
         bool getDownloadFlag() const;

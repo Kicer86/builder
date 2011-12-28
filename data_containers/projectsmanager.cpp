@@ -26,10 +26,11 @@
 #include "projectsmanager.hpp"
 #include "releaseinfo.hpp"
 #include "dialogs/releasecopydialog.hpp"
+#include "misc/functions.hpp"
 #include "widgets/projectinfowidget.hpp"
 
 
-ProjectsManager::ProjectsManager(): id(0)
+ProjectsManager::ProjectsManager()
 {
     model = new QStandardItemModel();
 }
@@ -51,12 +52,12 @@ void ProjectsManager::registerProject(ProjectInfo* project)
 {
     projectsList.append(project);
 
-    qDebug() << QString("registering project %1 with id %2").arg(project->getName()).arg(project->getId());
+    qDebug() << QString("registering project %1").arg(project->getName());
 
-    foreach(const ReleaseInfo *release, project->getReleasesList())
+    foreach(ReleaseInfo *release, project->getReleasesList())
     {
         QStandardItem *releaseItem = new QStandardItem(release->getName());
-        releaseItem->setData(release->getId());  //zapisz id wydania
+        Functions::setReleaseInfo(releaseItem, release);  //save pointer to ReleaseInfo to QStandardItem
         model->appendRow(releaseItem);
     }
 }
@@ -75,12 +76,6 @@ void ProjectsManager::showInfo(ReleaseInfo* releaseInfo)
 }
 
 
-int ProjectsManager::getId()
-{
-    return id++;
-}
-
-
 QStandardItemModel* ProjectsManager::getModel() const
 {
     return model;
@@ -93,41 +88,6 @@ ReleaseInfo* ProjectsManager::getCurrentRelease() const
         return projectInfoWidget->getCurrentRelease();
     else
         return 0;
-}
-
-
-
-ProjectInfo* ProjectsManager::findProject(int projectId)
-{
-    ProjectInfo *ret = 0;
-
-    foreach(ProjectInfo *projectInfo, projectsList)
-    {
-        if (projectInfo->getId() == projectId)
-        {
-            ret = projectInfo;
-            break;
-        }
-    }
-
-    return ret;
-}
-
-
-ReleaseInfo* ProjectsManager::findRelease(int releaseId)
-{
-    ReleaseInfo *ret = 0;
-
-    foreach( ProjectInfo *projectInfo, projectsList )
-        foreach( ReleaseInfo *releaseInfo, projectInfo->getReleasesList() )
-            if (releaseInfo->getId() == releaseId)
-            {
-                ret = releaseInfo;
-                goto quit;
-            }
-
-quit:
-    return ret;
 }
 
 

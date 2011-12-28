@@ -26,11 +26,22 @@
 class ReleaseInfo;
 class WidgetListItem;
 
+namespace std
+{
+    namespace tr1
+    {
+        template <class T> class shared_ptr;
+    }
+}
+
 class WidgetListView: public QListView
 {
     Q_OBJECT
 
-    QHash<int, WidgetListItem *> *widgets;   //lista wydgetów które są wyświetlane na liście
+    typedef std::tr1::shared_ptr<WidgetListItem> WidgetListItemPtr;      //pointer to WidgetListItem
+    typedef QHash<ReleaseInfo *, WidgetListItemPtr> WidgetListView_List;
+
+    WidgetListView_List widgets;             //lista wydgetów które są wyświetlane na liście
     QWidget *backgroundWidget;
     QModelIndex currentItem;                 //variable actualized in some rare ocasions like right click on item ;)
 
@@ -55,7 +66,7 @@ class WidgetListView: public QListView
     virtual ~WidgetListView();
 
     WidgetListItem* getProjectWidget(const QModelIndex& idx) const;
-    const QHash< int, WidgetListItem* >* getWidgets() const;
+    const WidgetListView_List *getWidgets() const;
 
   signals:
     void itemClicked(ReleaseInfo *) const;

@@ -51,11 +51,9 @@ class ProjectInfo: public QObject
         const std::vector<ReleaseInfo*>& getReleasesList() const;
         QString getPath() const;
         QString getName() const;
-        int getId() const;
         Status getStatus() const;
 
     private:
-        const int id;         //id projektu
         const QString name;
         std::vector<ReleaseInfo *> releasesList;
         mutable Status status;
