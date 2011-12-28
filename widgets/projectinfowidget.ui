@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>310</height>
+    <width>448</width>
+    <height>308</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -55,7 +55,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="0" column="1">
           <widget class="QPushButton" name="luaDebugButton">
            <property name="enabled">
             <bool>false</bool>
@@ -70,61 +70,6 @@
             <string>lua debug mode</string>
            </property>
           </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="specButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>Allows to edit the project .spec file.</string>
-           </property>
-           <property name="whatsThis">
-            <string>Allows to edit the project .spec file.</string>
-           </property>
-           <property name="text">
-            <string>Edit spec file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2" colspan="2">
-          <widget class="QPushButton" name="showMacrosButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>Shows result of rpm --showrc.</string>
-           </property>
-           <property name="whatsThis">
-            <string>Shows result of rpm --showrc.</string>
-           </property>
-           <property name="text">
-            <string>Show rpm's macros</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QPushButton" name="specConstansButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Show spec constans</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </item>
