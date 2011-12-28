@@ -100,7 +100,7 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
 
     connect(ui->editDowloadScriptButton, SIGNAL(clicked()), this, SLOT(editDowloadScriptButtonPressed()));
     connect(ui->specButton, SIGNAL(clicked()), this, SLOT(specButtonPressed()));
-    connect(ui->specConstansButton, SIGNAL(clicked()), this, SLOT(specConstansButtonPressed()));
+    connect(ui->specConstansButton, SIGNAL(clicked()), this, SLOT(specConstantsButtonPressed()));
     connect(ui->showMacrosButton, SIGNAL(clicked()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(clicked()), this, SLOT(downloadButtonPressed()));
@@ -341,7 +341,7 @@ void ProjectInfoWidget::specButtonPressed()
 }
 
 
-void ProjectInfoWidget::specConstansButtonPressed()
+void ProjectInfoWidget::specConstantsButtonPressed()
 {
     SpecConstantsDialog dialog;
 
