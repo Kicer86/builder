@@ -59,6 +59,10 @@ class RpmBuildPlugin: public BuildPlugin
         void buildButtonPressed();
         void fastBuildButtonPressed();
 
+        void specButtonPressed();
+        void specConstantsButtonPressed();
+        void showMacrosButtonPressed();
+
     public:
         RpmBuildPlugin();
         virtual ~RpmBuildPlugin();

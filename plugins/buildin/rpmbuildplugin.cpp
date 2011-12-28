@@ -20,20 +20,24 @@
 #include <assert.h>
 
 #include <QDir>
+#include <QDebug>
 #include <QtPlugin>
 #include <QGridLayout>
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QProcess>
 #include <QProgressBar>
-#include <QDebug>
+#include <QTemporaryFile>
 
 #include <debug.hpp>
 
 #include "rpmbuildplugin.hpp"
+#include "data_containers/editorsmanager.hpp"
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
+#include "dialogs/specconstantsdialog.hpp"
+#include "misc/functions.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/settings.hpp"
 
@@ -72,6 +76,13 @@ RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
 
     connect(buildButton, SIGNAL(pressed()), this, SLOT(buildButtonPressed()));
     connect(fastBuildButton, SIGNAL(pressed()), this, SLOT(fastBuildButtonPressed()));
+
+    connect(editSpecButton, SIGNAL(clicked()), this, SLOT(specButtonPressed()));
+    connect(showConstantsButton, SIGNAL(clicked()), this, SLOT(specConstantsButtonPressed()));
+    connect(showMacrosButton, SIGNAL(clicked()), this, SLOT(showMacrosButtonPressed()));
+//    ui->specButton->setEnabled(true);
+//    ui->specConstansButton->setEnabled(true);
+//    ui->showMacrosButton->setEnabled(true);
 }
 
 
@@ -229,6 +240,91 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 {
     debug(DebugLevel::Debug) << "fast build button pressed";
     build(Fast);
+}
+
+
+void RpmBuildPlugin::specButtonPressed()
+{
+    ReleaseInfo *const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
+
+    QFileInfo fileInfo(releaseInfo->getSpecFile());
+    if (fileInfo.exists() == false || fileInfo.size() == 0) //spec jeszcze nie istnieje? użyj tamplate
+    {
+        qDebug() << QString("preparing template for spec file (%1 -> %2)")
+                    .arg(Functions::dataPath("spec_template"), fileInfo.absoluteFilePath() );
+
+        //przygotuj spec pod bieżący projekt
+        QFile src(Functions::dataPath("spec_template"));
+        QFile dst(fileInfo.absoluteFilePath());
+        src.open(QIODevice::ReadOnly);
+        dst.open(QIODevice::WriteOnly);
+
+        QString projName = releaseInfo->getProjectInfo()->getName();
+
+        while (src.atEnd() == false)
+        {
+            QString line = src.readLine();
+
+            QRegExp name("Name:.*$");
+            if (name.exactMatch(line))       //uzupełnij nazwę projektu
+                line = QString("Name:           %1\n").arg(projName);
+
+            QRegExp mainSource("Source0:.*$");
+            if (mainSource.exactMatch(line)) //uzupełnij główne źródło
+                line = QString("Source0:        __FILEURL_%1__\n").arg(projName);
+
+            QRegExp version("%define         version.*$");
+            if (version.exactMatch(line))    //wersja programu
+                line = QString("%define         version __VERSION_%1__\n").arg(projName);
+
+            dst.write(line.toUtf8());
+        }
+
+        src.close();
+        dst.close();
+    }
+
+    EditorsManager::instance()->editFile(fileInfo.absoluteFilePath());
+}
+
+
+void RpmBuildPlugin::specConstantsButtonPressed()
+{
+    SpecConstantsDialog dialog;
+    ReleaseInfo *const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
+
+    foreach(ProjectVersion projectVersion, *releaseInfo->getLocalVersions())
+    {
+        const QString &name = projectVersion.getName();
+        const QString url = QString("__FILEURL_%1__").arg(name);
+
+        dialog.addConstant(url, projectVersion.getPkgUrl().toString());
+
+        const QString version = QString("__VERSION_%1__").arg(name);
+
+        dialog.addConstant(version, projectVersion.getVersion());
+    }
+
+    dialog.exec();
+}
+
+
+void RpmBuildPlugin::showMacrosButtonPressed()
+{
+    //zapisz makra do pliku tymczasowego
+    QTemporaryFile file;
+    QProcess rpm;
+
+    file.setFileTemplate("macrosXXXXXX");
+    file.open();
+    SandboxProcess::runProcess("rpm", QStringList() << "--showrc", &rpm);
+    rpm.waitForFinished(-1);
+    file.write(rpm.readAll());
+    file.close();
+
+    QProcess editor;
+    editor.start("kwrite", QStringList() << file.fileName());
+    editor.waitForFinished(-1);
 }
 
 
