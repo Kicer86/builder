@@ -1,15 +1,25 @@
 project(builder)
 cmake_minimum_required(VERSION 2.6)
-find_package(Qt4 4.6 COMPONENTS core gui new)
+find_package(Qt4 4.6 REQUIRED QtGui QtCore QtNetwork)
 find_package(Lua51 REQUIRED)
-find_program(CONVERT convert)
-find_program(INKSCAPE inkscape)
+find_program(INKSCAPE inkscape REQUIRED)
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+  #check version
+  string(REPLACE " " ";" C_ARGS ${CMAKE_C_COMPILER_ARG1})
+  execute_process(COMMAND ${CMAKE_C_COMPILER} ${C_ARGS} -dumpversion
+				  OUTPUT_VARIABLE GCC_VERSION)
+  if (GCC_VERSION VERSION_LESS 4.6)
+	message ( FATAL_ERROR "GCC version >= 4.6 required due to c++0x11 standard usage" )
+  else(GCC_VERSION VERSION_LESS 4.6)
+	message ( STATUS "Acceptable version of gcc found: ${GCC_VERSION}")
+  endif(GCC_VERSION VERSION_LESS 4.6)
+endif (CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
 
-# ForceAddFlags(CMAKE_CXX_FLAGS -std=c++0x)
 add_definitions(-DDEBUG_QSTRING_SUPPORT)      #let debug functions from my library know QString
 
 if (NOT BUILDER_DATADIR)
