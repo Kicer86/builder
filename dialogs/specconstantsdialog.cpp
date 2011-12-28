@@ -39,6 +39,20 @@ void SpecConstantsDialog::addConstant(const QString &name, const QString &value)
 }
 
 
+void SpecConstantsDialog::addSeparator()
+{
+    QFrame *line1 = new QFrame();
+    line1->setFrameShape(QFrame::HLine);
+    line1->setFrameShadow(QFrame::Sunken);
+
+    QFrame *line2 = new QFrame();
+    line2->setFrameShape(QFrame::HLine);
+    line2->setFrameShadow(QFrame::Sunken);
+
+    ui->constantsLayout->addWidget(line1);
+    ui->valuesLayout->addWidget(line2);
+}
+
 void SpecConstantsDialog::exec()
 {
     //finish list

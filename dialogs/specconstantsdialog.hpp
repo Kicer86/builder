@@ -18,6 +18,7 @@ public:
     ~SpecConstantsDialog();
 
     void addConstant(const QString &name, const QString &value);
+    void addSeparator();
 
     void exec();
 };
