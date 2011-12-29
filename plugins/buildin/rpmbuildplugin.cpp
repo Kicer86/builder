@@ -45,13 +45,16 @@
 
 Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
 
+static const QString buildButtonText(QObject::tr("Build"));
+static const QString fastBuildButtonText(QObject::tr("Fast build"));
+
 RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer"), buttonsEnabled(false)
 {
     //construct layout
     buttons = new QGridLayout;
     log = new QPlainTextEdit;
-    buildButton = new QPushButton(tr("Build"));
-    fastBuildButton = new QPushButton(tr("Fast build"));
+    buildButton = new QPushButton(buildButtonText);
+    fastBuildButton = new QPushButton(fastBuildButtonText);
 
     editSpecButton = new QPushButton(tr("Edit spec file"));
     showMacrosButton = new QPushButton(tr("Show Rpm macros"));
@@ -99,9 +102,6 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
     //get release currently selected
     ReleaseInfo * const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
-    const ProjectInfo *projectInfo = releaseInfo->getProjectInfo();
-    const QString releasePath = releaseInfo->getReleasePath();
-    const ReleaseInfo::VersionList &localVersions = *releaseInfo->getLocalVersions();
 
     if (releaseInfo == 0)
         return;                     //no release ich choosen
@@ -125,6 +125,10 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     if (Settings::instance()->getEnvType() == Settings::External)
         homePath = "/root";
 
+
+    const ProjectInfo *projectInfo = releaseInfo->getProjectInfo();
+    const QString releasePath = releaseInfo->getReleasePath();
+    const ReleaseInfo::VersionList &localVersions = *releaseInfo->getLocalVersions();
     const QString specFile = homePath + "/rpmbuild/SPECS/" + projectInfo->getName() + ".spec";
     const QString specSrc = releasePath + "/" + projectInfo->getName() + ".spec";
     const QString specDst = SandboxProcess::decoratePath(specFile);
@@ -240,6 +244,9 @@ void RpmBuildPlugin::buildButtonPressed()
 {
     debug(DebugLevel::Debug) << "build button pressed";
     build(Normal);
+
+    buildButton->setText(tr("Stop"));
+    fastBuildButton->setDisabled(true);
 }
 
 
@@ -247,6 +254,9 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 {
     debug(DebugLevel::Debug) << "fast build button pressed";
     build(Fast);
+
+    fastBuildButton->setText(tr("Stop"));
+    buildButton->setDisabled(true);
 }
 
 
@@ -264,6 +274,17 @@ void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
 
         buttonsEnabled = true;
     }
+}
+
+
+void RpmBuildPlugin::stopBuildProcess(ReleaseInfo *)
+{
+    //restore buttons
+    buildButton->setEnabled(true);
+    buildButton->setText(buildButtonText);
+
+    fastBuildButton->setEnabled(true);
+    fastBuildButton->setText(fastBuildButtonText);
 }
 
 

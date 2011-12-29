@@ -68,6 +68,7 @@ class RpmBuildPlugin: public BuildPlugin
 
     protected:
         virtual void newReleaseInfoSelected(ReleaseInfo *);
+        virtual void stopBuildProcess(ReleaseInfo *);
 
     public:
         RpmBuildPlugin();
