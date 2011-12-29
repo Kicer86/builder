@@ -58,7 +58,6 @@ class ProjectInfoWidget:public QWidget
         void downloadButtonPressed();
         //    void logWillChange();
         //    void logChanged();
-        void tabChanged(int);
 
     public:
         explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);

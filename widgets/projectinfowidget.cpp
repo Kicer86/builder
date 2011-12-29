@@ -108,7 +108,6 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     connect(ui->showMacrosButton, SIGNAL(pressed()), this, SLOT(showMacrosButtonPressed()));
     connect(ui->updateButton, SIGNAL(pressed()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 //    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
 
     //listen if current ReleaseInfo has changed
@@ -165,10 +164,6 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 void ProjectInfoWidget::setReleaseInfo(ReleaseInfo* rI)
 {
     setRelease(rI);
-
-    //Update log in build tabs
-    //There is no need to update notactive tabs, because they will be updated when activated :)
-    tabChanged(ui->tabWidget->currentIndex());
 }
 
 
@@ -374,21 +369,4 @@ void ProjectInfoWidget::downloadButtonPressed()
 void ProjectInfoWidget::updateButtonPressed()
 {
     releaseInfo->update();
-}
-
-
-void ProjectInfoWidget::tabChanged(int index)
-{
-    //find plugin of this tab
-    QWidget *tab = ui->tabWidget->widget(index);  //get widget of current tab
-
-    RefreshFunctions::const_iterator it = refreshFunctions.constFind(tab);   //find refresh function for this widget
-
-    if (it != refreshFunctions.end())  //it may be not found -> for example when "main" or "non build" tab is chosen
-    {
-        BuildPlugin *bP = it.value();
-
-        //call it
-        bP->updateTab();
-    }
 }
