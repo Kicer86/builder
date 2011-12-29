@@ -277,8 +277,10 @@ void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
 }
 
 
-void RpmBuildPlugin::stopBuildProcess(ReleaseInfo *)
+void RpmBuildPlugin::stopBuildProcess(ReleaseInfo *r)
 {
+    BuildPlugin::stopBuildProcess(r);
+
     //restore buttons
     buildButton->setEnabled(true);
     buildButton->setText(buildButtonText);
