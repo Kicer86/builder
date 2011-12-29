@@ -43,6 +43,7 @@ set(builder_SRCS
   dialogs/newprojectwizard.cpp 
   dialogs/releasecopydialog.cpp
   dialogs/progressdialog.cpp
+  misc/broadcast.cpp
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
@@ -68,6 +69,7 @@ set(builder_MOC
   dialogs/newprojectwizard.hpp
   dialogs/releasecopydialog.hpp
   dialogs/progressdialog.hpp
+  misc/broadcast.hpp
   misc/downloader.hpp
   misc/editfile.hpp
   misc/estimator.hpp
