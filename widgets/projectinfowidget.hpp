@@ -72,9 +72,6 @@ class ProjectInfoWidget:public QWidget
 
     public slots:
         void setReleaseInfo(ReleaseInfo *);
-
-    signals:
-        void releaseSelected(ReleaseInfo *);
 };
 
 #endif // PROJECTINFOWIDGET_HPP

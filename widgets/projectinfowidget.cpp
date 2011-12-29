@@ -32,6 +32,7 @@
 #include "data_containers/editorsmanager.hpp"
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
+#include "misc/broadcast.hpp"
 #include "misc/settings.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/estimator.hpp"
@@ -109,6 +110,9 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     connect(ui->downloadButton, SIGNAL(pressed()), this, SLOT(downloadButtonPressed()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 //    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
+
+    //listen if current ReleaseInfo has changed
+    connect(Broadcast::instance(), SIGNAL(releaseSelectedSignal(ReleaseInfo*)), this, SLOT(setReleaseInfo(ReleaseInfo*)));
 }
 
 
@@ -155,8 +159,6 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
     releaseInfo = ri;
     connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(refresh(int)));
     refresh(ReleaseInfo::AllChanged);
-
-    emit releaseSelected(ri);
 }
 
 
