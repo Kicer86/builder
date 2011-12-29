@@ -82,13 +82,17 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         const QString& getBuilderName() const;        //return builder name
         virtual QLayout* getBuildButtons() const = 0; //return layout with button(s) for managing build process
         virtual QWidget* getBuildLog() const = 0;     //return widget with build messages
-        virtual void updateTab() = 0;                 //function called, when tab with build logs should be updated
+        //virtual void updateTab() = 0;                 //function called, when tab with build logs should be updated
         virtual void updateProgress(int) = 0;         //set build progress (-1 means that progress is unknown)
 
     protected:
         //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
         void startBuildProcess(const QString &, const QStringList &, BuildProcess *);
         BuildProcess *findBuildProcess(ReleaseInfo *releaseInfo);
+
+    protected slots:
+        virtual void newReleaseInfoSelected(ReleaseInfo *)
+        {}
 
     protected slots:
         void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
