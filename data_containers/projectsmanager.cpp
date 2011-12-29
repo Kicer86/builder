@@ -87,7 +87,7 @@ ReleaseInfo* ProjectsManager::getCurrentRelease() const
     if (projectInfoWidget)
         return projectInfoWidget->getCurrentRelease();
     else
-        return 0;
+        return nullptr;
 }
 
 

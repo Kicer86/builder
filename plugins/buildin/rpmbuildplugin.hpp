@@ -54,6 +54,7 @@ class RpmBuildPlugin: public BuildPlugin
         QProgressBar *progressBar;
 
         void build(Type);
+        virtual void updateTab();
 
     private slots:
         void buildButtonPressed();
@@ -63,13 +64,15 @@ class RpmBuildPlugin: public BuildPlugin
         void specConstantsButtonPressed();
         void showMacrosButtonPressed();
 
+    protected:
+        virtual void newReleaseInfoSelected(ReleaseInfo *);
+
     public:
         RpmBuildPlugin();
         virtual ~RpmBuildPlugin();
 
         virtual QLayout* getBuildButtons() const;
         virtual QWidget* getBuildLog() const;
-        virtual void updateTab();
         virtual void updateProgress(int);
 };
 

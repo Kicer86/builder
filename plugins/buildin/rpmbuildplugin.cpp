@@ -227,6 +227,8 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     startBuildProcess("rpmbuild", args, buildProcess);
 
     releaseInfo->buildStarted();
+
+    updateTab();
 }
 
 
@@ -241,6 +243,12 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 {
     debug(DebugLevel::Debug) << "fast build button pressed";
     build(Fast);
+}
+
+
+void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
+{
+    updateTab();
 }
 
 
@@ -372,7 +380,7 @@ void RpmBuildPlugin::updateTab()
         if (buildProcess)
             log->setDocument(buildProcess->getLog());
         else
-            log->setDocument(0);
+            log->setDocument(nullptr);
     }
 }
 

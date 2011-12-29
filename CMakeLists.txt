@@ -54,6 +54,7 @@ set(builder_SRCS
   dialogs/releasecopydialog.cpp
   dialogs/progressdialog.cpp
   dialogs/specconstantsdialog.cpp
+  misc/broadcast.cpp
   misc/downloader.cpp
   misc/editfile.cpp
   misc/estimator.cpp
@@ -80,6 +81,7 @@ set(builder_MOC
   dialogs/releasecopydialog.hpp
   dialogs/progressdialog.hpp
   dialogs/specconstantsdialog.hpp
+  misc/broadcast.hpp
   misc/downloader.hpp
   misc/editfile.hpp
   misc/estimator.hpp

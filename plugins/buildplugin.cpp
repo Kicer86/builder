@@ -29,6 +29,7 @@
 #include "buildplugin.hpp"
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
+#include "misc/broadcast.hpp"
 #include "misc/sandboxprocess.hpp"
 
 
@@ -94,6 +95,10 @@ void BuildProcess::stop() const
 BuildPlugin::BuildPlugin(const char *n): pluginName(n)
 {
     debug(DebugLevel::Debug) << "Loading plugin " << pluginName;
+
+    //watch for changes in current (selected) ReleaseInfo
+    connect(Broadcast::instance(), SIGNAL(releaseSelectedSignal(ReleaseInfo *)), this, SLOT(newReleaseInfoSelected(ReleaseInfo *)));
+
 }
 
 

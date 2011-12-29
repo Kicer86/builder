@@ -32,6 +32,7 @@
 #include "data_containers/projectinfo.hpp"
 #include "data_containers/projectversion.hpp"
 #include "data_containers/releaseinfo.hpp"
+#include "misc/broadcast.hpp"
 #include "misc/settings.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/estimator.hpp"
@@ -99,8 +100,10 @@ ProjectInfoWidget::ProjectInfoWidget( QWidget* p, Qt::WindowFlags f):
     connect(ui->editDowloadScriptButton, SIGNAL(clicked()), this, SLOT(editDowloadScriptButtonPressed()));
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateButtonPressed()));
     connect(ui->downloadButton, SIGNAL(clicked()), this, SLOT(downloadButtonPressed()));
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 //    connect(ui->buildMessages, SIGNAL(textChanged()), this, SLOT(logChanged()));
+
+    //listen if current ReleaseInfo has changed
+    connect(Broadcast::instance(), SIGNAL(releaseSelectedSignal(ReleaseInfo*)), this, SLOT(setReleaseInfo(ReleaseInfo*)));
 }
 
 
@@ -151,11 +154,6 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
 void ProjectInfoWidget::setReleaseInfo(ReleaseInfo* rI)
 {
     setRelease(rI);
-
-    //Update log in build tab
-    //There is no need to update notactive tabs, becouse they will be updated when activated :)
-
-    tabChanged(ui->tabWidget->currentIndex());
 }
 
 
@@ -299,21 +297,4 @@ void ProjectInfoWidget::downloadButtonPressed()
 void ProjectInfoWidget::updateButtonPressed()
 {
     releaseInfo->update();
-}
-
-
-void ProjectInfoWidget::tabChanged(int index)
-{
-    //find plugin of this tab
-    QWidget *tab = ui->tabWidget->widget(index);  //get widget of current tab
-
-    RefreshFunctions::const_iterator it = refreshFunctions.constFind(tab);   //find refresh function for this widget
-
-    if (it != refreshFunctions.end())  //it may be not found -> for example when "main" or "non build" tab is chosen
-    {
-        BuildPlugin *bP = it.value();
-
-        //call it
-        bP->updateTab();
-    }
 }

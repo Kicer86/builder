@@ -14,6 +14,7 @@
 #include "data_containers/projectinfo.hpp"
 #include "dialogs/configdialog.hpp"
 #include "dialogs/newprojectwizard.hpp"
+#include "misc/broadcast.hpp"
 #include "misc/downloader.hpp"
 #include "misc/functions.hpp"
 #include "misc/settings.hpp"
@@ -40,7 +41,7 @@ Builder::Builder()
 
     ProjectsManager::instance()->setProjectInfoWidget(projectInfoWidget);
 
-    connect(projectList, SIGNAL(itemClicked(ReleaseInfo*)), projectInfoWidget, SLOT(setReleaseInfo(ReleaseInfo*)));
+    connect(projectList, SIGNAL(itemClicked(ReleaseInfo*)), Broadcast::instance(), SLOT(releaseSelected(ReleaseInfo*)));
 
     //scan projects dir
     QDir directory(Settings::instance()->getProjectsPath());
