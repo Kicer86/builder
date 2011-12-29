@@ -34,47 +34,47 @@ class ProjectInfo;
 
 class ProjectInfoWidget:public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-    Ui_ProjectInfoForm *ui;
-    ReleaseInfo *releaseInfo;
-    typedef QMap<QWidget *, BuildPlugin *> RefreshFunctions;
-    RefreshFunctions refreshFunctions;  //list of refresh functions for each tab
+        Ui_ProjectInfoForm *ui;
+        ReleaseInfo *releaseInfo;
+        typedef QMap<QWidget *, BuildPlugin *> RefreshFunctions;
+        RefreshFunctions refreshFunctions;  //list of refresh functions for each tab
 
-//    bool autoScrool;                 //this value is set to true if build log should scroll to bottom automatically
+        //    bool autoScrool;                 //this value is set to true if build log should scroll to bottom automatically
 
-    //info o projekcie
-    QListView *localInfoView;
-    QListView *remoteInfoView;
-    QStringListModel *localInfoModel;
-    QStringListModel *remoteInfoModel;
+        //info o projekcie
+        QListView *localInfoView;
+        QListView *remoteInfoView;
+        QStringListModel *localInfoModel;
+        QStringListModel *remoteInfoModel;
 
-  private slots:
-    void refresh(int type);
-    void editDowloadScriptButtonPressed();
-    void specButtonPressed();
-    void showMacrosButtonPressed();
-    void updateButtonPressed();
-    void downloadButtonPressed();
-//    void logWillChange();
-//    void logChanged();
-    void tabChanged(int);
+    private slots:
+        void refresh(int type);
+        void editDowloadScriptButtonPressed();
+        void specButtonPressed();
+        void showMacrosButtonPressed();
+        void updateButtonPressed();
+        void downloadButtonPressed();
+        //    void logWillChange();
+        //    void logChanged();
+        void tabChanged(int);
 
-  public:
-    explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
-    virtual ~ProjectInfoWidget();
+    public:
+        explicit ProjectInfoWidget(QWidget* p = 0, Qt::WindowFlags f = 0);
+        virtual ~ProjectInfoWidget();
 
-    void addBuildPluginButtons(QLayout *, const QString &);     //function which adds provided (by plugin) layout
-    void addBuildPluginLogs(QWidget *, const QString &, BuildPlugin *);        //function which adds provided (by plugin) layout and tab
-    ReleaseInfo *getCurrentRelease() const;
+        void addBuildPluginButtons(QLayout *, const QString &);     //function which adds provided (by plugin) layout
+        void addBuildPluginLogs(QWidget *, const QString &, BuildPlugin *);        //function which adds provided (by plugin) layout and tab
+        ReleaseInfo *getCurrentRelease() const;
 
-    void setRelease(ReleaseInfo *);
+        void setRelease(ReleaseInfo *);
 
-  public slots:
-    void setReleaseInfo(ReleaseInfo *);
+    public slots:
+        void setReleaseInfo(ReleaseInfo *);
 
     signals:
-    void releaseSelected(ReleaseInfo *);
+        void releaseSelected(ReleaseInfo *);
 };
 
 #endif // PROJECTINFOWIDGET_HPP
