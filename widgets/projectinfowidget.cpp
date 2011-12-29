@@ -155,6 +155,8 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
     releaseInfo = ri;
     connect(releaseInfo, SIGNAL(statusChanged(int)), this, SLOT(refresh(int)));
     refresh(ReleaseInfo::AllChanged);
+
+    emit releaseSelected(ri);
 }
 
 
@@ -162,9 +164,8 @@ void ProjectInfoWidget::setReleaseInfo(ReleaseInfo* rI)
 {
     setRelease(rI);
 
-    //Update log in build tab
-    //There is no need to update notactive tabs, becouse they will be updated when activated :)
-
+    //Update log in build tabs
+    //There is no need to update notactive tabs, because they will be updated when activated :)
     tabChanged(ui->tabWidget->currentIndex());
 }
 
