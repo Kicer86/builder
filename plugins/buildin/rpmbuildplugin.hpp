@@ -35,6 +35,8 @@ class RpmBuildPlugin: public BuildPlugin
         Q_OBJECT
         Q_INTERFACES(BuildPlugin)
 
+        bool buttonsEnabled;
+
         RpmBuildPlugin(const RpmBuildPlugin&);
         void operator=(const RpmBuildPlugin&);
 

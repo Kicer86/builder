@@ -45,7 +45,7 @@
 
 Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
 
-RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
+RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer"), buttonsEnabled(false)
 {
     //construct layout
     buttons = new QGridLayout;
@@ -81,9 +81,13 @@ RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer")
     connect(editSpecButton, SIGNAL(clicked()), this, SLOT(specButtonPressed()));
     connect(showConstantsButton, SIGNAL(clicked()), this, SLOT(specConstantsButtonPressed()));
     connect(showMacrosButton, SIGNAL(clicked()), this, SLOT(showMacrosButtonPressed()));
-//    ui->specButton->setEnabled(true);
-//    ui->specConstansButton->setEnabled(true);
-//    ui->showMacrosButton->setEnabled(true);
+
+    //disable all buttons until any ReleaseInfo is chosen
+    buildButton->setDisabled(true);
+    fastBuildButton->setDisabled(true);
+    editSpecButton->setDisabled(true);
+    showConstantsButton->setDisabled(true);
+    showMacrosButton->setDisabled(true);
 }
 
 
@@ -249,6 +253,17 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
 {
     updateTab();
+
+    if (buttonsEnabled == false)   //first ReleaseInfo chosen, enable buttons
+    {
+        buildButton->setEnabled(true);
+        fastBuildButton->setEnabled(true);
+        editSpecButton->setEnabled(true);
+        showConstantsButton->setEnabled(true);
+        showMacrosButton->setEnabled(true);
+
+        buttonsEnabled = true;
+    }
 }
 
 
