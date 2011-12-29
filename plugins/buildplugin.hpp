@@ -94,8 +94,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         virtual void newReleaseInfoSelected(ReleaseInfo *)
         {}
 
-    protected slots:
-        void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
+        virtual void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
 
     private:
         BuildPlugin(const BuildPlugin& other);
