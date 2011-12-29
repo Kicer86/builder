@@ -37,8 +37,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>171</width>
-            <height>206</height>
+            <width>158</width>
+            <height>189</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="constantsLayout"/>
@@ -68,8 +68,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>170</width>
-            <height>206</height>
+            <width>158</width>
+            <height>189</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="valuesLayout"/>

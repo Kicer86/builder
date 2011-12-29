@@ -2,6 +2,7 @@
 #include <assert.h>
 
 #include <QScrollBar>
+#include <QLineEdit>
 
 #include "specconstantsdialog.hpp"
 #include "ui_specconstantsdialog.h"
@@ -101,6 +102,38 @@ SpecConstantsDialog::~SpecConstantsDialog()
 }
 
 
+void SpecConstantsDialog::manageVariables()
+{
+    //remove empty variables, and make sure there is one empty at the end od list
+
+    for (size_t i = 0; (i + 1) < variableList.size(); i++)
+    {
+        Variable &variable = variableList[i];
+
+        if (variable.first->text().size() == 0 &&
+            variable.second->text().size() == 0)
+        {
+            ui->constantsLayout->removeWidget(variable.first);
+            ui->valuesLayout->removeWidget(variable.second);
+
+            variable.first->deleteLater();
+            variable.second->deleteLater();
+
+            variableList.erase( variableList.begin() + i);
+        }
+    }
+
+    //no items or last one is not empty?
+    const size_t listSize = variableList.size();
+    if (listSize == 0 ||
+        variableList[listSize - 1].first->text().size() != 0 ||
+        variableList[listSize - 1].second->text().size() != 0)
+    {
+        addVariable(QString(), QString());     //create empty variable
+    }
+}
+
+
 void SpecConstantsDialog::addConstant(const QString &name, const QString &value)
 {
     RichLabel *nameWidget = new RichLabel(name);
@@ -114,6 +147,24 @@ void SpecConstantsDialog::addConstant(const QString &name, const QString &value)
 
     ui->constantsLayout->addWidget(nameWidget);
     ui->valuesLayout->addWidget(valueWidget);
+}
+
+
+void SpecConstantsDialog::addVariable(const QString &name, const QString &value)
+{
+    QLineEdit *nameWidget = new QLineEdit(name);
+    QLineEdit *valueWidget = new QLineEdit(value);
+
+    ui->constantsLayout->addWidget(nameWidget);
+    ui->valuesLayout->addWidget(valueWidget);
+
+    //save variable on list
+    Variable variable(nameWidget, valueWidget);
+    variableList.push_back(variable);
+
+    //watch for editing finished
+    connect(nameWidget, SIGNAL(editingFinished()), this, SLOT(manageVariables()));
+    connect(valueWidget, SIGNAL(editingFinished()), this, SLOT(manageVariables()));
 }
 
 
@@ -133,9 +184,12 @@ void SpecConstantsDialog::addSeparator()
 
 void SpecConstantsDialog::exec()
 {
+    //make sure, there is empty field for new variable
+    manageVariables();
+
     //finish list
-    ui->constantsLayout->addStretch(1);
-    ui->valuesLayout->addStretch(1);
+    //ui->constantsLayout->addStretch(1);
+    //ui->valuesLayout->addStretch(1);
 
     QDialog::exec();
 }
