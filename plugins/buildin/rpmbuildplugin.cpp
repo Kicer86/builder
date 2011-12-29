@@ -355,12 +355,12 @@ void RpmBuildPlugin::specConstantsButtonPressed()
     {
         const QString &name = projectVersion.getName();
         const QString url = QString("__FILEURL_%1__").arg(name);
+        const QString version = QString("__VERSION_%1__").arg(name);
+        const QString extension = QString("__EXTENSION_%1__").arg(name);
 
         dialog.addConstant(url, projectVersion.getPkgUrl().toString());
-
-        const QString version = QString("__VERSION_%1__").arg(name);
-
         dialog.addConstant(version, projectVersion.getVersion());
+        dialog.addConstant(extension, projectVersion.getExtension());
 
         dialog.addSeparator();
     }
