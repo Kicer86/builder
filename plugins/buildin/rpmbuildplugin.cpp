@@ -199,7 +199,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     while (src.atEnd() == false)
     {
         QString line = src.readLine();
-        const QRegExp version("(.*)__(.*)__(.*)");
+        const QRegExp version("(.*)__(.*)__(.*)");  //variable/constant is marked by "__" as prefix and suffix ie: __VARIABLE__
 
         if (version.exactMatch(line))
         {
