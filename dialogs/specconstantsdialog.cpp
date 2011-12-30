@@ -187,7 +187,11 @@ SpecConstantsDialog::Variables SpecConstantsDialog::getVariables() const
     Variables ret;
 
     for(const Variable &variable: variableList)
-        ret.push_back(std::pair<QString, QString>(variable.first->text(), variable.second->text()));
+        if (variable.first->text().size() > 0 &&
+            variable.second->text().size() > 0)
+        {
+            ret.push_back(std::pair<QString, QString>(variable.first->text(), variable.second->text()));
+        }
 
     return ret;
 }
