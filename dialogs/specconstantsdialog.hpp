@@ -10,10 +10,10 @@
 
 class QLineEdit;
 
-namespace Ui {
-class SpecConstansDialog;
+namespace Ui
+{
+    class SpecConstansDialog;
 }
-
 
 class SpecConstantsDialog: public QDialog
 {
@@ -36,6 +36,10 @@ public:
     void addConstant(const QString &name, const QString &value);
     void addVariable(const QString &name, const QString &value);
     void addSeparator();
+
+    typedef std::vector< std::pair<QString, QString> > Variables;
+
+    Variables getVariables() const;
 
     void exec();
 };

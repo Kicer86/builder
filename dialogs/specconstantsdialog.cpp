@@ -3,6 +3,7 @@
 
 #include <QScrollBar>
 #include <QLineEdit>
+#include <QString>
 
 #include "specconstantsdialog.hpp"
 #include "ui_specconstantsdialog.h"
@@ -178,6 +179,17 @@ void SpecConstantsDialog::addSeparator()
 
     ui->constantsLayout->addWidget(line1);
     ui->valuesLayout->addWidget(line2);
+}
+
+
+SpecConstantsDialog::Variables SpecConstantsDialog::getVariables() const
+{
+    Variables ret;
+
+    for(const Variable &variable: variableList)
+        ret.push_back(std::pair<QString, QString>(variable.first->text(), variable.second->text()));
+
+    return ret;
 }
 
 
