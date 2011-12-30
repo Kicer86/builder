@@ -351,7 +351,8 @@ void RpmBuildPlugin::specConstantsButtonPressed()
     if (dialogData.size() > 0)
         dialog.restoreGeometry(dialogData);
 
-    foreach(ProjectVersion projectVersion, *releaseInfo->getLocalVersions())
+    //fill it with constants
+    for(const ProjectVersion &projectVersion: *releaseInfo->getLocalVersions())
     {
         const QString &name = projectVersion.getName();
         const QString url = QString("__FILEURL_%1__").arg(name);
@@ -364,6 +365,15 @@ void RpmBuildPlugin::specConstantsButtonPressed()
 
         dialog.addSeparator();
     }
+
+    //fill it with variables
+    settings.beginGroup("spec variables");
+    for (const QString &key: settings.childKeys())
+    {
+        const QString value = settings.value(key).toString();
+        dialog.addVariable(key, value);
+    }
+    settings.endGroup();
 
     dialog.exec();
 
