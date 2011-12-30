@@ -367,6 +367,20 @@ void RpmBuildPlugin::specConstantsButtonPressed()
 
     dialog.exec();
 
+    if (dialog.result() == QDialog::Accepted)
+    {
+        //remove any existing variables
+        settings.remove("spec variables");
+
+        settings.beginGroup("spec variables");
+
+        //save variables
+        for(const std::pair<QString, QString> &variable: dialog.getVariables())
+            settings.setValue(variable.first, QVariant(variable.second));
+
+        settings.endGroup();
+    }
+
     //save dialog dimension
     settings.setValue("Constants dialog", dialog.saveGeometry());
     settings.endGroup();
