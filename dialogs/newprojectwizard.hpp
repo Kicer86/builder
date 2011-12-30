@@ -8,27 +8,27 @@
 class QLineEdit;
 namespace Ui
 {
-  class NewProjectWizard;
+    class NewProjectWizard;
 }
 
 class NewProjectWizard : public QWizard
 {
-    Q_OBJECT
+        Q_OBJECT
 
-    std::auto_ptr<Ui::NewProjectWizard> ui;
-    QList<QLineEdit *> edits;
+        std::auto_ptr<Ui::NewProjectWizard> ui;
+        QList<QLineEdit *> edits;
 
-    void addReleseLineEdit();
+        void addReleseLineEdit();
 
-  private slots:
-    void textChanged(const QString &);
+    private slots:
+        void textChanged(const QString &);
 
-  public:
-    explicit NewProjectWizard(QWidget *parent = 0);
-    ~NewProjectWizard();
+    public:
+        explicit NewProjectWizard(QWidget *parent = 0);
+        ~NewProjectWizard();
 
-    QString getProjectName() const;
-    QStringList getReleasesNames() const;
+        QString getProjectName() const;
+        QStringList getReleasesNames() const;
 };
 
 #endif // NEWPROJECTWIZARD_HPP

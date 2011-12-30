@@ -36,21 +36,21 @@ EditorsManager::~EditorsManager()
 
 EditorsManager* EditorsManager::instance()
 {
-  static EditorsManager _instance;
-  return &_instance;
+    static EditorsManager _instance;
+    return &_instance;
 }
 
 
 void EditorsManager::editFile(const QString& file)
 {
-  EditFile *editor = new EditFile(file, this);
-  list.append(editor);
-  connect (editor, SIGNAL(done(EditFile*)), this, SLOT(closeEditor(EditFile*)));
+    EditFile *editor = new EditFile(file, this);
+    list.append(editor);
+    connect (editor, SIGNAL(done(EditFile*)), this, SLOT(closeEditor(EditFile*)));
 }
 
 
 void EditorsManager::closeEditor(EditFile* editor)
 {
-  assert(list.contains(editor));
-  delete list.takeAt(list.indexOf(editor));  //usun takowy element
+    assert(list.contains(editor));
+    delete list.takeAt(list.indexOf(editor));  //usun takowy element
 }

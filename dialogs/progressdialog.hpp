@@ -6,19 +6,19 @@
 #include <QWidget>
 
 namespace Ui {
-class ProgressDialog;
+    class ProgressDialog;
 }
 
 class ProgressDialog : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit ProgressDialog(QWidget *parent = 0);
-    ~ProgressDialog();
+    public:
+        explicit ProgressDialog(QWidget *parent = 0);
+        ~ProgressDialog();
 
-private:
-    std::auto_ptr<Ui::ProgressDialog> ui;
+    private:
+        std::auto_ptr<Ui::ProgressDialog> ui;
 };
 
 #endif // PROGRESSDIALOG_HPP

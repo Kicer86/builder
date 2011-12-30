@@ -28,30 +28,30 @@
 
 namespace Ui
 {
-  class ConfigDialog;
+    class ConfigDialog;
 }
 
 class ConfigDialog : public QDialog
 {
-    Q_OBJECT
+        Q_OBJECT
 
-  public:
-    explicit ConfigDialog(QWidget* p=0, Qt::WindowFlags f=0);
-    ~ConfigDialog();
+    public:
+        explicit ConfigDialog(QWidget* p=0, Qt::WindowFlags f=0);
+        ~ConfigDialog();
 
-    Settings::EnvType getEnvType() const;
-    QString getExtEnvPath() const;
-    QString getProjsPath() const;
-    QStringList getExtList() const;
+        Settings::EnvType getEnvType() const;
+        QString getExtEnvPath() const;
+        QString getProjsPath() const;
+        QStringList getExtList() const;
 
-  private:
-    std::auto_ptr<Ui::ConfigDialog> ui;
+    private:
+        std::auto_ptr<Ui::ConfigDialog> ui;
 
-  private slots:
-    void locEnvButtonPressed();
-    void extEnvButtonPressed();
-    void envBrowsePressed();
-    void projsBrowsePressed();
+    private slots:
+        void locEnvButtonPressed();
+        void extEnvButtonPressed();
+        void envBrowsePressed();
+        void projsBrowsePressed();
 };
 
 #endif // CONFIGDIALOG_HPP
