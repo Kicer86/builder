@@ -102,9 +102,9 @@ void ProjectInfo::updateStatus() const
     //przeleć releasy i sprawdź czy są jakieś do pobrania/budowania
     foreach(ReleaseInfo *ri, releasesList)
     {
-        bool dwl = ri->getDownloadFlag();
-        bool bld = ri->getBuildFlag();
-        bool progress = ri->getState() != ReleaseInfo::State::Nothing;  //is there something goin' on ?
+        const bool dwl = ri->getDownloadFlag();
+        const bool bld = ri->getBuildFlag();
+        const bool progress = ri->getState() != ReleaseInfo::State::Nothing;  //is there something goin' on ?
 
         if (progress)
         {

@@ -20,6 +20,8 @@
 #ifndef CONFIGDIALOG_HPP
 #define CONFIGDIALOG_HPP
 
+#include <memory>
+
 #include <QDialog>
 
 #include "misc/settings.hpp"
@@ -43,7 +45,7 @@ class ConfigDialog : public QDialog
     QStringList getExtList() const;
 
   private:
-    Ui::ConfigDialog *ui;
+    std::auto_ptr<Ui::ConfigDialog> ui;
 
   private slots:
     void locEnvButtonPressed();

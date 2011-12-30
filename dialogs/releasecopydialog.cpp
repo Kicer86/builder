@@ -16,9 +16,7 @@ ReleaseCopyDialog::ReleaseCopyDialog(const ReleaseInfo &releaseInfo, QWidget *p)
 }
 
 ReleaseCopyDialog::~ReleaseCopyDialog()
-{
-    delete ui;
-}
+{}
 
 
 QString ReleaseCopyDialog::getNewName() const

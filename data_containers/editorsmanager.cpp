@@ -43,7 +43,7 @@ EditorsManager* EditorsManager::instance()
 
 void EditorsManager::editFile(const QString& file)
 {
-  EditFile *editor=new EditFile(file, this);
+  EditFile *editor = new EditFile(file, this);
   list.append(editor);
   connect (editor, SIGNAL(done(EditFile*)), this, SLOT(closeEditor(EditFile*)));
 }

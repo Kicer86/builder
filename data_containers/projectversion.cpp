@@ -34,7 +34,7 @@ ProjectVersion::ProjectVersion(const QString& filePart):
 ProjectVersion::ProjectVersion(const QUrl& u):
     status(Status::Empty), majorN(0), minorN(0),release(0), build(0)
 {
-    url=u;
+    url = u;
     setValues(u.toString());
 }
 
@@ -48,13 +48,13 @@ void ProjectVersion::setValues(const QString& partialUrl)
 {
     status = Status::Filled;
 
-    rawVersion=partialUrl;             //partialUrl to częsciowy (wersja + rozszerzenie]) lub cały url do pliku
+    rawVersion = partialUrl;             //partialUrl to częsciowy (wersja + rozszerzenie]) lub cały url do pliku
     QFileInfo fileInfo(partialUrl);
     //                major      minor         release     build
     QRegExp version(".*([0-9]+)[-.]([0-9]+)[-.]?([0-9]*)[-.]?([0-9]*).*");
     version.exactMatch(fileInfo.fileName());
 
-    len=1;
+    len = 1;
     while (len<=version.captureCount() && version.capturedTexts()[len]!="")
         len++;
 
@@ -90,7 +90,7 @@ void ProjectVersion::setLocalFile(const QFileInfo& file)
 
 void ProjectVersion::setName(const QString& n)
 {
-    name=n;
+    name = n;
 }
 
 
@@ -114,24 +114,24 @@ int ProjectVersion::compare(const ProjectVersion& pV) const
     if (getStatus() != Status::Filled && pV.getStatus() != Status::Filled)
         return 0;
 
-    if (majorN<pV.majorN)
+    if (majorN < pV.majorN)
         return -1;
-    if (majorN>pV.majorN)
+    if (majorN > pV.majorN)
         return 1;
 
-    if (minorN<pV.minorN)
+    if (minorN < pV.minorN)
         return -1;
-    if (minorN>pV.minorN)
+    if (minorN > pV.minorN)
         return 1;
 
-    if (release<pV.release)
+    if (release < pV.release)
         return -1;
-    if (release>pV.release)
+    if (release > pV.release)
         return 1;
 
-    if ( build<pV.build)
+    if ( build < pV.build)
         return -1;
-    if ( build>pV.build)
+    if ( build > pV.build)
         return 1;
 
     return extCompare(pV);

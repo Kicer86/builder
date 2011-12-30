@@ -10,6 +10,4 @@ ProgressDialog::ProgressDialog(QWidget *p) :
 
 
 ProgressDialog::~ProgressDialog()
-{
-    delete ui;
-}
+{}

@@ -51,7 +51,7 @@ ReleaseInfo::ReleaseInfo(const QString &n, ProjectInfo* p):
     downloadScript = releasePath() + "/download.lua";
 
     //read local version
-    int size = settings.beginReadArray("localVersion");
+    const int size = settings.beginReadArray("localVersion");
     for (int i = 0; i < size; i++)
     {
         settings.setArrayIndex(i);
@@ -79,7 +79,7 @@ ReleaseInfo::~ReleaseInfo()
 
     settings.beginWriteArray("localVersion");
     int i = 0;
-    foreach(ProjectVersion pV, localVersions)
+    for(const ProjectVersion &pV: localVersions)
     {
         QString pkgName = pV.getName();
         settings.setArrayIndex(i);
@@ -244,8 +244,10 @@ void ReleaseInfo::update()
         else
             debug(DebugLevel::Warning) << QString("Could not open lua script file: %1").arg(downloadScript);
 
-        foreach (ProjectVersion pV, currentVersions)
-            debug(DebugLevel::Info) << "url to new version of " << projectInfo->getName() << " is " << pV.text() << " " << pV.getExtension() << " " << pV.getVersion();
+        for(const ProjectVersion &pV: currentVersions)
+            debug(DebugLevel::Info) << "url to new version of " << projectInfo->getName()
+                                    << " is " << pV.text()
+                                    << " " << pV.getExtension() << " " << pV.getVersion();
     }
     setState(State::Nothing);
 }
@@ -259,11 +261,9 @@ void ReleaseInfo::downloadPkg()
         connect(&downloader, SIGNAL(progressUpdate(int, int)), this, SLOT(updateProgress(int, int)));
         connect(&downloader, SIGNAL(progressUpdate(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
 
-        VersionList::iterator i;
-        for (i = currentVersions.begin(); i != currentVersions.end(); ++i)
+        for (ProjectVersion &remoteVersion: currentVersions)
         {
-            ProjectVersion &remoteVersion = *i;
-            QString pkgName = remoteVersion.getName();
+            const QString pkgName = remoteVersion.getName();
 
             if ( remoteVersion.getStatus() == ProjectVersion::Status::Filled &&  //there is any valid data?
                 (localVersions.contains(pkgName) == false ||                          //local version does not contains this file?

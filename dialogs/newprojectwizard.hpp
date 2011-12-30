@@ -1,6 +1,8 @@
 #ifndef NEWPROJECTWIZARD_HPP
 #define NEWPROJECTWIZARD_HPP
 
+#include <memory>
+
 #include <QWizard>
 
 class QLineEdit;
@@ -13,18 +15,18 @@ class NewProjectWizard : public QWizard
 {
     Q_OBJECT
 
-    Ui::NewProjectWizard *ui;
+    std::auto_ptr<Ui::NewProjectWizard> ui;
     QList<QLineEdit *> edits;
-    
+
     void addReleseLineEdit();
-    
+
   private slots:
     void textChanged(const QString &);
-    
+
   public:
     explicit NewProjectWizard(QWidget *parent = 0);
     ~NewProjectWizard();
-    
+
     QString getProjectName() const;
     QStringList getReleasesNames() const;
 };

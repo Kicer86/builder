@@ -97,9 +97,7 @@ SpecConstantsDialog::SpecConstantsDialog(QWidget *p) :
 
 
 SpecConstantsDialog::~SpecConstantsDialog()
-{
-    delete ui;
-}
+{}
 
 
 void SpecConstantsDialog::manageVariables()
@@ -181,6 +179,7 @@ void SpecConstantsDialog::addSeparator()
     ui->constantsLayout->addWidget(line1);
     ui->valuesLayout->addWidget(line2);
 }
+
 
 void SpecConstantsDialog::exec()
 {

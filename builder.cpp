@@ -51,7 +51,7 @@ Builder::Builder()
     setCentralWidget(projectInfoWidget);
     addDockWidget(Qt::LeftDockWidgetArea, projectListWidgetDock);
 
-    foreach(QString item, dirs)
+    for(const QString &item: dirs)
     {
         ProjectInfo *projectInfo = new ProjectInfo(item);
         ProjectsManager::instance()->registerProject(projectInfo);
@@ -113,7 +113,7 @@ Builder::~Builder()
 void Builder::loadPlugins()
 {
     QDir pluginsDir(Functions::dataPath("plugins"));
-    foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+    for (const QString &fileName: pluginsDir.entryList(QDir::Files))
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
@@ -148,7 +148,7 @@ void Builder::registerPlugin(QObject* plugin)
 void Builder::optionsDialog()
 {
     ConfigDialog *config = new ConfigDialog(this);
-    if (config->exec()==QDialog::Accepted)
+    if (config->exec() == QDialog::Accepted)
     {
         Settings::instance()->setEnvPath(config->getExtEnvPath());
         Settings::instance()->setEnvType(config->getEnvType());

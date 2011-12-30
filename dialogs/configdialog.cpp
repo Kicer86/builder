@@ -46,24 +46,24 @@ ConfigDialog::ConfigDialog(QWidget* p, Qt::WindowFlags f): QDialog(p, f),
 
   ui->envLine->setText(Settings::instance()->getEnvPath());
   ui->projsLine->setText(Settings::instance()->getProjectsPath());
-  
-  QStringList list=Settings::instance()->getExtList();
+
+  QStringList list = Settings::instance()->getExtList();
   QString edit;
-  for(int i=0; i<list.size(); i++)
+
+  const int listSize = list.size();
+  for(int i=0; i < listSize; i++)
   {
-    if (i+1<list.size())
+    if ((i + 1) < listSize)
       edit+= list[i] + "; ";
     else
-      edit+= list[i]; 
+      edit+= list[i];
   }
   ui->extLine->setText(edit);
 }
 
 
 ConfigDialog::~ConfigDialog()
-{
-  delete ui;
-}
+{}
 
 
 Settings::EnvType ConfigDialog::getEnvType() const
@@ -89,12 +89,12 @@ QString ConfigDialog::getProjsPath() const
 
 QStringList ConfigDialog::getExtList() const
 {
-  QStringList list=ui->extLine->text().split(";", QString::SkipEmptyParts);
-  
+  const QStringList list = ui->extLine->text().split(";", QString::SkipEmptyParts);
+
   QStringList ret;
-  foreach (QString str, list)
+  for(const QString &str: list)
     ret << str.simplified();
-  
+
   return ret;
 }
 
@@ -115,21 +115,21 @@ void ConfigDialog::extEnvButtonPressed()
 
 void ConfigDialog::envBrowsePressed()
 {
-  QString path=
+  const QString path=
     QFileDialog::getExistingDirectory(this,
                                       tr("Browse for projects' dir"),
                                       ui->envLine->text());
-  if (path!="")
+  if (path != "")
     ui->envLine->setText(path);
 }
 
 
 void ConfigDialog::projsBrowsePressed()
 {
-  QString path=
+  const QString path=
     QFileDialog::getExistingDirectory(this,
                                       tr("Browse for projects' dir"),
                                       ui->projsLine->text());
-  if (path!="")
+  if (path != "")
     ui->projsLine->setText(path);
 }

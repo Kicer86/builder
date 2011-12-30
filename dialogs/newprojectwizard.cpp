@@ -15,32 +15,31 @@ NewProjectWizard::NewProjectWizard(QWidget *p) :
 }
 
 NewProjectWizard::~NewProjectWizard()
-{
-  delete ui;
-}
+{}
 
 
 void NewProjectWizard::addReleseLineEdit()
 {
-  QLineEdit *lineEdit=new QLineEdit;
+  QLineEdit *lineEdit = new QLineEdit;
   edits.append(lineEdit);
   ui->releasesLayout->addWidget(lineEdit);
   connect(lineEdit, SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
 }
 
+
 void NewProjectWizard::textChanged(const QString& )
 {
   //check qlineedits to determine if add or remove next one
-  int eSize=edits.size();
+  int eSize = edits.size();
 
   assert(edits.size()>0);   //at least one
 
   //add some?
-  if (edits[eSize-1]->text().isEmpty()==false)  //last one is not empty?
+  if (edits[eSize-1]->text().isEmpty() == false)  //last one is not empty?
     addReleseLineEdit();
 
   //remove all trailing empties
-  while (edits.size()>1 && 
+  while (edits.size()>1 &&
          edits[edits.size()-2]->text().isEmpty() &&
          edits[edits.size()-1]->text().isEmpty()
         )    //last one is empty, and almost last also ?
@@ -60,9 +59,9 @@ QString NewProjectWizard::getProjectName() const
 QStringList NewProjectWizard::getReleasesNames() const
 {
   QStringList ret;
-  foreach (const QLineEdit *relName, edits)
+  for (const QLineEdit *const relName: edits)
     if (relName->text().isEmpty()==false)
       ret<<relName->text();
-    
+
   return ret;
 }

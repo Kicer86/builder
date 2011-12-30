@@ -36,7 +36,7 @@ ImagesManager* ImagesManager::instance()
 
 ImageWidget::ImageLayerPtr ImagesManager::getImage(const QString& name, int res)
 {
-    bool svg=name.right(4).toLower()==".svg";
+    const bool svg = name.right(4).toLower()==".svg";
 
     if (svg)
         return ImageWidget::ImageLayerPtr(new ImageLayer(Functions::dataPath(QString("icons/svg/%1").arg(name)), res, res));

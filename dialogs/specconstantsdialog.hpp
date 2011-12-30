@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include <QDialog>
 #include <QLabel>
@@ -18,7 +19,7 @@ class SpecConstantsDialog: public QDialog
 {
     Q_OBJECT
 
-    Ui::SpecConstansDialog *ui;
+    std::auto_ptr<Ui::SpecConstansDialog> ui;
 
     typedef std::pair<QLineEdit *, QLineEdit *> Variable;   //name and value
     typedef std::vector<Variable> VariableList;

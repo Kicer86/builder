@@ -1,6 +1,8 @@
 #ifndef RELEASECOPYDIALOG_HPP
 #define RELEASECOPYDIALOG_HPP
 
+#include <memory>
+
 #include <QDialog>
 
 class ReleaseInfo;
@@ -13,7 +15,7 @@ class ReleaseCopyDialog : public QDialog
 {
     Q_OBJECT
 
-    Ui::ReleaseCopyDialog *ui;
+    std::auto_ptr<Ui::ReleaseCopyDialog> ui;
 
 public:
     explicit ReleaseCopyDialog(const ReleaseInfo &, QWidget *parent = 0);
