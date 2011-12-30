@@ -48,6 +48,13 @@ Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
 static const QString buildButtonText(QObject::tr("Build"));
 static const QString fastBuildButtonText(QObject::tr("Fast build"));
 
+static void append(QHash<QString, QString> &hash, const QList< std::pair<QString, QString> > &list)
+{
+    for(const std::pair<QString, QString> &element: list)
+        hash[element.first] = element.second;
+}
+
+
 RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer"), buttonsEnabled(false)
 {
     //construct layout
@@ -105,9 +112,9 @@ RpmBuildPlugin::List RpmBuildPlugin::getListOfConstants(const ReleaseInfo *relea
     for(const ProjectVersion &projectVersion: *releaseInfo->getLocalVersions())
     {
         const QString &name = projectVersion.getName();
-        const QString url = QString("__FILEURL_%1__").arg(name);
-        const QString version = QString("__VERSION_%1__").arg(name);
-        const QString extension = QString("__EXTENSION_%1__").arg(name);
+        const QString url = QString("FILEURL_%1").arg(name);
+        const QString version = QString("VERSION_%1").arg(name);
+        const QString extension = QString("EXTENSION_%1").arg(name);
 
         list.push_back( Pair(url, projectVersion.getPkgUrl().toString()) );
         list.push_back( Pair(version, projectVersion.getVersion()) );
@@ -185,38 +192,30 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     src.open(QIODevice::ReadOnly);
     dst.open(QIODevice::WriteOnly);
 
+    //prepare hash of constants and variables
+    QHash<QString, QString> list;
+    append(list, getListOfConstants(releaseInfo));
+
     while (src.atEnd() == false)
     {
         QString line = src.readLine();
-        const QRegExp version("(.*)__VERSION_([a-zA-Z0-9_-]+)__(.*)");
+        const QRegExp version("(.*)__(.*)__(.*)");
 
         if (version.exactMatch(line))
         {
-            line = version.capturedTexts()[1];
-            const QString pkgName = version.capturedTexts()[2];
-            if (releaseInfo->getLocalVersions()->contains(pkgName))
-                line += localVersions[pkgName].getVersion();
-            line += version.capturedTexts()[3];
-        }
+            const QString varName = version.capturedTexts()[2];
 
-        const QRegExp extension("(.*)__EXTENSION_([a-zA-Z0-9_-]+)__(.*)");
-        if (extension.exactMatch(line))
-        {
-            line = extension.capturedTexts()[1];
-            const QString pkgName = extension.capturedTexts()[2];
-            if (localVersions.contains(pkgName))
-                line += localVersions[pkgName].getExtension();
-            line += extension.capturedTexts()[3];
-        }
+            //find out if this is a known variable
+            if (list.contains(varName))
+            {
+                line = version.capturedTexts()[1];
+                line += list[varName];
+                line += version.capturedTexts()[3];
 
-        const QRegExp fileurl("(.*)__FILEURL_([a-zA-Z0-9_-]+)__(.*)");
-        if (fileurl.exactMatch(line))
-        {
-            line = fileurl.capturedTexts()[1];
-            const QString pkgName = fileurl.capturedTexts()[2];
-            if (localVersions.contains(pkgName))
-                line += localVersions[pkgName].getPkgUrl().toString();
-            line += fileurl.capturedTexts()[3];
+                debug(DebugLevel::Info) << "Variable \"" << varName << "\" used in spec file. (value = \"" << list[varName] << "\")";
+            }
+            else
+                debug(DebugLevel::Warning) << "Unknown variable \"" << varName << "\" used in spec file.";
         }
 
         dst.write(line.toUtf8());
