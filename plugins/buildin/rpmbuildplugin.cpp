@@ -98,6 +98,50 @@ RpmBuildPlugin::~RpmBuildPlugin()
 {}
 
 
+RpmBuildPlugin::List RpmBuildPlugin::getListOfConstants(const ReleaseInfo *releaseInfo) const
+{
+    RpmBuildPlugin::List list;
+
+    for(const ProjectVersion &projectVersion: *releaseInfo->getLocalVersions())
+    {
+        const QString &name = projectVersion.getName();
+        const QString url = QString("__FILEURL_%1__").arg(name);
+        const QString version = QString("__VERSION_%1__").arg(name);
+        const QString extension = QString("__EXTENSION_%1__").arg(name);
+
+        list.push_back( Pair(url, projectVersion.getPkgUrl().toString()) );
+        list.push_back( Pair(version, projectVersion.getVersion()) );
+        list.push_back( Pair(extension, projectVersion.getExtension()) );
+    }
+
+    return list;
+}
+
+
+RpmBuildPlugin::List RpmBuildPlugin::getListOfVariables(const ReleaseInfo *releaseInfo) const
+{
+    RpmBuildPlugin::List list;
+
+    QSettings settings;
+    settings.beginGroup("Projects");
+    settings.beginGroup(releaseInfo->getProjectInfo()->getName());
+    settings.beginGroup(releaseInfo->getName());
+    settings.beginGroup("spec variables");
+
+    for (const QString &key: settings.childKeys())
+    {
+        const QString value = settings.value(key).toString();
+        list.push_back( Pair(key, value) );
+    }
+
+    settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
+    settings.endGroup();
+
+    return list;
+}
+
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
     //get release currently selected
@@ -352,18 +396,11 @@ void RpmBuildPlugin::specConstantsButtonPressed()
         dialog.restoreGeometry(dialogData);
 
     //fill it with constants
-    for(const ProjectVersion &projectVersion: *releaseInfo->getLocalVersions())
+    for(const Pair &constant: getListOfConstants(releaseInfo))
     {
-        const QString &name = projectVersion.getName();
-        const QString url = QString("__FILEURL_%1__").arg(name);
-        const QString version = QString("__VERSION_%1__").arg(name);
-        const QString extension = QString("__EXTENSION_%1__").arg(name);
+        dialog.addConstant(constant.first, constant.second);
 
-        dialog.addConstant(url, projectVersion.getPkgUrl().toString());
-        dialog.addConstant(version, projectVersion.getVersion());
-        dialog.addConstant(extension, projectVersion.getExtension());
-
-        dialog.addSeparator();
+        //dialog.addSeparator();
     }
 
     //fill it with variables

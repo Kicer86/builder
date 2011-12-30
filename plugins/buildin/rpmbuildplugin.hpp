@@ -21,6 +21,8 @@
 #ifndef RPMBUILDPLUGIN_HPP
 #define RPMBUILDPLUGIN_HPP
 
+#include <utility>
+
 #include <QObject>
 
 #include "plugins/buildplugin.hpp"
@@ -57,6 +59,12 @@ class RpmBuildPlugin: public BuildPlugin
 
         void build(Type);
         virtual void updateTab();
+
+        typedef std::pair<QString, QString> Pair;
+        typedef QList<Pair> List;
+        List getListOfConstants(const ReleaseInfo *) const;
+        List getListOfVariables(const ReleaseInfo *) const;
+
 
     private slots:
         void buildButtonPressed();
