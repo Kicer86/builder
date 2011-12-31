@@ -6,7 +6,7 @@ find_program(INKSCAPE inkscape REQUIRED)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
   #check version
-  string(REPLACE " " ";" C_ARGS ${CMAKE_C_COMPILER_ARG1})
+  string(REPLACE " " ";" C_ARGS "${CMAKE_C_COMPILER_ARG1}")
   execute_process(COMMAND ${CMAKE_C_COMPILER} ${C_ARGS} -dumpversion
 				  OUTPUT_VARIABLE GCC_VERSION)
   if (GCC_VERSION VERSION_LESS 4.6)
