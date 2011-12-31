@@ -64,7 +64,7 @@ class RpmBuildPlugin: public BuildPlugin
         typedef QList<Pair> List;
         typedef QHash<QString, QString> Hash;
 
-        QString replaceVariables(const QString &, const Hash &);   //replace variables/constants in str by theirs values
+        QString replaceVariables(const QString &, const Hash &) const;   //replace variables/constants in str by theirs values
         List getListOfConstants(const ReleaseInfo *) const;
         List getListOfVariables(const ReleaseInfo *) const;
         Hash solveVariables(const List &variables, const List &constants) const;

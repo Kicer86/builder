@@ -54,6 +54,12 @@ static void append(QHash<QString, QString> &hash, const QList< std::pair<QString
         hash[element.first] = element.second;
 }
 
+static void append(QHash<QString, QString> &hash, const QHash<QString, QString> &other)
+{
+    for (auto i = other.begin(); i != other.end(); ++i)
+        hash.insert(i.key(), i.value());
+}
+
 
 RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer"), buttonsEnabled(false)
 {
@@ -105,7 +111,7 @@ RpmBuildPlugin::~RpmBuildPlugin()
 {}
 
 
-QString RpmBuildPlugin::replaceVariables(const QString &str, const Hash &variables)
+QString RpmBuildPlugin::replaceVariables(const QString &str, const Hash &variables) const
 {
     const int size = str.size();
     QString result;
@@ -198,13 +204,17 @@ RpmBuildPlugin::List RpmBuildPlugin::getListOfVariables(const ReleaseInfo *relea
 }
 
 
-RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables, const List &constants) const
+RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables,         //variables to solve
+                                                    const List &constants          //constants (solved)
+                                                   ) const
 {
     Hash hash;
 
-    std::function<void(const Pair &var)> resolveVariable;
+    append(hash, constants);    //fill list of solved constants/variables with constants
 
-    resolveVariable = [&](const Pair &var)
+    std::function<bool(const Pair &var)> resolveVariable;
+
+    resolveVariable = [&](const Pair &var) -> bool
     {
         assert(hash.contains(var.first) == false);
 
@@ -218,14 +228,16 @@ RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables, const
             switch (operation)
             {
                 case '=':       //just use variable's value
-                {
+                    hash[var.first] = replaceVariables(var.second.mid(1), hash);   //do not use first char which is '='
+                    break;
 
-                }
-                break;
-
-
+                default:
+                    debug(DebugLevel::Error) << "unknown variable operator: \"" << operation << "\"";
+                    break;
             }
         }
+
+        return true;
     };
 
     for (const Pair &var: variables)
@@ -285,33 +297,14 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     //prepare hash of constants and variables
     QHash<QString, QString> list;
-    append(list, getListOfConstants(releaseInfo));
+    List constants = getListOfConstants(releaseInfo);
+    List variables = getListOfVariables(releaseInfo);
+    append(list, constants);
+    append(list, solveVariables(variables, constants));
 
     while (src.atEnd() == false)
     {
         const QString line = replaceVariables( src.readLine(), list );
-
-        /*
-        const QRegExp version("(.*)__(.*)__(.*)");  //variable/constant is marked by "__" as prefix and suffix ie: __VARIABLE__
-
-        if (version.exactMatch(line))
-        {
-            const QString varName = version.capturedTexts()[2];
-
-            //find out if this is a known variable
-            if (list.contains(varName))
-            {
-                line = version.capturedTexts()[1];
-                line += list[varName];
-                line += version.capturedTexts()[3];
-
-                debug(DebugLevel::Info) << "Variable \"" << varName << "\" used in spec file. (value = \"" << list[varName] << "\")";
-            }
-            else
-                debug(DebugLevel::Warning) << "Unknown variable \"" << varName << "\" used in spec file.";
-        }
-        */
-
         dst.write(line.toUtf8());
     }
 
