@@ -216,6 +216,14 @@ RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables,      
 
     resolveVariable = [&](const Pair &var) -> bool
     {
+
+        auto error = [&](const QString &variable, const QString &value, const QString &message)
+        {
+            debug(DebugLevel::Error) << "Could not resolve variable \"" << variable << "\""
+                                     << "with value \"" << value << "\""
+                                     << ". Error message: " << message;
+        };
+
         assert(hash.contains(var.first) == false);
 
         //check first char of value
@@ -230,6 +238,58 @@ RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables,      
                 case '=':       //just use variable's value
                     hash[var.first] = replaceVariables(var.second.mid(1), hash);   //do not use first char which is '='
                     break;
+
+                case 'r':       //regexp
+                {
+                    //Format for this operation:
+                    //  "r:expression:regexp:result"
+                    // ie: "r:abc:a(.*):_%1_" will return "_bc_".  (%1 is equivalent of \1)
+                    // This operation is +- equivalent of:
+                    // echo $expression | sed -e "s/$regexp/$result/"
+                    // Instead of ":" as separator, any other char may be used.
+
+                    const QString value = var.second.mid(1);   //all chars except 1. char
+                    const size_t size = value.size();
+                    if (size >= sizeof(":::"))                 //minimal regexp is: ":::"
+                    {
+                        const QString solvedValue = replaceVariables(value, hash);  //replace all variables with theirs values
+                        const char splitter = solvedValue[0].toAscii();  //use first char as splitter
+
+                        //do splitting
+                        const QStringList regexpParts = solvedValue.mid(1).split(splitter);  //ommit first ':'
+
+                        //we are expecting 3 parts
+                        if (regexpParts.size() == 3)
+                        {
+                            QRegExp regexp(regexpParts[1]);        //second part is a pattern
+
+                            if (regexp.exactMatch(regexpParts[0])) //enter string to be matched (first part)
+                            {
+                                //now try to commit matched expression to result
+                                const QStringList captured = regexp.capturedTexts();  //list of captured texts "(.*)"
+                                QString result = regexpParts[2];
+
+                                for (int i = 1; i < captured.size(); i++)
+                                {
+                                    //this operation will replace each "%n" in result part of regexp with corresponding captured text.
+                                    //This is why we use %n instead of \n, as %n is used by QString algorithms to replace args
+                                    result = result.arg(captured[i]);
+                                }
+
+                                hash[var.first] = result;
+                            }
+                            else
+                                error(var.first, var.second, "Could not match regular expression.");
+                        }
+                        else
+                            error(var.first, var.second,
+                                  QString("Variable's value should consist of 3 parts, but %1 were found.")
+                                  .arg(regexpParts.size()));
+                    }
+                    else
+                        error(var.first, var.second, "Variable's value is too short even for simples regular expression.");
+                }
+                break;
 
                 default:
                     debug(DebugLevel::Error) << "unknown variable operator: \"" << operation << "\"";
