@@ -105,6 +105,54 @@ RpmBuildPlugin::~RpmBuildPlugin()
 {}
 
 
+QString RpmBuildPlugin::replaceVariables(const QString &str, const Hash &variables)
+{
+    const int size = str.size();
+    QString result;
+
+    for (int i = 0; i < size; i++)
+    {
+        QString toAppend(str[i]);
+
+        if (i < (size - sizeof("__a__")))  // enought chars to create shortest variable?
+        {
+            if (str[i] == '_' && str[i + 1] == '_')  //prefix matches? (__)
+            {
+                const int j = i + 2;
+                i = j;                               //jump over prefix
+                toAppend += '_';
+
+                while ( (i + 1) < size && (str[i] != '_' || str[i + 1] != '_') )  //wait for suffix (__)
+                    toAppend += str[i++];
+
+                if (i + 1 < size && str[i] == '_' && str[i + 1] == '_')
+                {
+                    toAppend += "__";
+                    i++;
+
+                    //we got it!
+                    const int k = i - 2;  //name without suffix
+
+                    const QString varName = str.mid(j, k - j + 1);
+
+                    if (variables.contains(varName))
+                    {
+                        toAppend = variables[varName];
+                        debug(DebugLevel::Info) << "Variable \"" << varName << "\" used in spec file. (value = \"" << variables[varName] << "\")";
+                    }
+                    else
+                        debug(DebugLevel::Warning) << "Unknown variable \"" << varName << "\" used in spec file.";
+                }
+            }
+        }
+
+        result.append(toAppend);
+    }
+
+    return result;
+}
+
+
 RpmBuildPlugin::List RpmBuildPlugin::getListOfConstants(const ReleaseInfo *releaseInfo) const
 {
     RpmBuildPlugin::List list;
@@ -148,6 +196,49 @@ RpmBuildPlugin::List RpmBuildPlugin::getListOfVariables(const ReleaseInfo *relea
 
     return list;
 }
+
+
+RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables, const List &constants) const
+{
+    Hash hash;
+
+    std::function<void(const Pair &var)> resolveVariable;
+
+    resolveVariable = [&](const Pair &var)
+    {
+        assert(hash.contains(var.first) == false);
+
+        //check first char of value
+        if (var.second.size() == 0)
+            hash[var.first] = var.second;
+        else
+        {
+            const char operation = var.second[0].toAscii() ;
+
+            switch (operation)
+            {
+                case '=':       //just use variable's value
+                {
+
+                }
+                break;
+
+
+            }
+        }
+    };
+
+    for (const Pair &var: variables)
+    {
+        //try to resolve value
+
+        if (hash.contains(var.first) == false)  //not resolved yet?
+            resolveVariable(var);
+    }
+
+    return hash;
+}
+
 
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
@@ -198,7 +289,9 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     while (src.atEnd() == false)
     {
-        QString line = src.readLine();
+        const QString line = replaceVariables( src.readLine(), list );
+
+        /*
         const QRegExp version("(.*)__(.*)__(.*)");  //variable/constant is marked by "__" as prefix and suffix ie: __VARIABLE__
 
         if (version.exactMatch(line))
@@ -217,6 +310,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
             else
                 debug(DebugLevel::Warning) << "Unknown variable \"" << varName << "\" used in spec file.";
         }
+        */
 
         dst.write(line.toUtf8());
     }
