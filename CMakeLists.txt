@@ -2,7 +2,13 @@ project(builder)
 cmake_minimum_required(VERSION 2.6)
 find_package(Qt4 4.6 REQUIRED QtGui QtCore QtNetwork)
 find_package(Lua51 REQUIRED)
-find_program(INKSCAPE inkscape REQUIRED)
+find_program(INKSCAPE inkscape)
+
+if (INKSCAPE-NOTFOUND)
+	message ( FATAL_ERROR "inkscape: not found" )
+else (INKSCAPE-NOTFOUND)
+	message ( STATUS "inkscape: found" )
+endif (INKSCAPE-NOTFOUND)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
   #check version
