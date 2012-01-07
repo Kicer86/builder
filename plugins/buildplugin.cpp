@@ -33,7 +33,7 @@
 #include "misc/sandboxprocess.hpp"
 
 
-BuildProcess::BuildProcess(ReleaseInfo *r): releaseInfo(r)
+BuildProcess::BuildProcess(ReleaseInfo *r): releaseInfo(r), data(0)
 {
     log = new QTextDocument(this);
     process = new QProcess(this);
@@ -82,13 +82,19 @@ void BuildProcess::read() const
 
 void BuildProcess::close(int)
 {
-    emit stopBuildProcess(releaseInfo);
+    emit buildProcessStopped(releaseInfo);
 }
 
 
 void BuildProcess::stop() const
 {
     process->terminate();
+}
+
+
+bool BuildProcess::isRunning() const
+{
+    return process->state() != QProcess::NotRunning;
 }
 
 
@@ -124,7 +130,7 @@ void BuildPlugin::startBuildProcess(const QString &program, const QStringList &a
     //make sure there is no such process already in base
     if (findBuildProcess(buildProcess->releaseInfo)==0)
     {
-        connect(buildProcess, SIGNAL(stopBuildProcess(ReleaseInfo*)), this, SLOT(stopBuildProcess(ReleaseInfo*)));
+        connect(buildProcess, SIGNAL(buildProcessStopped(ReleaseInfo*)), this, SLOT(stopBuildProcess(ReleaseInfo*)));
 
         buildsInfo[buildProcess->releaseInfo] = buildProcess;
     }
@@ -139,7 +145,7 @@ void BuildPlugin::startBuildProcess(const QString &program, const QStringList &a
 }
 
 
-BuildProcess* BuildPlugin::findBuildProcess(ReleaseInfo *releaseInfo)
+BuildProcess* BuildPlugin::findBuildProcess(const ReleaseInfo *releaseInfo)
 {
     BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
 
@@ -164,6 +170,7 @@ void BuildPlugin::stopBuildProcess(ReleaseInfo *releaseInfo)
         //buildProcess->deleteLater();
 
         releaseInfo->buildStopped();
+        buildProcessStopped(releaseInfo);
 
         updateProgress(0);  //stop progress
     }

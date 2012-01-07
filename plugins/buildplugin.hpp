@@ -40,8 +40,9 @@ class BuildProcess: public QObject
         QTextDocument *log;             //build log
         ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
         int progress;                   //build progress (if -1 then unknown)
+        int data;                       //additional data. For any purposes
 
-        void appendToLog(const QString& str) const;
+        void appendToLog(const QString &str) const;
 
     private slots:
         void read() const;
@@ -54,18 +55,31 @@ class BuildProcess: public QObject
         virtual ~BuildProcess();
 
         void stop() const;              //terminate build process
-        QProcess *getProcess()
+        QProcess* getProcess()
         {
             return process;
         }
 
-        QTextDocument *getLog()
+        QTextDocument* getLog()
         {
             return log;
         }
 
+        void setData(int d)
+        {
+            data = d;
+        }
+
+        int getData() const
+        {
+            return data;
+        }
+
+        bool isRunning() const;
+
+
     signals:
-        void stopBuildProcess(ReleaseInfo *);
+        void buildProcessStopped(ReleaseInfo *);
 };
 
 
@@ -77,7 +91,7 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         BuildPlugin(const char *);
         virtual ~BuildPlugin();
 
-        typedef std::map<ReleaseInfo*, BuildProcess*> BuildsInfo;
+        typedef std::map<const ReleaseInfo*, BuildProcess*> BuildsInfo;
 
         const QString& getBuilderName() const;        //return builder name
         virtual QLayout* getBuildButtons() const = 0; //return layout with button(s) for managing build process
@@ -88,13 +102,11 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
     protected:
         //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
         void startBuildProcess(const QString &, const QStringList &, BuildProcess *);
-        BuildProcess *findBuildProcess(ReleaseInfo *releaseInfo);
+        BuildProcess *findBuildProcess(const ReleaseInfo *);
+        virtual void buildProcessStopped(ReleaseInfo *) {}
 
     protected slots:
-        virtual void newReleaseInfoSelected(ReleaseInfo *)
-        {}
-
-        virtual void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
+        virtual void newReleaseInfoSelected(ReleaseInfo *) {}
 
     private:
         BuildPlugin(const BuildPlugin& other);
@@ -103,6 +115,9 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         const QString pluginName;
 
         BuildsInfo buildsInfo;
+
+    private slots:
+        void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
 };
 
 Q_DECLARE_INTERFACE(BuildPlugin, "kicer.builder.BuildPlugin/1.0")

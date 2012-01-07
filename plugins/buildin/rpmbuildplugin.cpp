@@ -312,6 +312,60 @@ RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables,      
 }
 
 
+void RpmBuildPlugin::refreshButtons()
+{
+    //get current ReleaseInfo
+    const ReleaseInfo *releaseInfo = ProjectsManager::instance()->getCurrentRelease();
+
+    //now get it's build process
+    if (releaseInfo != nullptr)
+    {
+        if (buttonsEnabled == false)   //first ReleaseInfo chosen, enable buttons
+        {
+            buildButton->setEnabled(true);
+            fastBuildButton->setEnabled(true);
+            editSpecButton->setEnabled(true);
+            showConstantsButton->setEnabled(true);
+            showMacrosButton->setEnabled(true);
+
+            buttonsEnabled = true;
+        }
+
+        BuildProcess *buildProcess = findBuildProcess(releaseInfo);
+
+        if (buildProcess != nullptr && buildProcess->isRunning())
+        {
+            switch (buildProcess->getData())
+            {
+                case Normal:
+                    buildButton->setText(tr("Stop"));
+                    fastBuildButton->setDisabled(true);
+                    break;
+
+                case Fast:
+                    fastBuildButton->setText(tr("Stop"));
+                    buildButton->setDisabled(true);
+                    break;
+
+                default:
+                    assert(!"bug, unregonized build type");
+                    break;
+            }
+        }
+        else
+        {
+            //process is not running, restore buttons
+            buildButton->setEnabled(true);
+            buildButton->setText(buildButtonText);
+
+            fastBuildButton->setEnabled(true);
+            fastBuildButton->setText(fastBuildButtonText);
+        }
+    }
+
+}
+
+
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
     //get release currently selected
@@ -420,6 +474,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
     if (buildProcess == 0)
         buildProcess = new BuildProcess(releaseInfo);
 
+    buildProcess->setData(buildType);
     buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
 
     startBuildProcess("rpmbuild", args, buildProcess);
@@ -435,8 +490,7 @@ void RpmBuildPlugin::buildButtonPressed()
     debug(DebugLevel::Debug) << "build button pressed";
     build(Normal);
 
-    buildButton->setText(tr("Stop"));
-    fastBuildButton->setDisabled(true);
+    refreshButtons();
 }
 
 
@@ -445,8 +499,7 @@ void RpmBuildPlugin::fastBuildButtonPressed()
     debug(DebugLevel::Debug) << "fast build button pressed";
     build(Fast);
 
-    fastBuildButton->setText(tr("Stop"));
-    buildButton->setDisabled(true);
+    refreshButtons();
 }
 
 
@@ -454,29 +507,13 @@ void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
 {
     updateTab();
 
-    if (buttonsEnabled == false)   //first ReleaseInfo chosen, enable buttons
-    {
-        buildButton->setEnabled(true);
-        fastBuildButton->setEnabled(true);
-        editSpecButton->setEnabled(true);
-        showConstantsButton->setEnabled(true);
-        showMacrosButton->setEnabled(true);
-
-        buttonsEnabled = true;
-    }
+    refreshButtons();
 }
 
 
-void RpmBuildPlugin::stopBuildProcess(ReleaseInfo *r)
+void RpmBuildPlugin::buildProcessStopped(ReleaseInfo *)
 {
-    BuildPlugin::stopBuildProcess(r);
-
-    //restore buttons
-    buildButton->setEnabled(true);
-    buildButton->setText(buildButtonText);
-
-    fastBuildButton->setEnabled(true);
-    fastBuildButton->setText(fastBuildButtonText);
+    refreshButtons();
 }
 
 

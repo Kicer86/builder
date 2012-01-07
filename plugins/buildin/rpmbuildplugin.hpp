@@ -68,6 +68,7 @@ class RpmBuildPlugin: public BuildPlugin
         List getListOfConstants(const ReleaseInfo *) const;
         List getListOfVariables(const ReleaseInfo *) const;
         Hash solveVariables(const List &variables, const List &constants) const;
+        void refreshButtons();              //another releaseInfo selected, or build started, buttons have to be refreshed
 
     private slots:
         void buildButtonPressed();
@@ -79,7 +80,7 @@ class RpmBuildPlugin: public BuildPlugin
 
     protected:
         virtual void newReleaseInfoSelected(ReleaseInfo *);
-        virtual void stopBuildProcess(ReleaseInfo *);
+        virtual void buildProcessStopped(ReleaseInfo *);
 
     public:
         RpmBuildPlugin();
