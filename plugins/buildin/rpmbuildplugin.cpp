@@ -312,7 +312,7 @@ RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables,      
 }
 
 
-void RpmBuildPlugin::refreshButtons()
+void RpmBuildPlugin::refreshGui()
 {
     //get current ReleaseInfo
     const ReleaseInfo *releaseInfo = ProjectsManager::instance()->getCurrentRelease();
@@ -331,7 +331,7 @@ void RpmBuildPlugin::refreshButtons()
             buttonsEnabled = true;
         }
 
-        BuildProcess *buildProcess = findBuildProcess(releaseInfo);
+        const BuildProcess *buildProcess = findBuildProcess(releaseInfo);
 
         if (buildProcess != nullptr && buildProcess->isRunning())
         {
@@ -490,7 +490,7 @@ void RpmBuildPlugin::buildButtonPressed()
     debug(DebugLevel::Debug) << "build button pressed";
     build(Normal);
 
-    refreshButtons();
+    refreshGui();
 }
 
 
@@ -499,7 +499,7 @@ void RpmBuildPlugin::fastBuildButtonPressed()
     debug(DebugLevel::Debug) << "fast build button pressed";
     build(Fast);
 
-    refreshButtons();
+    refreshGui();
 }
 
 
@@ -507,13 +507,13 @@ void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
 {
     updateTab();
 
-    refreshButtons();
+    refreshGui();
 }
 
 
 void RpmBuildPlugin::buildProcessStopped(ReleaseInfo *)
 {
-    refreshButtons();
+    refreshGui();
 }
 
 
