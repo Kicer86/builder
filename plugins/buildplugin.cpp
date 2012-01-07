@@ -42,6 +42,7 @@ BuildProcess::BuildProcess(ReleaseInfo *r): releaseInfo(r), data(0)
     QPlainTextDocumentLayout *documentLayout=new QPlainTextDocumentLayout(log);
     log->setDocumentLayout(documentLayout);
 
+    connect(process, SIGNAL(started()), this, SLOT(started()));
     connect(process, SIGNAL(readyRead()), this, SLOT(read()));
     connect(process, SIGNAL(finished(int)), this, SLOT(close(int)));
 }
@@ -57,6 +58,12 @@ void BuildProcess::appendToLog(const QString &str) const
     QTextCursor cursor(log);
     cursor.movePosition(QTextCursor::End);
     cursor.insertText(str);
+}
+
+
+void BuildProcess::started() const
+{
+    emit progress(-1);
 }
 
 
@@ -82,6 +89,7 @@ void BuildProcess::read() const
 
 void BuildProcess::close(int)
 {
+    emit progress(0);
     emit buildProcessStopped(releaseInfo);
 }
 
@@ -98,13 +106,12 @@ bool BuildProcess::isRunning() const
 }
 
 
-BuildPlugin::BuildPlugin(const char *n): pluginName(n)
+BuildPlugin::BuildPlugin(const char *n): currentReleaseInfo(nullptr), pluginName(n)
 {
     debug(DebugLevel::Debug) << "Loading plugin " << pluginName;
 
     //watch for changes in current (selected) ReleaseInfo
-    connect(Broadcast::instance(), SIGNAL(releaseSelectedSignal(ReleaseInfo *)), this, SLOT(newReleaseInfoSelected(ReleaseInfo *)));
-
+    connect(Broadcast::instance(), SIGNAL(releaseSelectedSignal(ReleaseInfo *)), this, SLOT(releaseInfoSelected(ReleaseInfo *)));
 }
 
 
@@ -153,10 +160,36 @@ BuildProcess* BuildPlugin::findBuildProcess(const ReleaseInfo *releaseInfo)
 }
 
 
+
+void BuildPlugin::disconnectProcessSignals()
+{
+    if (currentReleaseInfo != nullptr)
+    {
+        //disconnect previous BuildProcess
+        BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);  //build process for actual release
+        if (buildProcess != nullptr)
+            disconnect(buildProcess);
+    }
+}
+
+
+void BuildPlugin::connectProcessSignals()
+{
+    if (currentReleaseInfo != nullptr)
+    {
+        BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);  //build process of previous release
+        if (buildProcess != nullptr)
+            connect(buildProcess, SIGNAL(progress(int)), this, SLOT(updateProgress(int)));
+    }
+}
+
+
 void BuildPlugin::stopBuildProcess(ReleaseInfo *releaseInfo)
 {
     BuildProcess *buildProcess = findBuildProcess(releaseInfo);
     assert(buildProcess);
+
+    disconnectProcessSignals();
 
     if (buildProcess)
     {
@@ -171,7 +204,18 @@ void BuildPlugin::stopBuildProcess(ReleaseInfo *releaseInfo)
 
         releaseInfo->buildStopped();
         buildProcessStopped(releaseInfo);
-
-        updateProgress(0);  //stop progress
     }
+}
+
+
+void BuildPlugin::releaseInfoSelected(ReleaseInfo *r)
+{
+    //new releaseInfo selected, watch for changes of build progres
+    disconnectProcessSignals();
+
+    currentReleaseInfo = r;            //save current ReleaseInfo
+    //connect signals
+    connectProcessSignals();
+
+    newReleaseInfoSelected();   //call virtual protected function
 }

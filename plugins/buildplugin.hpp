@@ -39,12 +39,12 @@ class BuildProcess: public QObject
         QProcess *process;              //build process
         QTextDocument *log;             //build log
         ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
-        int progress;                   //build progress (if -1 then unknown)
         int data;                       //additional data. For any purposes
 
         void appendToLog(const QString &str) const;
 
     private slots:
+        void started() const;
         void read() const;
         void close(int);
 
@@ -79,7 +79,8 @@ class BuildProcess: public QObject
 
 
     signals:
-        void buildProcessStopped(ReleaseInfo *);
+        void buildProcessStopped(ReleaseInfo *) const;
+        void progress(int) const;
 };
 
 
@@ -96,27 +97,31 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         const QString& getBuilderName() const;        //return builder name
         virtual QLayout* getBuildButtons() const = 0; //return layout with button(s) for managing build process
         virtual QWidget* getBuildLog() const = 0;     //return widget with build messages
-        virtual void updateProgress(int) = 0;         //set build progress (-1 means that progress is unknown)
 
     protected:
+        ReleaseInfo *currentReleaseInfo;                     //cache for current ReleaseInfo
+
         //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
         void startBuildProcess(const QString &, const QStringList &, BuildProcess *);
         BuildProcess *findBuildProcess(const ReleaseInfo *);
         virtual void buildProcessStopped(ReleaseInfo *) {}
-
-    protected slots:
-        virtual void newReleaseInfoSelected(ReleaseInfo *) {}
+        virtual void newReleaseInfoSelected() {}
 
     private:
         BuildPlugin(const BuildPlugin& other);
         void operator=(const BuildPlugin&);
 
         const QString pluginName;
-
         BuildsInfo buildsInfo;
 
+        void disconnectProcessSignals(); //destroy connections
+        void connectProcessSignals();    //make connections between build process and 'this'
+
     private slots:
-        void stopBuildProcess(ReleaseInfo *);  //remove build process for ReleaseInfo
+        void stopBuildProcess(ReleaseInfo *);         //remove build process for ReleaseInfo
+        void releaseInfoSelected(ReleaseInfo *);
+        virtual void updateProgress(int) {}           //set build progress (-1 means that progress is unknown)
+
 };
 
 Q_DECLARE_INTERFACE(BuildPlugin, "kicer.builder.BuildPlugin/1.0")

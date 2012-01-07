@@ -79,7 +79,7 @@ class RpmBuildPlugin: public BuildPlugin
         void showMacrosButtonPressed();
 
     protected:
-        virtual void newReleaseInfoSelected(ReleaseInfo *);
+        virtual void newReleaseInfoSelected();
         virtual void buildProcessStopped(ReleaseInfo *);
 
     public:

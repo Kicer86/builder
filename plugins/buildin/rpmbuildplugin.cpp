@@ -34,7 +34,6 @@
 
 #include "rpmbuildplugin.hpp"
 #include "data_containers/editorsmanager.hpp"
-#include "data_containers/projectsmanager.hpp"
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
 #include "dialogs/specconstantsdialog.hpp"
@@ -314,11 +313,8 @@ RpmBuildPlugin::Hash RpmBuildPlugin::solveVariables(const List &variables,      
 
 void RpmBuildPlugin::refreshGui()
 {
-    //get current ReleaseInfo
-    const ReleaseInfo *releaseInfo = ProjectsManager::instance()->getCurrentRelease();
-
     //now get it's build process
-    if (releaseInfo != nullptr)
+    if (currentReleaseInfo != nullptr)
     {
         if (buttonsEnabled == false)   //first ReleaseInfo chosen, enable buttons
         {
@@ -331,7 +327,7 @@ void RpmBuildPlugin::refreshGui()
             buttonsEnabled = true;
         }
 
-        const BuildProcess *buildProcess = findBuildProcess(releaseInfo);
+        const BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);
 
         if (buildProcess != nullptr && buildProcess->isRunning())
         {
@@ -368,35 +364,29 @@ void RpmBuildPlugin::refreshGui()
 
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
-    //get release currently selected
-    ReleaseInfo * const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
-
-    if (releaseInfo == 0)
+    if (currentReleaseInfo == 0)
         return;                     //no release ich choosen
 
     //get info about this release
-    BuildProcess *buildProcess = findBuildProcess(releaseInfo);
+    BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);
     if (buildProcess)   //there is an info about build?
     {
         //if it's running then stop it
-        if (buildProcess->getProcess()->state() == QProcess::Running) //running?
+        if (buildProcess->isRunning()) //running?
         {
             buildProcess->stop();
             return;
         }
     }
 
-    //włącz progress bar
-    updateProgress(-1);  //powinien migać czy coś
-
     QString homePath = getenv("HOME");
     if (Settings::instance()->getEnvType() == Settings::External)
         homePath = "/root";
 
 
-    const ProjectInfo *projectInfo = releaseInfo->getProjectInfo();
-    const QString releasePath = releaseInfo->getReleasePath();
-    const ReleaseInfo::VersionList &localVersions = *releaseInfo->getLocalVersions();
+    const ProjectInfo *projectInfo = currentReleaseInfo->getProjectInfo();
+    const QString releasePath = currentReleaseInfo->getReleasePath();
+    const ReleaseInfo::VersionList &localVersions = *currentReleaseInfo->getLocalVersions();
     const QString specFile = homePath + "/rpmbuild/SPECS/" + projectInfo->getName() + ".spec";
     const QString specSrc = releasePath + "/" + projectInfo->getName() + ".spec";
     const QString specDst = SandboxProcess::decoratePath(specFile);
@@ -411,8 +401,8 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     //prepare hash of constants and variables
     QHash<QString, QString> list;
-    List constants = getListOfConstants(releaseInfo);
-    List variables = getListOfVariables(releaseInfo);
+    List constants = getListOfConstants(currentReleaseInfo);
+    List variables = getListOfVariables(currentReleaseInfo);
     append(list, constants);
     append(list, solveVariables(variables, constants));
 
@@ -441,7 +431,7 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     //skopiuj patche
     QDir patchesDir(releasePath + "/patches");
-    patchesDir.cd(releaseInfo->getName());
+    patchesDir.cd(currentReleaseInfo->getName());
     const QStringList patches = patchesDir.entryList( QDir::Files, QDir::Name | QDir::IgnoreCase );
 
     foreach(QString patch, patches)
@@ -472,14 +462,14 @@ void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 
     //not created yet?
     if (buildProcess == 0)
-        buildProcess = new BuildProcess(releaseInfo);
+        buildProcess = new BuildProcess(currentReleaseInfo);
 
     buildProcess->setData(buildType);
     buildProcess->getProcess()->setWorkingDirectory(SandboxProcess::decoratePath(""));
 
     startBuildProcess("rpmbuild", args, buildProcess);
 
-    releaseInfo->buildStarted();
+    currentReleaseInfo->buildStarted();
 
     updateTab();
 }
@@ -503,7 +493,7 @@ void RpmBuildPlugin::fastBuildButtonPressed()
 }
 
 
-void RpmBuildPlugin::newReleaseInfoSelected(ReleaseInfo *)
+void RpmBuildPlugin::newReleaseInfoSelected()
 {
     updateTab();
 
@@ -519,9 +509,7 @@ void RpmBuildPlugin::buildProcessStopped(ReleaseInfo *)
 
 void RpmBuildPlugin::specButtonPressed()
 {
-    ReleaseInfo *const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
-
-    QFileInfo fileInfo(releaseInfo->getSpecFile());
+    QFileInfo fileInfo(currentReleaseInfo->getSpecFile());
     if (fileInfo.exists() == false || fileInfo.size() == 0) //spec jeszcze nie istnieje? użyj tamplate
     {
         qDebug() << QString("preparing template for spec file (%1 -> %2)")
@@ -533,7 +521,7 @@ void RpmBuildPlugin::specButtonPressed()
         src.open(QIODevice::ReadOnly);
         dst.open(QIODevice::WriteOnly);
 
-        QString projName = releaseInfo->getProjectInfo()->getName();
+        QString projName = currentReleaseInfo->getProjectInfo()->getName();
 
         while (src.atEnd() == false)
         {
@@ -566,20 +554,18 @@ void RpmBuildPlugin::specConstantsButtonPressed()
 {
     SpecConstantsDialog dialog;
 
-    ReleaseInfo *const releaseInfo = ProjectsManager::instance()->getCurrentRelease();
-
     //restore dialog's dimenstion
     QSettings settings;
     settings.beginGroup("Projects");
-    settings.beginGroup(releaseInfo->getProjectInfo()->getName());
-    settings.beginGroup(releaseInfo->getName());
+    settings.beginGroup(currentReleaseInfo->getProjectInfo()->getName());
+    settings.beginGroup(currentReleaseInfo->getName());
 
     QByteArray dialogData = settings.value("Constants dialog").toByteArray();
     if (dialogData.size() > 0)
         dialog.restoreGeometry(dialogData);
 
     //fill it with constants
-    for(const Pair &constant: getListOfConstants(releaseInfo))
+    for(const Pair &constant: getListOfConstants(currentReleaseInfo))
     {
         dialog.addConstant(constant.first, constant.second);
 
@@ -655,10 +641,9 @@ void RpmBuildPlugin::updateTab()
     //rpm's build log has been chosen
     //display log of particular releaseinfo
 
-    ReleaseInfo *currentRelease = ProjectsManager::instance()->getCurrentRelease();
-    if (currentRelease)
+    if (currentReleaseInfo)
     {
-        BuildProcess *const buildProcess = findBuildProcess(currentRelease);
+        BuildProcess *const buildProcess = findBuildProcess(currentReleaseInfo);
         if (buildProcess)
             log->setDocument(buildProcess->getLog());
         else
