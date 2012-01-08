@@ -6,7 +6,12 @@
 
 // ********************************** data **********************************
 
-QExProgressBarModel::QExProgressBarModel(QObject *p): QObject(p) {}
+QExProgressBarModel::QExProgressBarModel(QObject *p):
+    QObject(p),
+    m_value(0),
+    m_minimum(0),
+    m_maximum(100)
+{}
 
 
 void QExProgressBarModel::setMaximum ( int m )
@@ -46,7 +51,7 @@ void QExProgressBarModel::setValue(int v)
 
 QExProgressBarView::QExProgressBarView(QWidget *p): QProgressBar(p), model(nullptr) {}
 
-void QExProgressBarView::setModel(QExProgressBarModel *m)
+void QExProgressBarView::setModel(const QExProgressBarModel *m)
 {
     //disconnect previous model
     if (model != nullptr)
@@ -54,13 +59,18 @@ void QExProgressBarView::setModel(QExProgressBarModel *m)
 
     model = m;
 
-    //make connections
-    connect(model, SIGNAL(setPBMaximum(int)), this, SLOT(setMaximum(int)));
-    connect(model, SIGNAL(setPBMimimum(int)), this, SLOT(setMinimum(int)));
-    connect(model, SIGNAL(setPBMRange(int, int)), this, SLOT(setRange(int, int)));
-    connect(model, SIGNAL(setPBValue(int)), this, SLOT(setValue(int)));
+    if (model != nullptr)
+    {
+        //make connections
+        connect(model, SIGNAL(setPBMaximum(int)), this, SLOT(setMaximum(int)));
+        connect(model, SIGNAL(setPBMimimum(int)), this, SLOT(setMinimum(int)));
+        connect(model, SIGNAL(setPBRange(int, int)), this, SLOT(setRange(int, int)));
+        connect(model, SIGNAL(setPBValue(int)), this, SLOT(setValue(int)));
 
-    //refresh data
-    setRange(model->minimum(), model->maximum());
-    setValue(model->value());
+        //refresh data
+        setRange(model->minimum(), model->maximum());
+        setValue(model->value());
+    }
+    else
+        reset();
 }

@@ -18,7 +18,7 @@ class QExProgressBarModel: public QObject
         int m_minimum, m_maximum;
 
     public:
-        explicit QExProgressBarModel(QObject *p);
+        explicit QExProgressBarModel(QObject *p = 0);
         ~QExProgressBarModel() {}
 
         int value() const
@@ -52,11 +52,11 @@ class QExProgressBarModel: public QObject
 //view
 class QExProgressBarView: public QProgressBar
 {
-        QExProgressBarModel *model;
+        const QExProgressBarModel *model;
 
     public:
-        explicit QExProgressBarView(QWidget *);
-        void setModel(QExProgressBarModel *);
+        explicit QExProgressBarView(QWidget *p = 0);
+        void setModel(const QExProgressBarModel *);
 };
 
 
