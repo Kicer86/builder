@@ -5,20 +5,20 @@ find_package(Lua51 REQUIRED)
 find_program(INKSCAPE inkscape)
 
 if (INKSCAPE-NOTFOUND)
-	message ( FATAL_ERROR "inkscape: not found" )
+    message ( FATAL_ERROR "inkscape: not found" )
 else (INKSCAPE-NOTFOUND)
-	message ( STATUS "inkscape: found" )
+    message ( STATUS "inkscape: found" )
 endif (INKSCAPE-NOTFOUND)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
   #check version
   string(REPLACE " " ";" C_ARGS "${CMAKE_C_COMPILER_ARG1}")
   execute_process(COMMAND ${CMAKE_C_COMPILER} ${C_ARGS} -dumpversion
-				  OUTPUT_VARIABLE GCC_VERSION)
+                  OUTPUT_VARIABLE GCC_VERSION)
   if (GCC_VERSION VERSION_LESS 4.6)
-	message ( FATAL_ERROR "GCC version >= 4.6 required due to c++0x11 standard usage" )
+    message ( FATAL_ERROR "GCC version >= 4.6 required due to c++0x11 standard usage" )
   else(GCC_VERSION VERSION_LESS 4.6)
-	message ( STATUS "Acceptable version of gcc found: ${GCC_VERSION}")
+    message ( STATUS "Acceptable version of gcc found: ${GCC_VERSION}")
   endif(GCC_VERSION VERSION_LESS 4.6)
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
@@ -29,13 +29,13 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for 
 add_definitions(-DDEBUG_QSTRING_SUPPORT)      #let debug functions from my library know QString
 
 if (NOT BUILDER_DATADIR)
-	set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)
+    set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)
 endif (NOT BUILDER_DATADIR)
 if (NOT BUILDER_LIBDIR)
-	set (BUILDER_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
+    set (BUILDER_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
 endif (NOT BUILDER_LIBDIR)
 if (NOT BUILDER_BINDIR)
-	set (BUILDER_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+    set (BUILDER_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 endif (NOT BUILDER_BINDIR)
 
 include (plugins/plugins.cmake)
@@ -56,7 +56,7 @@ set(builder_SRCS
   data_containers/projectversion.cpp
   data_containers/releaseinfo.cpp
   dialogs/configdialog.cpp
-  dialogs/newprojectwizard.cpp 
+  dialogs/newprojectwizard.cpp
   dialogs/releasecopydialog.cpp
   dialogs/progressdialog.cpp
   dialogs/specconstantsdialog.cpp
@@ -71,6 +71,7 @@ set(builder_SRCS
   plugins/buildplugin.cpp
   widgets/imagewidget.cpp
   widgets/projectinfowidget.cpp
+  widgets/QExProgressBar/qexprogressbar.cpp
   widgets/widgetlist/widgetdelegate.cpp
   widgets/widgetlist/widgetlistitem.cpp
   widgets/widgetlist/widgetlistproxymodel.cpp
@@ -95,6 +96,7 @@ set(builder_MOC
   plugins/buildplugin.hpp
   widgets/imagewidget.hpp
   widgets/projectinfowidget.hpp
+  widgets/QExProgressBar/qexprogressbar.hpp
   widgets/widgetlist/widgetlistitem.hpp
   widgets/widgetlist/widgetlistview.hpp
 )
