@@ -7,8 +7,10 @@
 
 #include <QProgressBar>
 
-// data
-class QExProgressBarProxy: public QObject
+class QProgressBar;
+
+//model
+class QExProgressBarModel: public QObject
 {
         Q_OBJECT
 
@@ -16,21 +18,46 @@ class QExProgressBarProxy: public QObject
         int m_minimum, m_maximum;
 
     public:
+        explicit QExProgressBarModel(QObject *p);
+        ~QExProgressBarModel() {}
+
+        int value() const
+        {
+            return m_value;
+        }
+
+        int minimum() const
+        {
+            return m_minimum;
+        }
+
+        int maximum() const
+        {
+            return m_maximum;
+        }
 
     public slots:
-        void setMaximum ( int maximum );
-        void setMinimum ( int minimum );
-        void setRange ( int minimum, int maximum );
-        void setValue ( int value );
+        void setMaximum(int);
+        void setMinimum(int);
+        void setRange (int, int);
+        void setValue (int);
+
+    signals:
+        void setPBMaximum(int);
+        void setPBMimimum(int);
+        void setPBRange(int, int);
+        void setPBValue(int);
 };
 
-
-// view
-class QExProgressBar: public QProgressBar
+//view
+class QExProgressBarView: public QProgressBar
 {
-    public:
-        explicit QExProgressBar(QWidget *parent = 0);
+        QExProgressBarModel *model;
 
+    public:
+        explicit QExProgressBarView(QWidget *);
+        void setModel(QExProgressBarModel *);
 };
+
 
 #endif // QEXPROGRESSBAR_HPP
