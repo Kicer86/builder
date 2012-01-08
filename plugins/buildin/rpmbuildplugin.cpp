@@ -26,7 +26,6 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QProcess>
-#include <QProgressBar>
 #include <QTemporaryFile>
 #include <QSettings>
 
@@ -40,6 +39,7 @@
 #include "misc/functions.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/settings.hpp"
+#include "widgets/QExProgressBar/qexprogressbar.hpp"
 
 
 Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
@@ -72,7 +72,7 @@ RpmBuildPlugin::RpmBuildPlugin(): BuildPlugin("RPM builer"), buttonsEnabled(fals
     showMacrosButton = new QPushButton(tr("Show Rpm macros"));
     showConstantsButton = new QPushButton(tr("Show spec's constants"));
 
-    progressBar = new QProgressBar;
+    progressBar = new QExProgressBarView;
 
     //1st column - build buttons
     buttons->addWidget(buildButton, 0, 0);
@@ -316,6 +316,8 @@ void RpmBuildPlugin::refreshGui()
     //now get it's build process
     if (currentReleaseInfo != nullptr)
     {
+        //update progress bar
+
         if (buttonsEnabled == false)   //first ReleaseInfo chosen, enable buttons
         {
             buildButton->setEnabled(true);
@@ -329,34 +331,41 @@ void RpmBuildPlugin::refreshGui()
 
         const BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);
 
-        if (buildProcess != nullptr && buildProcess->isRunning())
+        if (buildProcess != nullptr)
         {
-            switch (buildProcess->getData())
+            progressBar->setModel(buildProcess->getProgressBarModel());
+
+            if (buildProcess->isRunning())
             {
-                case Normal:
-                    buildButton->setText(tr("Stop"));
-                    fastBuildButton->setDisabled(true);
-                    break;
+                switch (buildProcess->getData())
+                {
+                    case Normal:
+                        buildButton->setText(tr("Stop"));
+                        fastBuildButton->setDisabled(true);
+                        break;
 
-                case Fast:
-                    fastBuildButton->setText(tr("Stop"));
-                    buildButton->setDisabled(true);
-                    break;
+                    case Fast:
+                        fastBuildButton->setText(tr("Stop"));
+                        buildButton->setDisabled(true);
+                        break;
 
-                default:
-                    assert(!"bug, unregonized build type");
-                    break;
+                    default:
+                        assert(!"bug, unregonized build type");
+                        break;
+                }
+            }
+            else
+            {
+                //process is not running, restore buttons
+                buildButton->setEnabled(true);
+                buildButton->setText(buildButtonText);
+
+                fastBuildButton->setEnabled(true);
+                fastBuildButton->setText(fastBuildButtonText);
             }
         }
         else
-        {
-            //process is not running, restore buttons
-            buildButton->setEnabled(true);
-            buildButton->setText(buildButtonText);
-
-            fastBuildButton->setEnabled(true);
-            fastBuildButton->setText(fastBuildButtonText);
-        }
+            progressBar->setModel(nullptr);
     }
 
 }
@@ -364,12 +373,12 @@ void RpmBuildPlugin::refreshGui()
 
 void RpmBuildPlugin::build(RpmBuildPlugin::Type buildType)
 {
-    if (currentReleaseInfo == 0)
-        return;                     //no release ich choosen
+    if (currentReleaseInfo == nullptr)
+        return;                        //no release ich choosen
 
     //get info about this release
     BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);
-    if (buildProcess)   //there is an info about build?
+    if (buildProcess != nullptr)       //there is an info about build?
     {
         //if it's running then stop it
         if (buildProcess->isRunning()) //running?
@@ -648,17 +657,5 @@ void RpmBuildPlugin::updateTab()
             log->setDocument(buildProcess->getLog());
         else
             log->setDocument(nullptr);
-    }
-}
-
-
-void RpmBuildPlugin::updateProgress(int progress)
-{
-    if (progress == -1)
-        progressBar->setRange(0, 0);
-    else
-    {
-        progressBar->setMaximum(100);
-        progressBar->setValue(progress);
     }
 }

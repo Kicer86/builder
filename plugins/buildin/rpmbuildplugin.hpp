@@ -30,7 +30,7 @@
 class QGridLayout;
 class QPlainTextEdit;
 class QPushButton;
-class QProgressBar;
+class QExProgressBarView;
 
 class RpmBuildPlugin: public BuildPlugin
 {
@@ -55,7 +55,7 @@ class RpmBuildPlugin: public BuildPlugin
         QPushButton  *editSpecButton;
         QPushButton  *showMacrosButton;
         QPushButton  *showConstantsButton;
-        QProgressBar *progressBar;
+        QExProgressBarView *progressBar;
 
         void build(Type);
         virtual void updateTab();
@@ -88,7 +88,6 @@ class RpmBuildPlugin: public BuildPlugin
 
         virtual QLayout* getBuildButtons() const;
         virtual QWidget* getBuildLog() const;
-        virtual void updateProgress(int);
 };
 
 #endif // RPMBUILDPLUGIN_HPP

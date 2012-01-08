@@ -26,6 +26,8 @@
 #include <QObject>
 #include <QStringList>
 
+#include "widgets/QExProgressBar/qexprogressbar.hpp"
+
 class QProcess;
 class QTextDocument;
 class QLayout;
@@ -36,15 +38,16 @@ class BuildProcess: public QObject
 {
         Q_OBJECT
 
-        QProcess *process;              //build process
-        QTextDocument *log;             //build log
-        ReleaseInfo *releaseInfo;       //pointer to related ReleaseInfo
-        int data;                       //additional data. For any purposes
+        QProcess *process;               //build process
+        QExProgressBarModel progressBar; //data model for progressBar
+        QTextDocument *log;              //build log
+        ReleaseInfo *releaseInfo;        //pointer to related ReleaseInfo
+        int data;                        //additional data. For any purposes
 
         void appendToLog(const QString &str) const;
 
     private slots:
-        void started() const;
+        void started();
         void read() const;
         void close(int);
 
@@ -77,10 +80,13 @@ class BuildProcess: public QObject
 
         bool isRunning() const;
 
+        const QExProgressBarModel* getProgressBarModel() const
+        {
+            return &progressBar;
+        }
 
     signals:
         void buildProcessStopped(ReleaseInfo *) const;
-        void progress(int) const;
 };
 
 
@@ -104,8 +110,8 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         //add *AND* run build process. BuildPlugin takes ownership on BuildProcess
         void startBuildProcess(const QString &, const QStringList &, BuildProcess *);
         BuildProcess *findBuildProcess(const ReleaseInfo *);
-        virtual void buildProcessStopped(ReleaseInfo *) {}
-        virtual void newReleaseInfoSelected() {}
+        virtual void buildProcessStopped(ReleaseInfo *) {}   //function called, when build process has stopped
+        virtual void newReleaseInfoSelected() {}             //function called, when new ReleaseInfo is choosen
 
     private:
         BuildPlugin(const BuildPlugin& other);
@@ -114,13 +120,9 @@ class BuildPlugin: public QObject                //it's QObject here, becouse pl
         const QString pluginName;
         BuildsInfo buildsInfo;
 
-        void disconnectProcessSignals(); //destroy connections
-        void connectProcessSignals();    //make connections between build process and 'this'
-
     private slots:
         void stopBuildProcess(ReleaseInfo *);         //remove build process for ReleaseInfo
         void releaseInfoSelected(ReleaseInfo *);
-        virtual void updateProgress(int) {}           //set build progress (-1 means that progress is unknown)
 
 };
 

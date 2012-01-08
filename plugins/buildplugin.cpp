@@ -61,9 +61,9 @@ void BuildProcess::appendToLog(const QString &str) const
 }
 
 
-void BuildProcess::started() const
+void BuildProcess::started()
 {
-    emit progress(-1);
+    progressBar.setRange(0, 0);
 }
 
 
@@ -89,7 +89,8 @@ void BuildProcess::read() const
 
 void BuildProcess::close(int)
 {
-    emit progress(0);
+    progressBar.setRange(0, 100);
+    progressBar.setValue(0);
     emit buildProcessStopped(releaseInfo);
 }
 
@@ -135,7 +136,7 @@ void BuildPlugin::startBuildProcess(const QString &program, const QStringList &a
                             << buildProcess->releaseInfo->getName();
 
     //make sure there is no such process already in base
-    if (findBuildProcess(buildProcess->releaseInfo)==0)
+    if (findBuildProcess(buildProcess->releaseInfo) == nullptr)
     {
         connect(buildProcess, SIGNAL(buildProcessStopped(ReleaseInfo*)), this, SLOT(stopBuildProcess(ReleaseInfo*)));
 
@@ -144,7 +145,6 @@ void BuildPlugin::startBuildProcess(const QString &program, const QStringList &a
     else
         buildProcess->getLog()->clear();  //we start new build, clear log
 
-//   buildProcess->process->start();
     QString infoMsg = SandboxProcess::runProcess(program, args, buildProcess->process);
 
     debug(DebugLevel::Info) << QString ("Starting: %1").arg(infoMsg);
@@ -160,40 +160,14 @@ BuildProcess* BuildPlugin::findBuildProcess(const ReleaseInfo *releaseInfo)
 }
 
 
-
-void BuildPlugin::disconnectProcessSignals()
-{
-    if (currentReleaseInfo != nullptr)
-    {
-        //disconnect previous BuildProcess
-        BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);  //build process for actual release
-        if (buildProcess != nullptr)
-            disconnect(buildProcess);
-    }
-}
-
-
-void BuildPlugin::connectProcessSignals()
-{
-    if (currentReleaseInfo != nullptr)
-    {
-        BuildProcess *buildProcess = findBuildProcess(currentReleaseInfo);  //build process of previous release
-        if (buildProcess != nullptr)
-            connect(buildProcess, SIGNAL(progress(int)), this, SLOT(updateProgress(int)));
-    }
-}
-
-
 void BuildPlugin::stopBuildProcess(ReleaseInfo *releaseInfo)
 {
     BuildProcess *buildProcess = findBuildProcess(releaseInfo);
     assert(buildProcess);
 
-    disconnectProcessSignals();
-
     if (buildProcess)
     {
-        assert(buildProcess->process->state() == QProcess::NotRunning);  //process should be halted
+        assert(buildProcess->isRunning() == false);  //process should be halted
 
         //remove all data
         BuildsInfo::iterator it = buildsInfo.find(releaseInfo);
@@ -210,12 +184,7 @@ void BuildPlugin::stopBuildProcess(ReleaseInfo *releaseInfo)
 
 void BuildPlugin::releaseInfoSelected(ReleaseInfo *r)
 {
-    //new releaseInfo selected, watch for changes of build progres
-    disconnectProcessSignals();
-
     currentReleaseInfo = r;            //save current ReleaseInfo
-    //connect signals
-    connectProcessSignals();
 
-    newReleaseInfoSelected();   //call virtual protected function
+    newReleaseInfoSelected();          //call virtual protected function
 }
