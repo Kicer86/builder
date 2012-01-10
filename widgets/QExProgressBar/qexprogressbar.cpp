@@ -10,13 +10,15 @@ QExProgressBarModel::QExProgressBarModel(QObject *p):
     QObject(p),
     m_value(0),
     m_minimum(0),
-    m_maximum(100)
+    m_maximum(100),
+    reseted(true)
 {}
 
 
 void QExProgressBarModel::setMaximum ( int m )
 {
     m_maximum = m;
+    reseted = false;
 
     emit setPBMaximum(m_maximum);
 }
@@ -25,6 +27,7 @@ void QExProgressBarModel::setMaximum ( int m )
 void QExProgressBarModel::setMinimum ( int m )
 {
     m_minimum = m;
+    reseted = false;
 
     emit setPBMimimum(m_minimum);
 }
@@ -34,6 +37,7 @@ void QExProgressBarModel::setRange(int min, int max)
 {
     m_minimum = min;
     m_maximum = max;
+    reseted = false;
 
     emit setPBRange(m_minimum, m_maximum);
 }
@@ -42,8 +46,15 @@ void QExProgressBarModel::setRange(int min, int max)
 void QExProgressBarModel::setValue(int v)
 {
     m_value = v;
+    reseted = false;
 
     emit setPBValue(m_value);
+}
+
+
+void QExProgressBarModel::reset()
+{
+    reseted = true;
 }
 
 
@@ -70,7 +81,15 @@ void QExProgressBarView::setModel(const QExProgressBarModel *m)
         //refresh data
         setRange(model->minimum(), model->maximum());
         setValue(model->value());
+
+        if (model->isReseted() == false)
+            reset();
     }
     else
+    {
+        //set default value
+        setRange(0,100);
+        setValue(0);
         reset();
+    }
 }

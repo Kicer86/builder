@@ -16,6 +16,7 @@ class QExProgressBarModel: public QObject
 
         int m_value;
         int m_minimum, m_maximum;
+        bool reseted;
 
     public:
         explicit QExProgressBarModel(QObject *p = 0);
@@ -36,11 +37,17 @@ class QExProgressBarModel: public QObject
             return m_maximum;
         }
 
+        bool isReseted() const
+        {
+            return reseted;
+        }
+
     public slots:
         void setMaximum(int);
         void setMinimum(int);
         void setRange (int, int);
         void setValue (int);
+        void reset();
 
     signals:
         void setPBMaximum(int);
