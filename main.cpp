@@ -3,6 +3,9 @@
 
 #include "builder.hpp"
 
+#include "misc/settings.hpp"
+#include "dialogs/setup.hpp"
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
@@ -14,8 +17,31 @@ int main(int argc, char** argv)
     QCoreApplication::setOrganizationDomain("http://kicer.sileman.net.pl");
     QCoreApplication::setApplicationName("Builder");
 
-    Builder builder;
-    builder.show();
+    bool config_ok = true;
+    int err = 0;
 
-    return app.exec();
+    if (Settings::instance()->configIsFine() == false)
+    {
+        Setup setup;
+        if (setup.exec() == QDialog::Accepted)
+        {
+            //apply settings
+            const QString projsDir = setup.readProjectsDir();
+
+            Settings::instance()->setProjsPath(projsDir);
+            Settings::instance()->setConfigFine();
+        }
+        else
+            config_ok = false;
+    }
+
+    if (config_ok)
+    {
+        Builder builder;
+        builder.show();
+
+        err = app.exec();
+    }
+
+    return err;
 }
