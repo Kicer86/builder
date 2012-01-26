@@ -59,6 +59,7 @@ set(builder_SRCS
   dialogs/newprojectwizard.cpp
   dialogs/releasecopydialog.cpp
   dialogs/progressdialog.cpp
+  dialogs/setup.cpp
   dialogs/specconstantsdialog.cpp
   misc/broadcast.cpp
   misc/downloader.cpp
@@ -87,6 +88,7 @@ set(builder_MOC
   dialogs/newprojectwizard.hpp
   dialogs/releasecopydialog.hpp
   dialogs/progressdialog.hpp
+  dialogs/setup.hpp
   dialogs/specconstantsdialog.hpp
   misc/broadcast.hpp
   misc/downloader.hpp
@@ -106,6 +108,7 @@ set(builder_UIS
   dialogs/newprojectwizard.ui
   dialogs/releasecopydialog.ui
   dialogs/progressdialog.ui
+  dialogs/setup.ui
   dialogs/specconstantsdialog.ui
   widgets/projectinfowidget.ui
 )
@@ -122,7 +125,7 @@ qt4_automoc(${builder_SRCS})
 qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
 
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
-# ADD_PRECOMPILED_HEADER(builder stdafx.h)
+
 set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
 
@@ -132,7 +135,8 @@ target_link_libraries(builder
       ${QT_QTNETWORK_LIBRARY}
       ${QT_QTSVG_LIBRARY}
       ${LUA_LIBRARIES}
-      htmlParser)
+      htmlParser
+      QtExt)
 
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
