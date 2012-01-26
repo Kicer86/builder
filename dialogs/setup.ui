@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
-    <height>282</height>
+    <width>433</width>
+    <height>255</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,10 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Configuration setup</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="sizePolicy">
@@ -54,7 +57,7 @@
          <item>
           <widget class="QPushButton" name="page1_button">
            <property name="text">
-            <string>PushButton</string>
+            <string>Browse</string>
            </property>
           </widget>
          </item>
@@ -72,7 +75,23 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage2"/>
+  <widget class="QWizardPage" name="wizardPage2">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout2">
+    <item>
+     <widget class="QLabel" name="page2_finishLabel">
+      <property name="text">
+       <string>Setup Finished!</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>

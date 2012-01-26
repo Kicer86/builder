@@ -7,7 +7,7 @@
 
 #include <qtext_choosefile.hpp>
 
-setup::setup(QWidget *p): QWizard(p), ui(new Ui::setup)
+Setup::Setup(QWidget *p): QWizard(p), ui(new Ui::setup)
 {
     ui->setupUi(this);
 
@@ -19,8 +19,14 @@ setup::setup(QWidget *p): QWizard(p), ui(new Ui::setup)
 }
 
 
-setup::~setup()
+Setup::~Setup()
 {
     delete ui;
     delete chooseFile;
+}
+
+
+QString Setup::readProjectsDir() const
+{
+    return ui->page1_dirEdit->text();
 }

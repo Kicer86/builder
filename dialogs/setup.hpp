@@ -9,7 +9,7 @@ namespace Ui {
 
 class QtExtChooseFile;
 
-class setup : public QWizard
+class Setup : public QWizard
 {
         Q_OBJECT
 
@@ -17,8 +17,10 @@ class setup : public QWizard
         QtExtChooseFile *chooseFile;
 
     public:
-        explicit setup(QWidget *parent = 0);
-        ~setup();
+        explicit Setup(QWidget *parent = 0);
+        virtual ~Setup();
+
+        QString readProjectsDir() const;
 };
 
 #endif // SETUP_HPP
