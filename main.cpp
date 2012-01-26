@@ -29,6 +29,7 @@ int main(int argc, char** argv)
             const QString projsDir = setup.readProjectsDir();
 
             Settings::instance()->setProjsPath(projsDir);
+            Settings::instance()->setEnvType(Settings::Local);
             Settings::instance()->setConfigFine();
         }
         else
