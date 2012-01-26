@@ -28,8 +28,17 @@ int main(int argc, char** argv)
             //apply settings
             const QString projsDir = setup.readProjectsDir();
 
+            //+some default values:
             Settings::instance()->setProjsPath(projsDir);
             Settings::instance()->setEnvType(Settings::Local);
+            Settings::instance()->setExtList(QStringList() << "tar.bz2"
+                                                           << "tar.gz"
+                                                           << "tgz"
+                                                           << "tar"
+                                                           << "zip"
+                                                           << "rar");
+
+            //mark config as initialized
             Settings::instance()->setConfigFine();
         }
         else
