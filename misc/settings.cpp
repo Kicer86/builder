@@ -74,6 +74,11 @@ QStringList Settings::getExtList() const
     return ret;
 }
 
+bool Settings::configIsFine() const
+{
+    return settings->value("main/initialized", "0").toInt() != 0;
+}
+
 
 void Settings::setEnvPath(const QString &path)
 {
@@ -105,4 +110,10 @@ void Settings::setExtList(const QStringList& list)
     }
     settings->endArray();
     settings->endGroup();
+}
+
+
+void Settings::setConfigFine()
+{
+    settings->setValue("main/initialized", 1);
 }

@@ -43,11 +43,13 @@ class Settings
     QString getEnvPath() const;
     EnvType getEnvType() const;
     QStringList getExtList() const;
-    
+    bool configIsFine() const;
+
     void setEnvPath(const QString& path);
     void setEnvType(EnvType type);
     void setProjsPath(const QString& path);
     void setExtList(const QStringList& list);
+    void setConfigFine();
 };
 
 #endif // SETTINGS_HPP
