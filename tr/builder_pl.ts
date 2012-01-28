@@ -7,7 +7,7 @@
         <location filename="../plugins/buildplugin.cpp" line="151"/>
         <source>Starting: %1
 </source>
-        <translation>Uruchamianie: %1</translation>
+        <translation>Rozpoczęcie budowania: %1</translation>
     </message>
 </context>
 <context>
@@ -35,7 +35,7 @@
     <message>
         <location filename="../builder.cpp" line="70"/>
         <source>Configure</source>
-        <translation>Konfiguruj</translation>
+        <translation>Konfiguracja</translation>
     </message>
     <message>
         <location filename="../builder.cpp" line="173"/>
@@ -46,12 +46,12 @@
     <message>
         <location filename="../builder.cpp" line="173"/>
         <source>Could not create project&apos;s directory (%1) in %2.</source>
-        <translation>Nie można stworzyć lokalizacji projektu(%1) w %2.</translation>
+        <translation>Nie można stworzyć katalogu projektu (%1) w %2.</translation>
     </message>
     <message>
         <location filename="../builder.cpp" line="196"/>
         <source>Could not create one of project&apos;s releases directory in %1.</source>
-        <translation>Nie można stworzyć lokalizacji wydania jednego z projektu w %1.</translation>
+        <translation>Nie można stworzyć katalogu wydania projektu w %1.</translation>
     </message>
 </context>
 <context>
@@ -60,7 +60,7 @@
         <location filename="../dialogs/configdialog.ui" line="14"/>
         <location filename="../build/ui_configdialog.h" line="153"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialog</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="20"/>
@@ -134,7 +134,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../dialogs/configdialog.cpp" line="120"/>
         <location filename="../dialogs/configdialog.cpp" line="131"/>
         <source>Browse for projects&apos; dir</source>
-        <translation>Przeglądaj w poszukiwaniu lokalizacji projektów</translation>
+        <translation>Przeglądaj w poszukiwaniu katalogu projektów</translation>
     </message>
 </context>
 <context>
@@ -167,7 +167,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../dialogs/newprojectwizard.ui" line="54"/>
         <location filename="../build/ui_newprojectwizard.h" line="89"/>
         <source>Download script</source>
-        <translation>Pobierz skrypt</translation>
+        <translation>Skrypt pobierający</translation>
     </message>
 </context>
 <context>
@@ -176,7 +176,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../dialogs/progressdialog.ui" line="20"/>
         <location filename="../build/ui_progressdialog.h" line="89"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="../dialogs/progressdialog.ui" line="35"/>
@@ -188,7 +188,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../dialogs/progressdialog.ui" line="42"/>
         <location filename="../build/ui_progressdialog.h" line="91"/>
         <source>in progress:</source>
-        <translation type="unfinished">w toku...</translation>
+        <translation>w toku:</translation>
     </message>
 </context>
 <context>
@@ -197,13 +197,13 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../widgets/projectinfowidget.ui" line="20"/>
         <location filename="../build/ui_projectinfowidget.h" line="163"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="30"/>
         <location filename="../build/ui_projectinfowidget.h" line="224"/>
         <source>Control</source>
-        <translation>Kontrola</translation>
+        <translation>Panel sterowania</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="36"/>
@@ -217,13 +217,13 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../build/ui_projectinfowidget.h" line="169"/>
         <location filename="../build/ui_projectinfowidget.h" line="172"/>
         <source>Shows the Lua script used for checking current version of project on it&apos;s page.</source>
-        <translation>Pokazuje skrypt lua użyty do sprawdzenia aktualnej wersji na stronie projektu.</translation>
+        <translation>Pokazuje skrypt Lua wykorzystywany do sprawdzania aktualnej wersji projektu.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="54"/>
         <location filename="../build/ui_projectinfowidget.h" line="174"/>
         <source>Edit download script</source>
-        <translation>Edytuj skrypt pobierania</translation>
+        <translation>Edytuj skrypt pobierający</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="64"/>
@@ -245,7 +245,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../build/ui_projectinfowidget.h" line="183"/>
         <location filename="../build/ui_projectinfowidget.h" line="186"/>
         <source>List of downloaded packages with it&apos;s versions.</source>
-        <translation>Lista ściągniętych pakietów wraz z ich wersjami.</translation>
+        <translation>Lista ściągniętych paczek wraz z ich wersjami.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="90"/>
@@ -265,6 +265,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../widgets/projectinfowidget.ui" line="103"/>
         <location filename="../build/ui_projectinfowidget.h" line="195"/>
         <source>Remote version</source>
+        <translatorcomment>ogólnie trzeba to zmienić (po angielsku też)</translatorcomment>
         <translation>Wersja zdalna</translation>
     </message>
     <message>
@@ -273,7 +274,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../build/ui_projectinfowidget.h" line="197"/>
         <location filename="../build/ui_projectinfowidget.h" line="200"/>
         <source>Check current version of project on it&apos;s page.</source>
-        <translation>Sprawdza obecną wersję na stronie projektu.</translation>
+        <translation>Sprawdza aktualną wersję na stronie projektu.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="123"/>
@@ -287,7 +288,7 @@ Przykład. tar.bz2; tar.gz; tar</translation>
         <location filename="../build/ui_projectinfowidget.h" line="204"/>
         <location filename="../build/ui_projectinfowidget.h" line="207"/>
         <source>Downloads new packages from project&apos;s page.</source>
-        <translation>Pobiera nowe pakiety ze strony projektu.</translation>
+        <translation>Pobiera nowe paczki ze strony projektu.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="139"/>
@@ -358,7 +359,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../plugins/buildin/rpmbuildplugin.cpp" line="48"/>
         <source>Fast build</source>
-        <translation>Sybkie budowanie</translation>
+        <translation>Szybkie budowanie</translation>
     </message>
 </context>
 <context>
@@ -367,13 +368,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../dialogs/releasecopydialog.ui" line="20"/>
         <location filename="../build/ui_releasecopydialog.h" line="118"/>
         <source>Dialog</source>
-        <translation></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="26"/>
         <location filename="../build/ui_releasecopydialog.h" line="119"/>
         <source>Copied release data:</source>
-        <translation>Skopiowane dane wydania:</translation>
+        <translation>Dane kopiowanego wydania:</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="32"/>
@@ -410,12 +411,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../plugins/buildin/rpmbuildplugin.cpp" line="72"/>
         <source>Show Rpm macros</source>
-        <translation>Pokaż makra pliku RPM</translation>
+        <translation>Pokaż makra Rpm</translation>
     </message>
     <message>
         <location filename="../plugins/buildin/rpmbuildplugin.cpp" line="73"/>
         <source>Show spec&apos;s constants</source>
-        <translation>Pokaż stałe pliku SPEC</translation>
+        <translation>Pokaż stałe pliku Spec</translation>
     </message>
     <message>
         <location filename="../plugins/buildin/rpmbuildplugin.cpp" line="343"/>
@@ -430,7 +431,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../dialogs/specconstantsdialog.ui" line="14"/>
         <location filename="../build/ui_specconstantsdialog.h" line="112"/>
         <source>Dialog</source>
-        <translation></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../dialogs/specconstantsdialog.ui" line="24"/>
@@ -450,34 +451,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="99"/>
         <source>download</source>
-        <translation type="unfinished">pobierz</translation>
+        <translation>pobierz</translation>
     </message>
     <message>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="100"/>
         <source>build</source>
-        <translation type="unfinished">buduj</translation>
+        <translation>buduj</translation>
     </message>
     <message>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="147"/>
         <source>download: %1</source>
-        <translation type="unfinished">pobierz: %1</translation>
+        <translation>pobieranie: %1</translation>
     </message>
     <message>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="149"/>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="157"/>
         <source>yes</source>
-        <translation type="unfinished">tak</translation>
+        <translation>tak</translation>
     </message>
     <message>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="150"/>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="158"/>
         <source>no</source>
-        <translation type="unfinished">nie</translation>
+        <translation>nie</translation>
     </message>
     <message>
         <location filename="../widgets/widgetlist/widgetlistitem.cpp" line="155"/>
         <source>build: %1</source>
-        <translation type="unfinished">buduj: %1</translation>
+        <translation>budowanie: %1</translation>
     </message>
 </context>
 <context>
@@ -485,12 +486,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../widgets/widgetlist/widgetlistview.cpp" line="89"/>
         <source>Release actions</source>
-        <translation type="unfinished">Akcje wydania</translation>
+        <translation>Opcje wydania</translation>
     </message>
     <message>
         <location filename="../widgets/widgetlist/widgetlistview.cpp" line="90"/>
         <source>Copy release</source>
-        <translation type="unfinished">Kopiuj wydanie</translation>
+        <translation>Kopiuj wydanie</translation>
     </message>
 </context>
 <context>
@@ -499,31 +500,31 @@ p, li { white-space: pre-wrap; }
         <location filename="../dialogs/setup.ui" line="20"/>
         <location filename="../build/ui_setup.h" line="117"/>
         <source>Configuration setup</source>
-        <translation type="unfinished">Ustawienia konfiguracji</translation>
+        <translation>Ustawienia</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="42"/>
         <location filename="../build/ui_setup.h" line="118"/>
         <source>Directory with projects</source>
-        <translation type="unfinished">Lokalizacja projektów</translation>
+        <translation>Lokalizacja projektów</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="48"/>
         <location filename="../build/ui_setup.h" line="119"/>
         <source>Choose directory where project will be kept:</source>
-        <translation type="unfinished">Wybierz lokalizację, gdzie będą przetrzymywane projekty:</translation>
+        <translation>Wybierz lokalizację, gdzie będą przetrzymywane projekty:</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="60"/>
         <location filename="../build/ui_setup.h" line="120"/>
         <source>Browse</source>
-        <translation type="unfinished">Przeglądaj</translation>
+        <translation>Przeglądaj</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="89"/>
         <location filename="../build/ui_setup.h" line="122"/>
         <source>Setup Finished!</source>
-        <translation type="unfinished">Konfiguracja zakończona!</translation>
+        <translation>Konfiguracja zakończona!</translation>
     </message>
 </context>
 </TS>
