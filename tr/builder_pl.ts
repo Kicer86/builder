@@ -60,31 +60,31 @@
         <location filename="../dialogs/configdialog.ui" line="14"/>
         <location filename="../build/ui_configdialog.h" line="153"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dialog</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="20"/>
         <location filename="../build/ui_configdialog.h" line="154"/>
         <source>Environment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Środowisko</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="26"/>
         <location filename="../build/ui_configdialog.h" line="155"/>
         <source>Local environment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lokalne środowisko</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="33"/>
         <location filename="../build/ui_configdialog.h" line="156"/>
         <source>External environment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zewnętrzne środowisko</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="42"/>
         <location filename="../build/ui_configdialog.h" line="157"/>
         <source>Path:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ścieżka</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="56"/>
@@ -92,31 +92,31 @@
         <location filename="../build/ui_configdialog.h" line="161"/>
         <location filename="../build/ui_configdialog.h" line="164"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeglądaj</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="68"/>
         <location filename="../build/ui_configdialog.h" line="162"/>
         <source>Projects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Projekty</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="74"/>
         <location filename="../build/ui_configdialog.h" line="163"/>
         <source>Path to projects:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ścieżka projektów</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="94"/>
         <location filename="../build/ui_configdialog.h" line="165"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inne</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="100"/>
         <location filename="../build/ui_configdialog.h" line="166"/>
         <source>Extensions order:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kolejność rozszerzeń</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="107"/>
@@ -125,7 +125,10 @@
 The first one will have the highest priority while searching for packages, 
 the last one will have te lowest priority.
 Ex: tar.bz2; tar.gz; tar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wpisz tutaj nazwy rozszerzeń oddzielone średnikiem.
+Pierwszy z nich ma najwyższy priorytet przy poszukiwaniu pakietów,
+ostani z nich ma najniższy priorytet.
+Przykład. tar.bz2; tar.gz; tar</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.cpp" line="120"/>
@@ -140,31 +143,31 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../dialogs/newprojectwizard.ui" line="20"/>
         <location filename="../build/ui_newprojectwizard.h" line="84"/>
         <source>Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kreator</translation>
     </message>
     <message>
         <location filename="../dialogs/newprojectwizard.ui" line="24"/>
         <location filename="../build/ui_newprojectwizard.h" line="85"/>
         <source>Project information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Informacje o projekcie</translation>
     </message>
     <message>
         <location filename="../dialogs/newprojectwizard.ui" line="33"/>
         <location filename="../build/ui_newprojectwizard.h" line="87"/>
         <source>Project name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nazwa projektu</translation>
     </message>
     <message>
         <location filename="../dialogs/newprojectwizard.ui" line="45"/>
         <location filename="../build/ui_newprojectwizard.h" line="88"/>
         <source>Releases</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wydania</translation>
     </message>
     <message>
         <location filename="../dialogs/newprojectwizard.ui" line="54"/>
         <location filename="../build/ui_newprojectwizard.h" line="89"/>
         <source>Download script</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pobierz skrypt</translation>
     </message>
 </context>
 <context>
@@ -173,19 +176,19 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../dialogs/progressdialog.ui" line="20"/>
         <location filename="../build/ui_progressdialog.h" line="89"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../dialogs/progressdialog.ui" line="35"/>
         <location filename="../build/ui_progressdialog.h" line="90"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anuluj</translation>
     </message>
     <message>
         <location filename="../dialogs/progressdialog.ui" line="42"/>
         <location filename="../build/ui_progressdialog.h" line="91"/>
         <source>in progress:</source>
-        <translation type="unfinished"></translation>
+        <translation>w toku...</translation>
     </message>
 </context>
 <context>
@@ -200,13 +203,13 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../widgets/projectinfowidget.ui" line="30"/>
         <location filename="../build/ui_projectinfowidget.h" line="224"/>
         <source>Control</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kontrola</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="36"/>
         <location filename="../build/ui_projectinfowidget.h" line="167"/>
         <source>Project Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nazwa Projektu</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="48"/>
@@ -220,7 +223,7 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../widgets/projectinfowidget.ui" line="54"/>
         <location filename="../build/ui_projectinfowidget.h" line="174"/>
         <source>Edit download script</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edytuj skrypt pobierania</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="64"/>
@@ -228,13 +231,13 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../build/ui_projectinfowidget.h" line="176"/>
         <location filename="../build/ui_projectinfowidget.h" line="179"/>
         <source>Not implemented yet.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jeszcze nie zaimplementowany.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="70"/>
         <location filename="../build/ui_projectinfowidget.h" line="181"/>
         <source>lua debug mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tryb debugowania lua</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="84"/>
@@ -242,13 +245,13 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../build/ui_projectinfowidget.h" line="183"/>
         <location filename="../build/ui_projectinfowidget.h" line="186"/>
         <source>List of downloaded packages with it&apos;s versions.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lista ściągniętych pakietów wraz z ich wersjami.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="90"/>
         <location filename="../build/ui_projectinfowidget.h" line="188"/>
         <source>Local version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wersja lokalna</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="97"/>
@@ -256,13 +259,13 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../build/ui_projectinfowidget.h" line="190"/>
         <location filename="../build/ui_projectinfowidget.h" line="193"/>
         <source>List of the available (to download) packages with it&apos;s versions.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lista dostępnych (do pobrania) pakietów wraz z ich wersjami.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="103"/>
         <location filename="../build/ui_projectinfowidget.h" line="195"/>
         <source>Remote version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wersja zdalna</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="117"/>
@@ -270,13 +273,13 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../build/ui_projectinfowidget.h" line="197"/>
         <location filename="../build/ui_projectinfowidget.h" line="200"/>
         <source>Check current version of project on it&apos;s page.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sprawdza obecną wersję na stronie projektu.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="123"/>
         <location filename="../build/ui_projectinfowidget.h" line="202"/>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sprawdź</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="133"/>
@@ -284,13 +287,13 @@ Ex: tar.bz2; tar.gz; tar</source>
         <location filename="../build/ui_projectinfowidget.h" line="204"/>
         <location filename="../build/ui_projectinfowidget.h" line="207"/>
         <source>Downloads new packages from project&apos;s page.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pobiera nowe pakiety ze strony projektu.</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="139"/>
         <location filename="../build/ui_projectinfowidget.h" line="209"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pobierz</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="148"/>
@@ -308,7 +311,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../widgets/projectinfowidget.ui" line="182"/>
         <location filename="../build/ui_projectinfowidget.h" line="164"/>
         <source>Add project</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodaj projekt</translation>
     </message>
     <message>
         <location filename="../widgets/projectinfowidget.ui" line="187"/>
@@ -320,7 +323,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../widgets/projectinfowidget.ui" line="192"/>
         <location filename="../build/ui_projectinfowidget.h" line="166"/>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konfiguruj</translation>
     </message>
 </context>
 <context>
