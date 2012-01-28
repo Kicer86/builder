@@ -1,3 +1,0 @@
-#!/bin/bash
-
-lupdate -noobsolete -verbose .. -ts builder_pl.ts
