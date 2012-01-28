@@ -1,8 +1,12 @@
+
 #include <QApplication>
 #include <QTextCodec>
+#include <QLocale>
+#include <QTranslator>
 
 #include "builder.hpp"
 
+#include "misc/functions.hpp"
 #include "misc/settings.hpp"
 #include "dialogs/setup.hpp"
 
@@ -16,6 +20,13 @@ int main(int argc, char** argv)
     QCoreApplication::setOrganizationName("Michał Walenciak");
     QCoreApplication::setOrganizationDomain("http://kicer.sileman.net.pl");
     QCoreApplication::setApplicationName("Builder");
+
+    QString locale = QLocale::system().name();
+
+    QTranslator translator;
+    const QString path = Functions::dataPath("translations/") + QString("builder_") + locale;
+    translator.load(path);
+    app.installTranslator(&translator);
 
     bool config_ok = true;
     int err = 0;
