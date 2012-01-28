@@ -185,34 +185,27 @@ void ProjectInfoWidget::refresh(int type)
         if (type & ReleaseInfo::ProgressChange &&
             state != ReleaseInfo::State::Nothing)
         {
-            const int currentMax = ui->progressBar->maximum();
-            const int total = releaseInfo->getProgressTotal();
-
-            //if (type == ReleaseInfo::AllChanged)
-            {
-                ui->progressBar->setMaximum(releaseInfo->getProgressTotal());
-
-                if (state == ReleaseInfo::State::Downloading )
-                    ui->progressBar->setFormat(tr("%3: %p% (%1/%2)")
-                                               .arg(/*sizeToString(d),
-                                                                                                                        sizeToString(t),*/
-                                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
-                                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
-                                                    releaseInfo->getDownloadedPkg()
-                                                    )
-                                               );
-                else if (state == ReleaseInfo::State::Building)
-                    ui->progressBar->setFormat(tr("%p% (%1/%2)")
-                                               .arg(
-                                                   releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
-                                                   releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
-                                                   )
-                                               );
-                else
-                    ui->progressBar->setFormat("%p%");
-            }
-
+            ui->progressBar->setMaximum(releaseInfo->getProgressTotal());
             ui->progressBar->setValue(releaseInfo->getProgressDone());
+
+            if (state == ReleaseInfo::State::Downloading )
+                ui->progressBar->setFormat(tr("%3: %p% (%1/%2)")
+                                           .arg(/*sizeToString(d),
+                                                                                                                                                    sizeToString(t),*/
+                                                releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
+                                                releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
+                                                releaseInfo->getDownloadedPkg()
+                                                )
+                                           );
+            else if (state == ReleaseInfo::State::Building)
+                ui->progressBar->setFormat(tr("%p% (%1/%2)")
+                                           .arg(
+                                               releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
+                                               releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
+                                               )
+                                           );
+            else
+                ui->progressBar->setFormat("%p%");
         }
 
         if (type & ReleaseInfo::StateChange)
