@@ -143,9 +143,12 @@ target_link_libraries(builder
       ${LUA_LIBRARIES}
       htmlParser
       QtExt)
-      
+
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
+
+#translations
+install(FILES ${builder_QM} DESTINATION ${BUILDER_DATADIR}/translations/)
 
 #target
 install(TARGETS builder RUNTIME DESTINATION ${BUILDER_BINDIR})
