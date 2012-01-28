@@ -188,8 +188,7 @@ void ProjectInfoWidget::refresh(int type)
             const int currentMax = ui->progressBar->maximum();
             const int total = releaseInfo->getProgressTotal();
 
-            if (type == ReleaseInfo::AllChanged ||
-                currentMax != total)
+            //if (type == ReleaseInfo::AllChanged)
             {
                 ui->progressBar->setMaximum(releaseInfo->getProgressTotal());
 
