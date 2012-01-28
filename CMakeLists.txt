@@ -42,6 +42,7 @@ include (plugins/plugins.cmake)
 
 #pozostałe katalogi po powyższym, ponieważ używają ścieżek
 add_subdirectory(images)
+add_subdirectory(tr)
 add_subdirectory(plugins/buildin)
 
 configure_file (${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
@@ -142,7 +143,7 @@ target_link_libraries(builder
       ${LUA_LIBRARIES}
       htmlParser
       QtExt)
-
+      
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
 
