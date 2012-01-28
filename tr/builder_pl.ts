@@ -369,31 +369,31 @@ p, li { white-space: pre-wrap; }
         <location filename="../dialogs/releasecopydialog.ui" line="26"/>
         <location filename="../build/ui_releasecopydialog.h" line="119"/>
         <source>Copied release data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skopiowane dane wydania:</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="32"/>
         <location filename="../build/ui_releasecopydialog.h" line="120"/>
         <source>Project name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nazwa projektu:</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="46"/>
         <location filename="../build/ui_releasecopydialog.h" line="122"/>
         <source>Release name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nazwa wydania:</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="63"/>
         <location filename="../build/ui_releasecopydialog.h" line="124"/>
         <source>New release data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nowa nazwa wydania:</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="69"/>
         <location filename="../build/ui_releasecopydialog.h" line="125"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nazwa:</translation>
     </message>
 </context>
 <context>
@@ -432,13 +432,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../dialogs/specconstantsdialog.ui" line="24"/>
         <location filename="../build/ui_specconstantsdialog.h" line="113"/>
         <source>Constant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stała</translation>
     </message>
     <message>
         <location filename="../dialogs/specconstantsdialog.ui" line="52"/>
         <location filename="../build/ui_specconstantsdialog.h" line="114"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wartość</translation>
     </message>
 </context>
 <context>
@@ -495,31 +495,31 @@ p, li { white-space: pre-wrap; }
         <location filename="../dialogs/setup.ui" line="20"/>
         <location filename="../build/ui_setup.h" line="117"/>
         <source>Configuration setup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustawienia konfiguracji</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="42"/>
         <location filename="../build/ui_setup.h" line="118"/>
         <source>Directory with projects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lokalizacja projektów</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="48"/>
         <location filename="../build/ui_setup.h" line="119"/>
         <source>Choose directory where project will be kept:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wybierz lokalizację, gdzie będą przetrzymywane projekty:</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="60"/>
         <location filename="../build/ui_setup.h" line="120"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przeglądaj</translation>
     </message>
     <message>
         <location filename="../dialogs/setup.ui" line="89"/>
         <location filename="../build/ui_setup.h" line="122"/>
         <source>Setup Finished!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konfiguracja zakończona!</translation>
     </message>
 </context>
 </TS>
