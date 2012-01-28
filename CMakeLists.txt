@@ -120,11 +120,16 @@ set(builder_IMGS
   icons/progress.svg
 )
 
+set( builder_TR
+  tr/builder_pl.ts
+)
+
 qt4_wrap_ui(builder_UIFILES ${builder_UIS})
 qt4_automoc(${builder_SRCS})
 qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
+qt4_add_translation(builder_QM ${builder_TR})
 
-add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES})
+add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES} ${builder_QM})
 
 set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
