@@ -135,7 +135,7 @@ void ProjectInfoWidget::setRelease(ReleaseInfo* ri)
     assert(ri);
 
     if (releaseInfo)
-        disconnect(releaseInfo);  //rozłącz połączenia poprzedniego projektu
+        disconnect(releaseInfo, 0, this, 0);  //rozłącz połączenia poprzedniego projektu
     else  //pierwszy projekt
     {
         ui->editDowloadScriptButton->setEnabled(true);
@@ -167,49 +167,57 @@ void ProjectInfoWidget::refresh(int type)
 {
     if (releaseInfo)
     {
-        if (type & ReleaseInfo::ProgressChange) //zmiana progressBara
-        {
-            ui->progressBar->setMaximum(releaseInfo->getProgressTotal());
-            ui->progressBar->setValue(releaseInfo->getProgressDone());
+        const ReleaseInfo::State state = releaseInfo->getState();
 
-            //dodatkowe iformacje progressBara
-            ReleaseInfo::State state = releaseInfo->getState();
-//            const int d = releaseInfo->getProgressDone();
-            const int t = releaseInfo->getProgressTotal();
-            if (t > 0)
+        switch (state)
+        {
+            case ReleaseInfo::State::Nothing:
+                ui->progressBar->setMaximum(1);   //to mark progress bar's reset state
+                ui->progressBar->setMinimum(0);
+                ui->progressBar->setValue(0);
+                ui->progressBar->reset();
+                break;
+
+            default:
+                break;
+        }
+
+        if (type & ReleaseInfo::ProgressChange &&
+            state != ReleaseInfo::State::Nothing)
+        {
+            const int currentMax = ui->progressBar->maximum();
+            const int total = releaseInfo->getProgressTotal();
+
+            if (type == ReleaseInfo::AllChanged ||
+                currentMax != total)
             {
+                ui->progressBar->setMaximum(releaseInfo->getProgressTotal());
+
                 if (state == ReleaseInfo::State::Downloading )
                     ui->progressBar->setFormat(tr("%3: %p% (%1/%2)")
                                                .arg(/*sizeToString(d),
-                                                    sizeToString(t),*/
-                                                   releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
-                                                   releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
-                                                   releaseInfo->getDownloadedPkg()
-                                                   )
-                                              );
+                                                                                                                        sizeToString(t),*/
+                                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
+                                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss"),
+                                                    releaseInfo->getDownloadedPkg()
+                                                    )
+                                               );
                 else if (state == ReleaseInfo::State::Building)
                     ui->progressBar->setFormat(tr("%p% (%1/%2)")
                                                .arg(
                                                    releaseInfo->getEstimator()->elapsed().toString("H:mm:ss"),
                                                    releaseInfo->getEstimator()->estimate().toString("H:mm:ss")
                                                    )
-                                              );
+                                               );
                 else
                     ui->progressBar->setFormat("%p%");
             }
+
+            ui->progressBar->setValue(releaseInfo->getProgressDone());
         }
 
         if (type & ReleaseInfo::StateChange)
         {
-            const ReleaseInfo::State state = releaseInfo->getState();
-
-            if (state == ReleaseInfo::State::Nothing)
-            {
-                //ui->progressBar->reset();
-                ui->progressBar->setMaximum(100);
-                ui->progressBar->setValue(0);
-            }
-
             ui->updateButton->setEnabled(state == ReleaseInfo::State::Nothing);
             ui->progressBar->setEnabled(state != ReleaseInfo::State::Nothing);
             ui->projectName->setText(QString("%1: %2").arg(releaseInfo->getProjectInfo()->getName()).arg(releaseInfo->getName()));

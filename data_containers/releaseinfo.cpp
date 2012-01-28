@@ -228,12 +228,10 @@ const Estimator* ReleaseInfo::getEstimator() const
 
 void ReleaseInfo::update()
 {
-    //włącz progress bar
-    updateProgress(0, 0); //powinien migać czy coś
-
     if ( downloadScript.isEmpty() == false )
     {
         setState(State::Checking);
+        updateProgress(0, 0);       //progress bar will blink
         Downloader downloader;
         QFile script(downloadScript);
         if (script.exists() && script.open(QIODevice::ReadOnly))
