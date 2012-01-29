@@ -133,8 +133,10 @@ WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 void WidgetListView::itemClicked(const QModelIndex& index)
 {
     currentItem = index;
-    ReleaseInfo *rI = getProjectWidget(index)->getReleaseInfo();
-    emit itemClicked(rI);
+    ReleaseInfo *releaseInfo = getProjectWidget(index)->getReleaseInfo();
+
+    if (releaseInfo != nullptr)
+        emit itemClicked(releaseInfo);
 }
 
 
