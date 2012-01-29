@@ -35,39 +35,45 @@ WidgetListProxyModel::~WidgetListProxyModel()
 //http://doc.qt.nokia.com/latest/qsortfilterproxymodel.html#details
 bool WidgetListProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
-  ReleaseInfo *lri = Functions::getReleaseInfo(left);
-  ReleaseInfo *rri = Functions::getReleaseInfo(right);
-
-  assert(lri && rri);
-
   //owning project
-  const ProjectInfo *lpi = lri->getProjectInfo();
-  const ProjectInfo *rpi = rri->getProjectInfo();
+  const ProjectInfo *lpi = Functions::getProjectInfo(left);
+  const ProjectInfo *rpi = Functions::getProjectInfo(right);
 
   //same project?
   if (lpi == rpi)
   {
-    //build state
-    bool buildLeft = lri->getBuildFlag();
-    bool buildRight = rri->getBuildFlag();
+      ReleaseInfo *lri = Functions::getReleaseInfo(left);
+      ReleaseInfo *rri = Functions::getReleaseInfo(right);
 
-    if (buildLeft == buildRight)  //same status of build?
-    {
-      //check download state
-      bool downloadLeft = lri->getDownloadFlag();
-      bool downloadRight = rri->getDownloadFlag();
+      assert ( lri != nullptr || rri != nullptr );  //there cannot be two empty releases in the same project
 
-      if (downloadLeft == downloadRight)         //same status of download??
-        return lri->getName() < rri->getName();  //use alphabetical order
+      if (lri == nullptr)
+          return true;
+
+      if (rri == nullptr)
+          return false;
+
+      //build state
+      bool buildLeft = lri->getBuildFlag();
+      bool buildRight = rri->getBuildFlag();
+
+      if (buildLeft == buildRight)  //same status of build?
+      {
+          //check download state
+          bool downloadLeft = lri->getDownloadFlag();
+          bool downloadRight = rri->getDownloadFlag();
+
+          if (downloadLeft == downloadRight)         //same status of download??
+              return lri->getName() < rri->getName();  //use alphabetical order
+          else
+              return downloadLeft == true && downloadRight == false;
+      }
       else
-        return downloadLeft == true && downloadRight == false;
-    }
-    else
-      return buildLeft == true && buildRight == false;
+          return buildLeft == true && buildRight == false;
   }
   else //different projects
   {
-    //use project's "global" status
-    return lpi->getStatus() > rpi->getStatus();
+      //use project's "global" status
+      return lpi->getStatus() > rpi->getStatus();
   }
 }

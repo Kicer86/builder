@@ -29,6 +29,7 @@ class QLabel;
 class QModelIndex;
 
 class ImageWidget;
+class ProjectInfo;
 class ReleaseInfo;
 
 
@@ -43,17 +44,20 @@ class WidgetListItem:public QWidget
     QLabel *title;
     ImageWidget *pixmap;
 
-    ReleaseInfo *releaseInfo;                  //related releaseInfo
+    const ProjectInfo *projectInfo;                  //related projectInfo
+    ReleaseInfo *releaseInfo;                        //related releaseInfo
     QGridLayout *projectLayout;
 
     void construct();
+    void constructProject();
+    void constructRelease();
 
   private slots:
     void updateValues();
     void internalRepaint();
 
   public:
-    WidgetListItem(ReleaseInfo *pI);
+    WidgetListItem(const ProjectInfo *, ReleaseInfo *);
     WidgetListItem(WidgetListItem *w);
     virtual ~WidgetListItem();
 

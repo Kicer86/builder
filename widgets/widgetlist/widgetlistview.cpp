@@ -26,6 +26,7 @@
 #include <QMenu>
 
 #include "data_containers/projectsmanager.hpp"
+#include "data_containers/projectinfo.hpp"
 #include "data_containers/releaseinfo.hpp"
 #include "widgetlistitem.hpp"
 #include "widgetdelegate.hpp"
@@ -62,13 +63,17 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
         const QModelIndex ch = m->index(i, 0);
 
         ReleaseInfo *releaseInfo = Functions::getReleaseInfo(ch);
+        const ProjectInfo *projectInfo = Functions::getProjectInfo(ch);
 
-        qDebug() << QString("inserting row in view for release %1").arg(releaseInfo->getName());
+        if (releaseInfo != nullptr)
+            qDebug() << QString("inserting row in view for release %1").arg(releaseInfo->getName());
+        else
+            qDebug() << QString("inserting row in view for project %1").arg(projectInfo->getName());
 
         if (widgets.contains(releaseInfo) == false)  // nie ma takiego elementu w bazie widgetów?
         {
             //create widget widget
-            WidgetListItemPtr widgetListItem(new WidgetListItem(releaseInfo));
+            WidgetListItemPtr widgetListItem(new WidgetListItem(projectInfo, releaseInfo));
             connect(widgetListItem.get(), SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
 
             //zapisz widget w bazie

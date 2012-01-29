@@ -35,16 +35,17 @@
 #include "data_containers/imagesmanager.hpp"
 #include "data_containers/projectsmanager.hpp"
 
-WidgetListItem::WidgetListItem(ReleaseInfo* pI):
+WidgetListItem::WidgetListItem(const ProjectInfo *pI, ReleaseInfo* rI):
         QWidget(),
         origins(nullptr),
         editor(nullptr),            //edtor does not exist at this moment
-        releaseInfo(pI)
+        projectInfo(pI),
+        releaseInfo(rI)
 {
     construct();
     setAttribute(Qt::WA_NoSystemBackground, true);
 
-    connect(pI, SIGNAL(optionsChanged()), this, SLOT(updateValues()));
+    connect(releaseInfo, SIGNAL(optionsChanged()), this, SLOT(updateValues()));
 }
 
 
@@ -77,6 +78,13 @@ void WidgetListItem::construct()
 {
     download = build = nullptr;
 
+    if (releaseInfo != nullptr)
+        constructRelease();
+}
+
+
+void WidgetListItem::constructRelease()
+{
     //setup view
     widget = new QWidget();
     projectLayout = new QGridLayout(widget);

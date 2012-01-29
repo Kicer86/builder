@@ -54,6 +54,11 @@ void ProjectsManager::registerProject(ProjectInfo* project)
 
     qDebug() << QString("registering project %1").arg(project->getName());
 
+    //create project's item
+    QStandardItem *projectItem = new QStandardItem(project->getName());
+    Functions::setReleaseInfo(projectItem, nullptr, project);    //null release
+    model->appendRow(projectItem);                               //append it
+
     foreach(ReleaseInfo *release, project->getReleasesList())
     {
         QStandardItem *releaseItem = new QStandardItem(release->getName());
