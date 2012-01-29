@@ -39,7 +39,7 @@ class WidgetListView: public QListView
     Q_OBJECT
 
     typedef std::tr1::shared_ptr<WidgetListItem> WidgetListItemPtr;      //pointer to WidgetListItem
-    typedef QHash<ReleaseInfo *, WidgetListItemPtr> WidgetListView_List;
+    typedef QHash<void *, WidgetListItemPtr> WidgetListView_List;
 
     WidgetListView_List widgets;             //lista wydgetów które są wyświetlane na liście
     QWidget *backgroundWidget;

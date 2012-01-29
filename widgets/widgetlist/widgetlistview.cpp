@@ -63,21 +63,28 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
         const QModelIndex ch = m->index(i, 0);
 
         ReleaseInfo *releaseInfo = Functions::getReleaseInfo(ch);
-        const ProjectInfo *projectInfo = Functions::getProjectInfo(ch);
+        ProjectInfo *projectInfo = Functions::getProjectInfo(ch);
+        void *ptr;
 
         if (releaseInfo != nullptr)
+        {
+            ptr = releaseInfo;
             qDebug() << QString("inserting row in view for release %1").arg(releaseInfo->getName());
+        }
         else
+        {
+            ptr = projectInfo;
             qDebug() << QString("inserting row in view for project %1").arg(projectInfo->getName());
+        }
 
-        if (widgets.contains(releaseInfo) == false)  // nie ma takiego elementu w bazie widgetów?
+        if (widgets.contains(ptr) == false)  // nie ma takiego elementu w bazie widgetów?
         {
             //create widget widget
             WidgetListItemPtr widgetListItem(new WidgetListItem(projectInfo, releaseInfo));
             connect(widgetListItem.get(), SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
 
             //zapisz widget w bazie
-            widgets.insert(releaseInfo, widgetListItem);
+            widgets.insert(ptr, widgetListItem);
         }
     }
 
@@ -123,10 +130,15 @@ void WidgetListView::dumpModel(const QModelIndex& index) const
 WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 {
     //odnajdź ten element na liście
-    ReleaseInfo *releaseInfo = Functions::getReleaseInfo(index);
-    assert(widgets.contains(releaseInfo));
+    void *releaseInfo = Functions::getReleaseInfo(index);
+    void *ptr = releaseInfo;
 
-    return (widgets.value(releaseInfo)).get();
+    if (releaseInfo == nullptr)   //TODO: zrobić porządek z tym
+        ptr = Functions::getProjectInfo(index);
+
+    assert(widgets.contains(ptr));
+
+    return (widgets.value(ptr)).get();
 }
 
 
