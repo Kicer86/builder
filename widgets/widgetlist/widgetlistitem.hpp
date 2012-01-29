@@ -27,6 +27,7 @@
 class QGridLayout;
 class QLabel;
 class QModelIndex;
+class QHBoxLayout;
 
 class ImageWidget;
 class ProjectInfo;
@@ -50,7 +51,7 @@ class WidgetListItem:public QWidget
 
     void construct();
     void constructProject();
-    void constructRelease();
+    void constructRelease(QHBoxLayout *);
 
   private slots:
     void updateValues();

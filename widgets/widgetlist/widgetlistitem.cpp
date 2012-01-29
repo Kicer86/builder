@@ -78,27 +78,39 @@ void WidgetListItem::construct()
 {
     download = build = nullptr;
 
-    if (releaseInfo != nullptr)
-        constructRelease();
-}
-
-
-void WidgetListItem::constructRelease()
-{
     //setup view
     widget = new QWidget();
     projectLayout = new QGridLayout(widget);
 
-    //add Title
-    title = new QLabel(releaseInfo->getProjectInfo()->getName());
-    projectLayout->addWidget(title, 0, 0);
+    //main layout
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
+    if (releaseInfo != nullptr)
+        constructRelease(mainLayout);
+    else
+        constructProject();
+
+    mainLayout->addWidget(widget, 1);
+}
+
+
+void WidgetListItem::constructProject()
+{
+    //add Title
+    title = new QLabel(projectInfo->getName());
+    projectLayout->addWidget(title, 0, 0);
+}
+
+
+void WidgetListItem::constructRelease(QHBoxLayout *mainLayout)
+{
     QLabel *releaseName = new QLabel(releaseInfo->getName());
 
     bool dwl = releaseInfo->getDownloadFlag();
     bool bld = releaseInfo->getBuildFlag();
 
-    projectLayout->addWidget(releaseName, 1, 0);
+    projectLayout->addWidget(releaseName, 0, 0);
 
     QVBoxLayout *lineLayout = new QVBoxLayout();
 
@@ -133,11 +145,8 @@ void WidgetListItem::constructRelease()
     pixmap = new ImageWidget(this);
     connect(pixmap, SIGNAL(rerender()), this, SLOT(internalRepaint()));
 
-    //główny layout
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    //update main layout
     mainLayout->addWidget(pixmap);
-    mainLayout->addWidget(widget, 1);
 
     if (origins == nullptr)
         updateValues();   //zaktualizuj widok
