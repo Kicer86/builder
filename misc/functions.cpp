@@ -31,60 +31,60 @@
 namespace Functions
 {
 
-QString sizeToString(int value)
-{
-  QString suffix="B";
+    QString sizeToString(int value)
+    {
+      QString suffix="B";
 
-  if (value>1024*1024)
-  {
-    value/=1024*1024;
-    suffix="MiB";
-  }
-  else if (value>1024)
-  {
-    value/=1024;
-    suffix="KiB";
-  }
+      if (value>1024*1024)
+      {
+        value/=1024*1024;
+        suffix="MiB";
+      }
+      else if (value>1024)
+      {
+        value/=1024;
+        suffix="KiB";
+      }
 
-  return QString("%1%2").arg(value).arg(suffix);
-}
-
-
-QString setColour(const QString &str, const QColor &colour)
-{
-  return QString("<span style=\"color: %1;\">%2</span>").arg(colour.name()).arg(str);
-}
+      return QString("%1%2").arg(value).arg(suffix);
+    }
 
 
-QString dataPath(const QString &path)
-{
-  return QString("%1/%2").arg(BUILDER_DATADIR, path);
-}
+    QString setColour(const QString &str, const QColor &colour)
+    {
+      return QString("<span style=\"color: %1;\">%2</span>").arg(colour.name()).arg(str);
+    }
 
 
-ReleaseInfo* getReleaseInfo(const QModelIndex &index)
-{
-    assert(index.isValid());
-
-    ReleaseInfo *result;
-
-    result = reinterpret_cast<ReleaseInfo *>(index.data(Qt::UserRole + 1).value<void *>());
-
-    return result;
-}
+    QString dataPath(const QString &path)
+    {
+      return QString("%1/%2").arg(BUILDER_DATADIR, path);
+    }
 
 
-const ProjectInfo* getProjectInfo(const QModelIndex &index)
-{
-    const ProjectInfo *result = getReleaseInfo(index)->getProjectInfo();
+    ReleaseInfo* getReleaseInfo(const QModelIndex &index)
+    {
+        assert(index.isValid());
 
-    return result;
-}
+        ReleaseInfo *result;
+
+        result = reinterpret_cast<ReleaseInfo *>(index.data(Qt::UserRole + 1).value<void *>());
+
+        return result;
+    }
 
 
-void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo)
-{
-    item->setData(qVariantFromValue(reinterpret_cast<void *>(releaseInfo)), Qt::UserRole + 1);
-}
+    const ProjectInfo* getProjectInfo(const QModelIndex &index)
+    {
+        const ProjectInfo *result = getReleaseInfo(index)->getProjectInfo();
+
+        return result;
+    }
+
+
+    void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo)
+    {
+        item->setData(qVariantFromValue(reinterpret_cast<void *>(releaseInfo)), Qt::UserRole + 1);
+    }
 
 } //namespace Functions
