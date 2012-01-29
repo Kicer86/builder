@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
-    <height>165</height>
+    <width>328</width>
+    <height>163</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Copy release</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

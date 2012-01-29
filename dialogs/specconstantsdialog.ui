@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>398</width>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Constans and variables table</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -37,8 +37,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>158</width>
-            <height>189</height>
+            <width>170</width>
+            <height>204</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="constantsLayout"/>
@@ -68,8 +68,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>158</width>
-            <height>189</height>
+            <width>169</width>
+            <height>204</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="valuesLayout"/>
