@@ -36,32 +36,32 @@ namespace Functions
 
     QString sizeToString(int value)
     {
-      QString suffix="B";
+        QString suffix="B";
 
-      if (value>1024*1024)
-      {
-        value/=1024*1024;
-        suffix="MiB";
-      }
-      else if (value>1024)
-      {
-        value/=1024;
-        suffix="KiB";
-      }
+        if (value>1024*1024)
+        {
+            value/=1024*1024;
+            suffix="MiB";
+        }
+        else if (value>1024)
+        {
+            value/=1024;
+            suffix="KiB";
+        }
 
-      return QString("%1%2").arg(value).arg(suffix);
+        return QString("%1%2").arg(value).arg(suffix);
     }
 
 
     QString setColour(const QString &str, const QColor &colour)
     {
-      return QString("<span style=\"color: %1;\">%2</span>").arg(colour.name()).arg(str);
+        return QString("<span style=\"color: %1;\">%2</span>").arg(colour.name()).arg(str);
     }
 
 
     QString dataPath(const QString &path)
     {
-      return QString("%1/%2").arg(BUILDER_DATADIR, path);
+        return QString("%1/%2").arg(BUILDER_DATADIR, path);
     }
 
 
