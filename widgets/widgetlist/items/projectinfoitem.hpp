@@ -1,0 +1,6 @@
+
+#ifndef PROJECTINFOITEM_HPP
+#define PROJECTINFOITEM_HPP
+
+#endif
+

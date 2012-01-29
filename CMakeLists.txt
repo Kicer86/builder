@@ -78,6 +78,8 @@ set(builder_SRCS
   widgets/widgetlist/widgetlistitem.cpp
   widgets/widgetlist/widgetlistproxymodel.cpp
   widgets/widgetlist/widgetlistview.cpp
+  widgets/widgetlist/items/projectinfoitem.cpp
+  widgets/widgetlist/items/releaseinfoitem.cpp
 )
 
 set(builder_MOC
@@ -102,6 +104,8 @@ set(builder_MOC
   widgets/QExProgressBar/qexprogressbar.hpp
   widgets/widgetlist/widgetlistitem.hpp
   widgets/widgetlist/widgetlistview.hpp
+  widgets/widgetlist/items/projectinfoitem.hpp
+  widgets/widgetlist/items/releaseinfoitem.hpp
 )
 
 set(builder_UIS

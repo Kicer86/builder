@@ -1,0 +1,5 @@
+
+#ifndef RELEASEINFOITEM_HPP
+#define RELEASEINFOITEM_HPP
+
+#endif
