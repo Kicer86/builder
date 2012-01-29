@@ -75,8 +75,6 @@ class WidgetListItem:public QWidget
         return origins;
     }
 
-    void prePaintEvent(const QModelIndex &);
-
   signals:
     void rerender(WidgetListItem *);           //signal emited when widget needs to be repainted
 };

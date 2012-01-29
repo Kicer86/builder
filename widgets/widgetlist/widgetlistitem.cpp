@@ -196,22 +196,3 @@ void WidgetListItem::internalRepaint()
 {
     emit rerender(this);
 }
-
-
-void WidgetListItem::prePaintEvent(const QModelIndex &index)
-{
-    //Widget is going to be painted.
-    //Before it update some values according to current data of model
-
-    //the same project as in prevoius element?
-    QModelIndex prevModel = index.sibling( index.row() - 1, index.column() );
-    const bool prevIsValid = prevModel.isValid();
-
-    const ProjectInfo *prevProjectInfo = prevIsValid? Functions::getProjectInfo(prevModel): nullptr;
-    const ProjectInfo *curProjectInfo = releaseInfo->getProjectInfo();
-
-    if (prevProjectInfo != curProjectInfo)      //prev and current have different ProjectInfo
-        title->setVisible(true);
-    else
-        title->setHidden(true);
-}

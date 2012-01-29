@@ -50,7 +50,6 @@ void WidgetDelegate::paintItem(QPainter *painter, const QStyleOptionViewItem &op
     pW->resize(option.rect.width(), pW->sizeHint().height());
 
     //draw the widget
-    //pW->prePaintEvent(index);
     pW->render(painter, QPoint() );
 
     painter->restore();
