@@ -34,6 +34,6 @@ namespace Functions
     ReleaseInfo* getReleaseInfo(const QModelIndex &index);
     const ProjectInfo* getProjectInfo(const QModelIndex &index);
 
-    void setReleaseInfo(QStandardItem *, ReleaseInfo *);
+    void setReleaseInfo(QStandardItem *, ReleaseInfo *, ProjectInfo *);
 
 }

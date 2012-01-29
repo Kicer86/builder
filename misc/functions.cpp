@@ -28,6 +28,9 @@
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
 
+#define RELEASE_POS (Qt::UserRole + 1)
+#define PROJECT_POS (Qt::UserRole + 2)
+
 namespace Functions
 {
 
@@ -82,9 +85,10 @@ namespace Functions
     }
 
 
-    void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo)
+    void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo, ProjectInfo *projectInfo)
     {
-        item->setData(qVariantFromValue(reinterpret_cast<void *>(releaseInfo)), Qt::UserRole + 1);
+        item->setData(qVariantFromValue(static_cast<void *>(releaseInfo)), RELEASE_POS);
+        item->setData(qVariantFromValue(static_cast<void *>(projectInfo)), PROJECT_POS);
     }
 
 } //namespace Functions
