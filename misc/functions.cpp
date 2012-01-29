@@ -71,7 +71,7 @@ namespace Functions
 
         ReleaseInfo *result;
 
-        result = reinterpret_cast<ReleaseInfo *>(index.data(Qt::UserRole + 1).value<void *>());
+        result = static_cast<ReleaseInfo *>(index.data(RELEASE_POS).value<void *>());
 
         return result;
     }
@@ -79,7 +79,11 @@ namespace Functions
 
     const ProjectInfo* getProjectInfo(const QModelIndex &index)
     {
-        const ProjectInfo *result = getReleaseInfo(index)->getProjectInfo();
+        assert(index.isValid());
+
+        ProjectInfo *result;
+
+        result = static_cast<ProjectInfo *>(index.data(PROJECT_POS).value<void *>());
 
         return result;
     }
