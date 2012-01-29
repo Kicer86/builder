@@ -98,7 +98,7 @@ void WidgetListItem::construct()
 void WidgetListItem::constructProject()
 {
     //add Title
-    title = new QLabel(projectInfo->getName());
+    title = new QLabel( QString("<b>%1</b>").arg(projectInfo->getName()) );
     projectLayout->addWidget(title, 0, 0);
 }
 
