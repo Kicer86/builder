@@ -57,10 +57,14 @@
 <context>
     <name>ConfigDialog</name>
     <message>
-        <location filename="../dialogs/configdialog.ui" line="14"/>
         <location filename="../build/ui_configdialog.h" line="153"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/configdialog.ui" line="14"/>
+        <source>Configuration</source>
+        <translation>Konfiguracja</translation>
     </message>
     <message>
         <location filename="../dialogs/configdialog.ui" line="20"/>
@@ -140,10 +144,14 @@ Przykład. tar.bz2; tar.gz; tar</translation>
 <context>
     <name>NewProjectWizard</name>
     <message>
-        <location filename="../dialogs/newprojectwizard.ui" line="20"/>
         <location filename="../build/ui_newprojectwizard.h" line="84"/>
         <source>Wizard</source>
         <translation>Kreator</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/newprojectwizard.ui" line="20"/>
+        <source>New project wizard</source>
+        <translation>Kreator nowego projektu</translation>
     </message>
     <message>
         <location filename="../dialogs/newprojectwizard.ui" line="24"/>
@@ -173,10 +181,14 @@ Przykład. tar.bz2; tar.gz; tar</translation>
 <context>
     <name>ProgressDialog</name>
     <message>
-        <location filename="../dialogs/progressdialog.ui" line="20"/>
         <location filename="../build/ui_progressdialog.h" line="89"/>
         <source>Form</source>
         <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/progressdialog.ui" line="20"/>
+        <source>Progress</source>
+        <translation>Postęp</translation>
     </message>
     <message>
         <location filename="../dialogs/progressdialog.ui" line="35"/>
@@ -339,12 +351,12 @@ p, li { white-space: pre-wrap; }
         <translation>%1 buduj</translation>
     </message>
     <message>
-        <location filename="../widgets/projectinfowidget.cpp" line="196"/>
+        <location filename="../widgets/projectinfowidget.cpp" line="192"/>
         <source>%3: %p% (%1/%2)</source>
         <translation>%3: %p% (%1/%2)</translation>
     </message>
     <message>
-        <location filename="../widgets/projectinfowidget.cpp" line="205"/>
+        <location filename="../widgets/projectinfowidget.cpp" line="201"/>
         <source>%p% (%1/%2)</source>
         <translation>%p% (%1/%2)</translation>
     </message>
@@ -365,10 +377,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ReleaseCopyDialog</name>
     <message>
-        <location filename="../dialogs/releasecopydialog.ui" line="20"/>
         <location filename="../build/ui_releasecopydialog.h" line="118"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/releasecopydialog.ui" line="20"/>
+        <source>Copy release</source>
+        <translation>Kopiuj wydanie</translation>
     </message>
     <message>
         <location filename="../dialogs/releasecopydialog.ui" line="26"/>
@@ -428,10 +444,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SpecConstansDialog</name>
     <message>
-        <location filename="../dialogs/specconstantsdialog.ui" line="14"/>
         <location filename="../build/ui_specconstantsdialog.h" line="112"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/specconstantsdialog.ui" line="14"/>
+        <source>Constans and variables table</source>
+        <translation>Tabela stałych i zmiennych</translation>
     </message>
     <message>
         <location filename="../dialogs/specconstantsdialog.ui" line="24"/>
