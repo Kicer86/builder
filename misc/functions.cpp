@@ -77,7 +77,7 @@ namespace Functions
     }
 
 
-    const ProjectInfo* getProjectInfo(const QModelIndex &index)
+    ProjectInfo* getProjectInfo(const QModelIndex &index)
     {
         assert(index.isValid());
 

@@ -32,7 +32,7 @@ namespace Functions
     QString dataPath(const QString &path);
 
     ReleaseInfo* getReleaseInfo(const QModelIndex &index);
-    const ProjectInfo* getProjectInfo(const QModelIndex &index);
+    ProjectInfo* getProjectInfo(const QModelIndex &index);
 
     void setReleaseInfo(QStandardItem *, ReleaseInfo *, ProjectInfo *);
 
