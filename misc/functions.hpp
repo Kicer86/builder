@@ -27,13 +27,22 @@ class ProjectInfo;
 namespace Functions
 {
 
+    enum class DataType
+    {
+        ProjectInfo,
+        ReleaseInfo
+    };
+
     QString sizeToString(int value);
     QString setColour(const QString &str, const QColor &colour);
     QString dataPath(const QString &path);
 
+    void* getDataInfo(const QModelIndex &index);
+    DataType getDataType(const QModelIndex &index);
+    const ProjectInfo *getProjectInfo(const QModelIndex &index);
     ReleaseInfo* getReleaseInfo(const QModelIndex &index);
-    ProjectInfo* getProjectInfo(const QModelIndex &index);
 
-    void setReleaseInfo(QStandardItem *, ReleaseInfo *, ProjectInfo *);
+    void setReleaseInfo(QStandardItem *, ReleaseInfo *);
+    void setReleaseInfo(QStandardItem *, ProjectInfo *);
 
 }

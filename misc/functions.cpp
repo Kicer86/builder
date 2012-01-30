@@ -28,8 +28,8 @@
 #include "data_containers/releaseinfo.hpp"
 #include "data_containers/projectinfo.hpp"
 
-#define RELEASE_POS (Qt::UserRole + 1)
-#define PROJECT_POS (Qt::UserRole + 2)
+#define DATA_POS (Qt::UserRole + 1)
+#define TYPE_POS (Qt::UserRole + 2)
 
 namespace Functions
 {
@@ -65,34 +65,82 @@ namespace Functions
     }
 
 
+    void* getDataInfo(const QModelIndex &index)
+    {
+        assert(index.isValid());
+
+        void *result = index.data(DATA_POS).value<void *>();
+
+        return result;
+    }
+
+    DataType getDataType(const QModelIndex &index)
+    {
+        assert(index.isValid());
+
+        DataType type = static_cast<DataType>(index.data(TYPE_POS).value<int>() );   //blah :/
+
+        return type;
+    }
+
+
     ReleaseInfo* getReleaseInfo(const QModelIndex &index)
     {
         assert(index.isValid());
 
-        ReleaseInfo *result;
+        ReleaseInfo *ret = nullptr;
+        const DataType type = getDataType(index);
 
-        result = static_cast<ReleaseInfo *>(index.data(RELEASE_POS).value<void *>());
+        switch (type)
+        {
+            case DataType::ReleaseInfo:
+                ret = static_cast<ReleaseInfo*>(index.data(DATA_POS).value<void *>());
+                break;
 
-        return result;
+            case DataType::ProjectInfo:
+                break;
+        }
+
+        return ret;
     }
 
 
-    ProjectInfo* getProjectInfo(const QModelIndex &index)
+    const ProjectInfo* getProjectInfo(const QModelIndex &index)
     {
         assert(index.isValid());
 
-        ProjectInfo *result;
+        const ProjectInfo *ret = nullptr;
+        const DataType type = getDataType(index);
 
-        result = static_cast<ProjectInfo *>(index.data(PROJECT_POS).value<void *>());
+        switch (type)
+        {
+            case DataType::ReleaseInfo:
+            {
+                ReleaseInfo *releaseInfo = static_cast<ReleaseInfo*>(index.data(DATA_POS).value<void *>());
+                ret = releaseInfo->getProjectInfo();
+                break;
+            }
 
-        return result;
+            case DataType::ProjectInfo:
+                ret = static_cast<ProjectInfo*>(index.data(DATA_POS).value<void *>());
+                break;
+        }
+
+        return ret;
     }
 
 
-    void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo, ProjectInfo *projectInfo)
+    void setReleaseInfo(QStandardItem *item, ReleaseInfo *releaseInfo)
     {
-        item->setData(qVariantFromValue(static_cast<void *>(releaseInfo)), RELEASE_POS);
-        item->setData(qVariantFromValue(static_cast<void *>(projectInfo)), PROJECT_POS);
+        item->setData(qVariantFromValue(static_cast<void *>(releaseInfo)), DATA_POS);
+        item->setData(qVariantFromValue(static_cast<int>(DataType::ReleaseInfo)), TYPE_POS);
+    }
+
+
+    void setReleaseInfo(QStandardItem *item, ProjectInfo *projectInfo)
+    {
+        item->setData(qVariantFromValue(static_cast<void *>(projectInfo)), DATA_POS);
+        item->setData(qVariantFromValue(static_cast<int>(DataType::ProjectInfo)), TYPE_POS);
     }
 
 } //namespace Functions

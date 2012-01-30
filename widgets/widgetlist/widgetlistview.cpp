@@ -62,29 +62,33 @@ void WidgetListView::rowsInserted(const QModelIndex& modelIndex, int start, int 
         QAbstractItemModel *m = model();
         const QModelIndex ch = m->index(i, 0);
 
+        void *dataPtr = Functions::getDataInfo(ch);
+        const Functions::DataType type = Functions::getDataType(ch);
+
         ReleaseInfo *releaseInfo = Functions::getReleaseInfo(ch);
-        ProjectInfo *projectInfo = Functions::getProjectInfo(ch);
-        void *ptr;
+        const ProjectInfo *projectInfo = Functions::getProjectInfo(ch);
 
-        if (releaseInfo != nullptr)
+        switch (type)
         {
-            ptr = releaseInfo;
-            qDebug() << QString("inserting row in view for release %1").arg(releaseInfo->getName());
-        }
-        else
-        {
-            ptr = projectInfo;
-            qDebug() << QString("inserting row in view for project %1").arg(projectInfo->getName());
+            case Functions::DataType::ReleaseInfo:
+                qDebug() << QString("inserting row in view for release %1")
+                            .arg(static_cast<ReleaseInfo *>(dataPtr)->getName());
+                break;
+
+            case Functions::DataType::ProjectInfo:
+                qDebug() << QString("inserting row in view for release %1")
+                            .arg(static_cast<ProjectInfo *>(dataPtr)->getName());
+                break;
         }
 
-        if (widgets.contains(ptr) == false)  // nie ma takiego elementu w bazie widgetów?
+        if (widgets.contains(dataPtr) == false)  // nie ma takiego elementu w bazie widgetów?
         {
             //create widget widget
             WidgetListItemPtr widgetListItem(new WidgetListItem(projectInfo, releaseInfo));
             connect(widgetListItem.get(), SIGNAL(rerender(WidgetListItem*)), this, SLOT(itemReload(WidgetListItem*)));  //update index which needs it
 
             //zapisz widget w bazie
-            widgets.insert(ptr, widgetListItem);
+            widgets.insert(dataPtr, widgetListItem);
         }
     }
 
@@ -129,26 +133,35 @@ void WidgetListView::dumpModel(const QModelIndex& index) const
 
 WidgetListItem* WidgetListView::getProjectWidget(const QModelIndex& index) const
 {
-    //odnajdź ten element na liście
-    void *releaseInfo = Functions::getReleaseInfo(index);
-    void *ptr = releaseInfo;
+    //find visual element associated with model's element
+    void *dataPtr = Functions::getDataInfo(index);
 
-    if (releaseInfo == nullptr)   //TODO: zrobić porządek z tym
-        ptr = Functions::getProjectInfo(index);
+    assert(widgets.contains(dataPtr));
 
-    assert(widgets.contains(ptr));
-
-    return (widgets.value(ptr)).get();
+    return (widgets.value(dataPtr)).get();
 }
 
 
 void WidgetListView::itemClicked(const QModelIndex& index)
 {
     currentItem = index;
-    ReleaseInfo *releaseInfo = getProjectWidget(index)->getReleaseInfo();
 
-    if (releaseInfo != nullptr)
-        emit itemClicked(releaseInfo);
+    const Functions::DataType type = Functions::getDataType(currentItem);
+
+    switch (type)
+    {
+        case Functions::DataType::ProjectInfo:
+            break;
+
+        case Functions::DataType::ReleaseInfo:
+        {
+            ReleaseInfo *releaseInfo = Functions::getReleaseInfo(currentItem);
+            assert(releaseInfo != nullptr);
+
+            emit itemClicked(releaseInfo);
+            break;
+        }
+    }
 }
 
 
@@ -169,6 +182,8 @@ void WidgetListView::itemReload(WidgetListItem *)
 void WidgetListView::copyItem()
 {
     ReleaseInfo *releaseInfo = Functions::getReleaseInfo(currentItem);
+
+    assert(releaseInfo != nullptr);
 
     ProjectsManager::instance()->copyRelease(*releaseInfo);
 }

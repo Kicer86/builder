@@ -56,13 +56,13 @@ void ProjectsManager::registerProject(ProjectInfo* project)
 
     //create project's item
     QStandardItem *projectItem = new QStandardItem(project->getName());
-    Functions::setReleaseInfo(projectItem, nullptr, project);    //null release
+    Functions::setReleaseInfo(projectItem, project);
     model->appendRow(projectItem);                               //append it
 
     foreach(ReleaseInfo *release, project->getReleasesList())
     {
         QStandardItem *releaseItem = new QStandardItem(release->getName());
-        Functions::setReleaseInfo(releaseItem, release, project);  //save pointer to ReleaseInfo to QStandardItem
+        Functions::setReleaseInfo(releaseItem, release);         //save pointer to ReleaseInfo to QStandardItem
         model->appendRow(releaseItem);
     }
 }
