@@ -17,10 +17,10 @@ foreach(IMG ${builder_IMGS})
     set(IMAGE_DIR ${RES}x${RES})
     set(IMAGE_NAME ${IMAGE_DIR}/${IMAGE_NAME_WE}.png)
 
-    if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR})
-      message ("Creating directory ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR} for file ${IMG}")
+    if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR})
+      message("Creating directory ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR} for file ${IMG}")
       file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR} )
-    endif (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR})
+    endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR})
 
     add_custom_command(
         OUTPUT ${IMAGE_NAME}
@@ -30,7 +30,7 @@ foreach(IMG ${builder_IMGS})
         #ARGS -resize ${RES}x${RES} ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png
       )
 
-    set (PROCESSED_IMAGES ${PROCESSED_IMAGES} ${IMAGE_DIR}/${IMAGE_NAME_WE}.png)
+    set(PROCESSED_IMAGES ${PROCESSED_IMAGES} ${IMAGE_DIR}/${IMAGE_NAME_WE}.png)
 
     #processed
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_DIR}/${IMAGE_NAME_WE}.png DESTINATION ${BUILDER_DATADIR}/icons/${IMAGE_DIR}/ )

@@ -1,51 +1,91 @@
+
 project(builder)
 cmake_minimum_required(VERSION 2.6)
 find_package(Qt4 4.6 REQUIRED QtGui QtCore QtNetwork)
 find_package(Lua51 REQUIRED)
 find_program(INKSCAPE inkscape)
 
-if (INKSCAPE-NOTFOUND)
-    message ( FATAL_ERROR "inkscape: not found" )
-else (INKSCAPE-NOTFOUND)
-    message ( STATUS "inkscape: found" )
-endif (INKSCAPE-NOTFOUND)
 
-if (CMAKE_COMPILER_IS_GNUCXX)
+#make sure inkscape is installed
+if(INKSCAPE-NOTFOUND)
+    message ( FATAL_ERROR "inkscape: not found" )
+else(INKSCAPE-NOTFOUND)
+    message ( STATUS "inkscape: found" )
+endif(INKSCAPE-NOTFOUND)
+
+
+#make sure, gcc is fresh enought
+if(CMAKE_COMPILER_IS_GNUCXX)
   #check version
   string(REPLACE " " ";" C_ARGS "${CMAKE_C_COMPILER_ARG1}")
   execute_process(COMMAND ${CMAKE_C_COMPILER} ${C_ARGS} -dumpversion
                   OUTPUT_VARIABLE GCC_VERSION)
-  if (GCC_VERSION VERSION_LESS 4.6)
+  if(GCC_VERSION VERSION_LESS 4.6)
     message ( FATAL_ERROR "GCC version >= 4.6 required due to c++0x11 standard usage" )
   else(GCC_VERSION VERSION_LESS 4.6)
     message ( STATUS "Acceptable version of gcc found: ${GCC_VERSION}")
   endif(GCC_VERSION VERSION_LESS 4.6)
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
+
+
+#platform specific definitions
+if(UNIX)
+    add_definitions(-DLINUX)
+else(WIN32)
+    add_definitions(-DWINDOWS)
+endif(UNIX)
+
+
+#add some build options/features
+set(GUI_TYPE KDE4 CACHE STRING "Use system related widgets from (possibilities: KDE4, GNOME, WINDOWS)")
+set(EXTRA_LIBS "")             #additional libs - depens on used gui
+
+if(${GUI_TYPE} STREQUAL "KDE4")
+    find_package(KDE4) # 4.0 REQUIRED)
+    #add_definitions(${KDE4_DEFINITIONS})
+    #include_directories(${KDE4_INCLUDE_DIR})
+    #set(EXTRA_LIBS ${KDE4_KIO_LIBRARY})
+else()
+    message(FATAL_ERROR, "Wrong GUI_TYPE: \"${GUI_TYPE}\"")
+endif(${GUI_TYPE} STREQUAL "KDE4")
+
+add_definitions(-DGUI_TYPE_${GUI_TYPE})
+
+
+
+#include directories
 include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
+
+#set path for module
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
 
 add_definitions(-DDEBUG_QSTRING_SUPPORT)      #let debug functions from my library know QString
 
-if (NOT BUILDER_DATADIR)
-    set (BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)
-endif (NOT BUILDER_DATADIR)
-if (NOT BUILDER_LIBDIR)
-    set (BUILDER_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
-endif (NOT BUILDER_LIBDIR)
-if (NOT BUILDER_BINDIR)
-    set (BUILDER_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-endif (NOT BUILDER_BINDIR)
 
-include (plugins/plugins.cmake)
+#set variables with paths
+if(NOT BUILDER_DATADIR)
+    set(BUILDER_DATADIR ${CMAKE_INSTALL_PREFIX}/share/builder)
+endif(NOT BUILDER_DATADIR)
+
+if(NOT BUILDER_LIBDIR)
+    set(BUILDER_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
+endif(NOT BUILDER_LIBDIR)
+
+if(NOT BUILDER_BINDIR)
+    set(BUILDER_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+endif(NOT BUILDER_BINDIR)
+
+#include plugins
+include(plugins/plugins.cmake)
 
 #pozostałe katalogi po powyższym, ponieważ używają ścieżek
 add_subdirectory(images)
 add_subdirectory(tr)
 add_subdirectory(plugins/buildin)
 
-configure_file (${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
+configure_file(${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
 
 set(builder_SRCS
   builder.cpp
@@ -144,6 +184,7 @@ target_link_libraries(builder
       ${QT_QTGUI_LIBRARY}
       ${QT_QTNETWORK_LIBRARY}
       ${QT_QTSVG_LIBRARY}
+      ${EXTRA_LIBS}               #gui specific stuff
       ${LUA_LIBRARIES}
       htmlParser
       QtExt)
