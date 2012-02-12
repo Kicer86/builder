@@ -10,7 +10,6 @@
 #include "misc/settings.hpp"
 #include "dialogs/setup.hpp"
 
-#include "dialogs/openwithdialog.hpp"
 
 int main(int argc, char** argv)
 {
