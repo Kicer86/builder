@@ -154,6 +154,7 @@ void Builder::optionsDialog()
         Settings::instance()->setEnvType(config->getEnvType());
         Settings::instance()->setProjsPath(config->getProjsPath());
         Settings::instance()->setExtList(config->getExtList());
+        Settings::instance()->setEditor(config->getEditor());
     }
 }
 
