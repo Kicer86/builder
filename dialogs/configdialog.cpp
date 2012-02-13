@@ -18,9 +18,12 @@
 
 #include <QFileDialog>
 
+#include <qtext_choosefile.hpp>
+
 #include "configdialog.hpp"
-#include "misc/settings.hpp"
 #include "ui_configdialog.h"
+#include "dialogs/openwithdialog.hpp"
+#include "misc/settings.hpp"
 
 ConfigDialog::ConfigDialog(QWidget* p, Qt::WindowFlags f): QDialog(p, f),
     ui(new Ui::ConfigDialog)
@@ -58,7 +61,14 @@ ConfigDialog::ConfigDialog(QWidget* p, Qt::WindowFlags f): QDialog(p, f),
         else
             edit+= list[i];
     }
+
     ui->extLine->setText(edit);
+
+    ui->editorLineEdit->setText(Settings::instance()->getEditor());
+
+    //add editor choose widget
+    openWithDialog = new OpenWithDialog();
+    chooseEditor = new QtExtChooseFile(ui->editorButton, ui->editorLineEdit, openWithDialog);
 }
 
 
@@ -84,6 +94,12 @@ QString ConfigDialog::getExtEnvPath() const
 QString ConfigDialog::getProjsPath() const
 {
     return ui->projsLine->text();
+}
+
+
+QString ConfigDialog::getEditor() const
+{
+    return ui->editorLineEdit->text();
 }
 
 

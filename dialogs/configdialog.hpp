@@ -26,6 +26,9 @@
 
 #include "misc/settings.hpp"
 
+class QtExtChooseFile;
+class OpenWithDialog;
+
 namespace Ui
 {
     class ConfigDialog;
@@ -42,10 +45,14 @@ class ConfigDialog : public QDialog
         Settings::EnvType getEnvType() const;
         QString getExtEnvPath() const;
         QString getProjsPath() const;
+        QString getEditor() const;
         QStringList getExtList() const;
 
     private:
         std::auto_ptr<Ui::ConfigDialog> ui;
+
+        QtExtChooseFile *chooseEditor;
+        OpenWithDialog *openWithDialog;
 
     private slots:
         void locEnvButtonPressed();
