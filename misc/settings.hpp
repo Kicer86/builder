@@ -43,12 +43,14 @@ class Settings
     QString getEnvPath() const;
     EnvType getEnvType() const;
     QStringList getExtList() const;
+    QString getEditor() const;
     bool configIsFine() const;
 
     void setEnvPath(const QString& path);
     void setEnvType(EnvType type);
     void setProjsPath(const QString& path);
     void setExtList(const QStringList& list);
+    void setEditor(const QString &);
     void setConfigFine();
 };
 

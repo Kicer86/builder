@@ -74,6 +74,13 @@ QStringList Settings::getExtList() const
     return ret;
 }
 
+
+QString Settings::getEditor() const
+{
+    return settings->value("main/editor", "").toString();
+}
+
+
 bool Settings::configIsFine() const
 {
     return settings->value("main/initialized", "0").toInt() != 0;
@@ -110,6 +117,12 @@ void Settings::setExtList(const QStringList& list)
     }
     settings->endArray();
     settings->endGroup();
+}
+
+
+void Settings::setEditor(const QString &editor)
+{
+    settings->setValue("main/editor", editor);
 }
 
 
