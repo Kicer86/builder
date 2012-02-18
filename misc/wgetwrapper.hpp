@@ -33,7 +33,12 @@ class WgetWrapper: public QObject
 
     QProcess *process;
     QStringList args;
+
+#if defined LINUX
     mutable int pid;
+#elif defined WINDOWS
+    mutable Q_PID pid;
+#endif
 
   private slots:
     void data();

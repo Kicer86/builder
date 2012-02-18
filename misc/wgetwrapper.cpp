@@ -19,6 +19,10 @@
 #include <QUrl>
 #include <QDebug>
 
+#ifdef WINDOWS
+    #include <Windows.h>  //for Q_PID access
+#endif
+
 #include "wgetwrapper.hpp"
 
 WgetWrapper::WgetWrapper(const QUrl &url, const QString &output_file)
@@ -42,7 +46,9 @@ int WgetWrapper::get() const
 {
   process->start("wget", args);
   //qDebug() << QString("starting: wget %1").arg(args.join(" "));
-  return pid=process->pid();
+  pid = process->pid();
+
+  return pid->dwProcessId;
 }
 
 
@@ -67,5 +73,5 @@ void WgetWrapper::data()
 
 void WgetWrapper::finished(int err, QProcess::ExitStatus)
 {
-  emit requestFinished(pid, err!=0);
+  emit requestFinished(pid->dwProcessId, err!=0);
 }
