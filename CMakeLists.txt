@@ -32,16 +32,19 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 #platform specific definitions
 if(UNIX)
     add_definitions(-DLINUX)
-else(WIN32)
+    set(DEFAULT_GUI_TYPE KDE4)
+elseif(WIN32)
     add_definitions(-DWINDOWS)
+    set(DEFAULT_GUI_TYPE WINDOWS)
 endif(UNIX)
 
 
 #add some build options/features
-set(GUI_TYPE KDE4 CACHE STRING "Use system related widgets from (possibilities: KDE4, GNOME, WINDOWS)")
+set(GUI_TYPE ${DEFAULT_GUI_TYPE} CACHE STRING "Use system related widgets from (possibilities: KDE4, GNOME, WINDOWS)")
 set(EXTRA_LIBS "")             #additional libs - depens on used gui
 
-if(${GUI_TYPE} STREQUAL "KDE4")
+if("${GUI_TYPE}" STREQUAL "KDE4")
+
     #due to "bug" in FindKDE4, searching for kde is done in function, to supress it from modyfining compilation flags
     function(load_kde)
         find_package(KDE4 4.0 REQUIRED)
@@ -51,12 +54,18 @@ if(${GUI_TYPE} STREQUAL "KDE4")
     endfunction(load_kde)
 
     load_kde()
+
+elseif("${GUI_TYPE}" STREQUAL "WINDOWS")
+
+    #nothing extra to do
+
 else()
+
     message(FATAL_ERROR, "Wrong GUI_TYPE: \"${GUI_TYPE}\"")
-endif(${GUI_TYPE} STREQUAL "KDE4")
+
+endif("${GUI_TYPE}" STREQUAL "KDE4")
 
 add_definitions(-DGUI_TYPE_${GUI_TYPE})
-
 
 
 #include directories
@@ -181,7 +190,7 @@ qt4_add_translation(builder_QM ${builder_TR})
 
 add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES} ${builder_QM})
 
-set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x"
+set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
 
 target_link_libraries(builder
