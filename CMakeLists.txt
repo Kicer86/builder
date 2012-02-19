@@ -44,7 +44,6 @@ set(GUI_TYPE ${DEFAULT_GUI_TYPE} CACHE STRING "Use system related widgets from (
 set(EXTRA_LIBS "")             #additional libs - depens on used gui
 
 if("${GUI_TYPE}" STREQUAL "KDE4")
-
     #due to "bug" in FindKDE4, searching for kde is done in function, to supress it from modyfining compilation flags
     function(load_kde)
         find_package(KDE4 4.0 REQUIRED)
@@ -54,15 +53,10 @@ if("${GUI_TYPE}" STREQUAL "KDE4")
     endfunction(load_kde)
 
     load_kde()
-
 elseif("${GUI_TYPE}" STREQUAL "WINDOWS")
-
     #nothing extra to do
-
 else()
-
     message(FATAL_ERROR, "Wrong GUI_TYPE: \"${GUI_TYPE}\"")
-
 endif("${GUI_TYPE}" STREQUAL "KDE4")
 
 add_definitions(-DGUI_TYPE_${GUI_TYPE})
