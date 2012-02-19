@@ -36,6 +36,7 @@ if(UNIX)
 elseif(WIN32)
     add_definitions(-DWINDOWS)
     set(DEFAULT_GUI_TYPE WINDOWS)
+    set(WIN_GUI_TYPE WIN32)
 endif(UNIX)
 
 
@@ -182,7 +183,7 @@ qt4_automoc(${builder_SRCS})
 qt4_wrap_cpp(builder_MOCFILES ${builder_MOC})
 qt4_add_translation(builder_QM ${builder_TR})
 
-add_executable(builder ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES} ${builder_QM})
+add_executable(builder ${WIN_GUI_TYPE} ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES} ${builder_QM})
 
 set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
