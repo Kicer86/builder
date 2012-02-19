@@ -23,6 +23,8 @@
     #include <Windows.h>  //for Q_PID access
 #endif
 
+#include <debug.hpp>
+
 #include "wgetwrapper.hpp"
 
 WgetWrapper::WgetWrapper(const QUrl &url, const QString &output_file)
@@ -45,10 +47,14 @@ WgetWrapper::~WgetWrapper()
 int WgetWrapper::get() const
 {
   process->start("wget", args);
-  //qDebug() << QString("starting: wget %1").arg(args.join(" "));
+  debug(DebugLevel::Info) << QString("starting: wget %1").arg(args.join(" "));
   pid = process->pid();
 
+#if defined WINDOWS
   return pid->dwProcessId;
+#elif defined LINUX
+  return pid;
+#endif
 }
 
 
@@ -58,7 +64,7 @@ void WgetWrapper::data()
   {
     QString line=process->readLine();
     line=line.left(line.length()-1);       //remove /n
-    
+
     //analyze line
     QRegExp progressRegEx(" *([0-9])+[a-zA-Z][ \\.]+([0-9]+)%.*");
     if (progressRegEx.exactMatch(line))
@@ -73,5 +79,9 @@ void WgetWrapper::data()
 
 void WgetWrapper::finished(int err, QProcess::ExitStatus)
 {
+#if defined WINDOWS
   emit requestFinished(pid->dwProcessId, err!=0);
+#elif defined LINUX
+  emit requestFinished(pid, err!=0);
+#endif
 }
