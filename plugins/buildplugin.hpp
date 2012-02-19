@@ -90,7 +90,7 @@ class BuildProcess: public QObject
 };
 
 
-class BuildPlugin: public QObject                //it's QObject here, becouse plugin system requires it
+class __attribute__ ((visibility ("default")))  BuildPlugin: public QObject //it's QObject here, becouse plugin system requires it
 {
         Q_OBJECT
 

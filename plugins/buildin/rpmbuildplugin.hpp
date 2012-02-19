@@ -32,7 +32,7 @@ class QPlainTextEdit;
 class QPushButton;
 class QExProgressBarView;
 
-class RpmBuildPlugin: public BuildPlugin
+class __attribute__ ((visibility ("default"))) RpmBuildPlugin: public BuildPlugin
 {
         Q_OBJECT
         Q_INTERFACES(BuildPlugin)
