@@ -20,7 +20,7 @@
 #include <QDebug>
 
 #ifdef WINDOWS
-    #include <Windows.h>  //for Q_PID access
+#include <Windows.h>  //for Q_PID access
 #endif
 
 #include <debug.hpp>
@@ -29,14 +29,14 @@
 
 WgetWrapper::WgetWrapper(const QUrl &url, const QString &output_file)
 {
-  process=new QProcess(this);
+    process=new QProcess(this);
 
-  connect(process, SIGNAL(readyRead()), this, SLOT(data()));
-  connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
+    connect(process, SIGNAL(readyRead()), this, SLOT(data()));
+    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
 
-  process->setProcessChannelMode(QProcess::MergedChannels);
-//   process->setWorkingDirectory(output_file);
-  args << "--progress=dot" << url.toString() << "-O" << output_file;
+    process->setProcessChannelMode(QProcess::MergedChannels);
+    //   process->setWorkingDirectory(output_file);
+    args << "--progress=dot" << url.toString() << "-O" << output_file;
 }
 
 
@@ -46,42 +46,42 @@ WgetWrapper::~WgetWrapper()
 
 int WgetWrapper::get() const
 {
-  process->start("wget", args);
-  debug(DebugLevel::Info) << QString("starting: wget %1").arg(args.join(" "));
-  pid = process->pid();
+    process->start("wget", args);
+    debug(DebugLevel::Info) << QString("starting: wget %1").arg(args.join(" "));
+    pid = process->pid();
 
 #if defined WINDOWS
-  return pid->dwProcessId;
+    return pid->dwProcessId;
 #elif defined LINUX
-  return pid;
+    return pid;
 #endif
 }
 
 
 void WgetWrapper::data()
 {
-  if (process->canReadLine())
-  {
-    QString line=process->readLine();
-    line=line.left(line.length()-1);       //remove /n
-
-    //analyze line
-    QRegExp progressRegEx(" *([0-9])+[a-zA-Z][ \\.]+([0-9]+)%.*");
-    if (progressRegEx.exactMatch(line))
+    if (process->canReadLine())
     {
-      int current=progressRegEx.capturedTexts()[2].toInt();
-      emit dataReadProgress(current, 100);
+        QString line=process->readLine();
+        line=line.left(line.length()-1);       //remove /n
+
+        //analyze line
+        QRegExp progressRegEx(" *([0-9])+[a-zA-Z][ \\.]+([0-9]+)%.*");
+        if (progressRegEx.exactMatch(line))
+        {
+            int current=progressRegEx.capturedTexts()[2].toInt();
+            emit dataReadProgress(current, 100);
+        }
+        qDebug() << line;
     }
-    qDebug() << line;
-  }
 }
 
 
 void WgetWrapper::finished(int err, QProcess::ExitStatus)
 {
 #if defined WINDOWS
-  emit requestFinished(pid->dwProcessId, err!=0);
+    emit requestFinished(pid->dwProcessId, err!=0);
 #elif defined LINUX
-  emit requestFinished(pid, err!=0);
+    emit requestFinished(pid, err!=0);
 #endif
 }
