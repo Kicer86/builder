@@ -22,7 +22,7 @@
 
 #include <QProcess>
 
-class SandboxProcess
+class __attribute__ ((visibility ("default"))) SandboxProcess
 {
   public:
     static QString runProcess(const QString &process, const QStringList &args, QProcess *proc);

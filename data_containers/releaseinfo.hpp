@@ -29,7 +29,7 @@ class QTextDocument;
 class Estimator;
 class ProjectInfo;
 
-class ReleaseInfo: public QObject
+class __attribute__ ((visibility ("default"))) ReleaseInfo: public QObject
 {
         Q_OBJECT
 

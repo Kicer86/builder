@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QStringList>
 
-#include "widgets/QExProgressBar/qexprogressbar.hpp"
+#include <qtext_progressbar.hpp>
 
 class QProcess;
 class QTextDocument;
@@ -34,7 +34,7 @@ class QLayout;
 
 class ReleaseInfo;
 
-class BuildProcess: public QObject
+class __attribute__ ((visibility ("default"))) BuildProcess: public QObject
 {
         Q_OBJECT
 

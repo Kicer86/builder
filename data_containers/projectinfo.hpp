@@ -29,7 +29,7 @@
 class QTimer;
 class ReleaseInfo;
 
-class ProjectInfo: public QObject
+class __attribute__ ((visibility ("default"))) ProjectInfo: public QObject
 {
         Q_OBJECT
 

@@ -24,7 +24,7 @@ class QString;
 class QStringList;
 class QSettings;
 
-class Settings
+class  __attribute__ ((visibility ("default"))) Settings
 {
     Settings();
     ~Settings();

@@ -30,6 +30,7 @@
 #include <QSettings>
 
 #include <debug.hpp>
+#include <qtext_progressbar.hpp>
 
 #include "rpmbuildplugin.hpp"
 #include "data_containers/editorsmanager.hpp"
@@ -39,7 +40,6 @@
 #include "misc/functions.hpp"
 #include "misc/sandboxprocess.hpp"
 #include "misc/settings.hpp"
-#include "widgets/QExProgressBar/qexprogressbar.hpp"
 
 
 Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)

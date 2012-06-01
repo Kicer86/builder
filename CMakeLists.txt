@@ -122,7 +122,6 @@ set(builder_SRCS
   plugins/buildplugin.cpp
   widgets/imagewidget.cpp
   widgets/projectinfowidget.cpp
-  widgets/QExProgressBar/qexprogressbar.cpp
   widgets/widgetlist/widgetdelegate.cpp
   widgets/widgetlist/widgetlistitem.cpp
   widgets/widgetlist/widgetlistproxymodel.cpp
@@ -150,7 +149,6 @@ set(builder_MOC
   plugins/buildplugin.hpp
   widgets/imagewidget.hpp
   widgets/projectinfowidget.hpp
-  widgets/QExProgressBar/qexprogressbar.hpp
   widgets/widgetlist/widgetlistitem.hpp
   widgets/widgetlist/widgetlistview.hpp
   widgets/widgetlist/items/projectinfoitem.hpp

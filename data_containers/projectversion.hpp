@@ -25,7 +25,7 @@
 
 class QSettings;
 
-struct ProjectVersion
+struct __attribute__ ((visibility ("default"))) ProjectVersion
 {
         //status of data
         enum class Status
