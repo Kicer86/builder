@@ -67,7 +67,7 @@ add_definitions(-DGUI_TYPE_${GUI_TYPE})
 include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
 
 
-#set path for module
+#set path for modules
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugins)  #cmake modules for plugins
 
 add_definitions(-DDEBUG_QSTRING_SUPPORT)      #let debug functions from my library know QString
