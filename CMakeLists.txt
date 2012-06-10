@@ -111,6 +111,7 @@ set(builder_SRCS
   dialogs/progressdialog.cpp
   dialogs/setup.cpp
   dialogs/specconstantsdialog.cpp
+  dialogs/systemdialogs.cpp
   misc/broadcast.cpp
   misc/downloader.cpp
   misc/editfile.cpp
