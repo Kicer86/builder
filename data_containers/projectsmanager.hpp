@@ -32,7 +32,7 @@ class ProjectInfoWidget;
 class ProjectInfo;
 
 
-class ProjectsManager
+class __attribute__ ((visibility ("default"))) ProjectsManager
 {
     ProjectInfoWidget *projectInfoWidget;
     QList<ProjectInfo *> projectsList;      //lista projektów. Powiązana z modelem za pomocą id

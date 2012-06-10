@@ -26,7 +26,7 @@
 class QFile;
 class EditFile;
 
-class EditorsManager : public QObject
+class __attribute__ ((visibility ("default"))) EditorsManager : public QObject
 {
     Q_OBJECT
 
@@ -39,7 +39,7 @@ class EditorsManager : public QObject
 
   public:
     virtual ~EditorsManager();
-    
+
     static EditorsManager *instance();
     void editFile(const QString& file);
 };

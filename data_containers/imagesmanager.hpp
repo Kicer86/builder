@@ -22,7 +22,7 @@
 
 #include "widgets/imagewidget.hpp"
 
-class ImagesManager
+class __attribute__ ((visibility ("default"))) ImagesManager
 {
         ImagesManager();
 
