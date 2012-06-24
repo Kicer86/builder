@@ -28,17 +28,14 @@ class WidgetListItem;
 
 namespace std
 {
-    namespace tr1
-    {
-        template <class T> class shared_ptr;
-    }
+    template <class T> class shared_ptr;
 }
 
 class WidgetListView: public QListView
 {
     Q_OBJECT
 
-    typedef std::tr1::shared_ptr<WidgetListItem> WidgetListItemPtr;      //pointer to WidgetListItem
+    typedef std::shared_ptr<WidgetListItem> WidgetListItemPtr;      //pointer to WidgetListItem
     typedef QHash<void *, WidgetListItemPtr> WidgetListView_List;
 
     WidgetListView_List widgets;             //lista wydgetów które są wyświetlane na liście

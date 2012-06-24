@@ -16,10 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include <assert.h>
 
-#include <tr1/memory>
+#include <memory>
 
 #include <QContextMenuEvent>
 #include <QDebug>

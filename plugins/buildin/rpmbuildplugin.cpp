@@ -119,7 +119,7 @@ QString RpmBuildPlugin::replaceVariables(const QString &str, const Hash &variabl
     {
         QString toAppend(str[i]);
 
-        if (i < (size - sizeof("__a__")))  // enought chars to create shortest variable?
+        if ( i < (size - static_cast<int>(sizeof("__a__"))) )  // enought chars to create shortest variable?
         {
             if (str[i] == '_' && str[i + 1] == '_')  //prefix matches? (__)
             {
