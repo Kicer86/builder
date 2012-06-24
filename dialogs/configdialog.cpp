@@ -22,7 +22,7 @@
 
 #include "configdialog.hpp"
 #include "ui_configdialog.h"
-#include "dialogs/openwithdialog.hpp"
+#include "dialogs/systemdialogs.hpp"
 #include "misc/settings.hpp"
 
 ConfigDialog::ConfigDialog(QWidget* p, Qt::WindowFlags f): QDialog(p, f),
@@ -67,8 +67,8 @@ ConfigDialog::ConfigDialog(QWidget* p, Qt::WindowFlags f): QDialog(p, f),
     ui->editorLineEdit->setText(Settings::instance()->getEditor());
 
     //add editor choose widget
-    openWithDialog = new OpenWithDialog();
-    chooseEditor = new QtExtChooseFile(ui->editorButton, ui->editorLineEdit, openWithDialog);
+    openWithDialog = SystemDialogs::getInstance()->getOpenWithDialog();
+    //chooseEditor = new QtExtChooseFile(ui->editorButton, ui->editorLineEdit, openWithDialog);
 }
 
 
