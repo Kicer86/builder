@@ -29,7 +29,7 @@
 #include <QTemporaryFile>
 #include <QSettings>
 
-#include <debug.hpp>
+#include <OpenLib/common/debug.hpp>
 #include <qtext_progressbar.hpp>
 
 #include "rpmbuildplugin.hpp"
@@ -44,19 +44,22 @@
 
 Q_EXPORT_PLUGIN2(RPMbuild_plugin, RpmBuildPlugin)
 
-static const QString buildButtonText(QObject::tr("Build"));
-static const QString fastBuildButtonText(QObject::tr("Fast build"));
-
-static void append(QHash<QString, QString> &hash, const QList< std::pair<QString, QString> > &list)
+namespace
 {
-    for(const std::pair<QString, QString> &element: list)
-        hash[element.first] = element.second;
-}
+    const QString buildButtonText(QObject::tr("Build"));
+    const QString fastBuildButtonText(QObject::tr("Fast build"));
 
-static void append(QHash<QString, QString> &hash, const QHash<QString, QString> &other)
-{
-    for (auto i = other.begin(); i != other.end(); ++i)
-        hash.insert(i.key(), i.value());
+    void append(QHash<QString, QString> &hash, const QList< std::pair<QString, QString> > &list)
+    {
+        for(const std::pair<QString, QString> &element: list)
+            hash[element.first] = element.second;
+    }
+
+    void append(QHash<QString, QString> &hash, const QHash<QString, QString> &other)
+    {
+        for (auto i = other.begin(); i != other.end(); ++i)
+            hash.insert(i.key(), i.value());
+    }
 }
 
 
