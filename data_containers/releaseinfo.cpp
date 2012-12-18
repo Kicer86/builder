@@ -21,7 +21,7 @@
 #include <QSettings>
 #include <QDir>
 
-#include <debug.hpp>
+#include <OpenLib/common/debug.hpp>
 
 #include "data_containers/projectsmanager.hpp"
 #include "data_containers/projectinfo.hpp"

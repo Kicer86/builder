@@ -36,9 +36,8 @@ extern "C"
 }
 
 #include <htmlparser.hpp>
-#include <std_macros.hpp>
-#include <str_op.hpp>
-#include <std_macros.hpp>
+#include <OpenLib/common/std_macros.hpp>
+#include <OpenLib/common/str_op.hpp>
 
 #include "downloader.hpp"
 #include "settings.hpp"
