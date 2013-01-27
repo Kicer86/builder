@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QStringList>
 
-#include <qtext_progressbar.hpp>
+#include <OpenLibrary/QtExt/qtext_progressbar.hpp>
 
 class QProcess;
 class QTextDocument;

@@ -2,7 +2,7 @@
 #include "dialogs/openwithdialog.hpp"
 
 #include <kopenwithdialog.h>
-#include <qtext_choosefile.hpp>
+#include <OpenLibrary/QtExt/qtext_choosefile.hpp>
 
 
 class OpenWithDialog::Impl: public KOpenWithDialog, public QtExtChooseFileDialog

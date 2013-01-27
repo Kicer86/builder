@@ -23,7 +23,7 @@
 #include <Windows.h>  //for Q_PID access
 #endif
 
-#include <OpenLib/common/debug.hpp>
+#include <OpenLibrary/common/debug.hpp>
 
 #include "wgetwrapper.hpp"
 

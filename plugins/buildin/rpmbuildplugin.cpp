@@ -29,8 +29,8 @@
 #include <QTemporaryFile>
 #include <QSettings>
 
-#include <OpenLib/common/debug.hpp>
-#include <qtext_progressbar.hpp>
+#include <OpenLibrary/common/debug.hpp>
+#include <OpenLibrary/QtExt/qtext_progressbar.hpp>
 
 #include "rpmbuildplugin.hpp"
 #include "data_containers/editorsmanager.hpp"

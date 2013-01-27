@@ -24,7 +24,7 @@
 #include <QProcess>
 #include <QTextDocument>
 
-#include <OpenLib/common/debug.hpp>
+#include <OpenLibrary/common/debug.hpp>
 
 #include "buildplugin.hpp"
 #include "data_containers/releaseinfo.hpp"

@@ -25,7 +25,7 @@
 #include <QScrollBar>
 #include <QDebug>
 
-#include <OpenLib/common/std_macros.hpp>
+#include <OpenLibrary/common/std_macros.hpp>
 
 #include "projectinfowidget.hpp"
 #include "data_containers/editorsmanager.hpp"

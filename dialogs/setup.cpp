@@ -5,7 +5,7 @@
 
 #include "ui_setup.h"
 
-#include <qtext_choosefile.hpp>
+#include <OpenLibrary/QtExt/qtext_choosefile.hpp>
 
 Setup::Setup(QWidget *p): QWizard(p), ui(new Ui::setup)
 {

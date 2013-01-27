@@ -35,9 +35,9 @@ extern "C"
 #include <lualib.h>
 }
 
-#include <htmlparser.hpp>
-#include <OpenLib/common/std_macros.hpp>
-#include <OpenLib/common/str_op.hpp>
+#include <OpenLibrary/htmlParser/htmlparser.hpp>
+#include <OpenLibrary/common/std_macros.hpp>
+#include <OpenLibrary/common/str_op.hpp>
 
 #include "downloader.hpp"
 #include "settings.hpp"

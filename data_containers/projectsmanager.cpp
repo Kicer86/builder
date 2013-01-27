@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QStandardItem>
 
-#include <OpenLib/common/debug.hpp>
+#include <OpenLibrary/common/debug.hpp>
 
 #include "projectinfo.hpp"
 #include "projectsmanager.hpp"

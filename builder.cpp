@@ -7,7 +7,7 @@
 #include <QStandardItemModel>
 #include <QPluginLoader>
 
-#include <OpenLib/common/debug.hpp>
+#include <OpenLibrary/common/debug.hpp>
 
 #include "builder.hpp"
 #include "data_containers/projectsmanager.hpp"

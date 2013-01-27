@@ -18,7 +18,7 @@
 
 #include <QFileDialog>
 
-#include <qtext_choosefile.hpp>
+#include <OpenLibrary/QtExt/qtext_choosefile.hpp>
 
 #include "configdialog.hpp"
 #include "ui_configdialog.h"

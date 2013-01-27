@@ -3,6 +3,7 @@ project(builder)
 cmake_minimum_required(VERSION 2.6)
 find_package(Qt4 4.6 REQUIRED QtGui QtCore QtNetwork)
 find_package(Lua51 REQUIRED)
+find_package(OpenLibrary REQUIRED common QtExt htmlParser)
 find_program(INKSCAPE inkscape)
 
 
@@ -21,7 +22,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   execute_process(COMMAND ${CMAKE_C_COMPILER} ${C_ARGS} -dumpversion
                   OUTPUT_VARIABLE GCC_VERSION)
   if(GCC_VERSION VERSION_LESS 4.6)
-    message( FATAL_ERROR "GCC version >= 4.6 required due to c++0x11 standard usage" )
+    message( FATAL_ERROR "GCC version >= 4.6 required due to c++11 standard usage" )
   else(GCC_VERSION VERSION_LESS 4.6)
     message( STATUS "Acceptable version of gcc found: ${GCC_VERSION}")
   endif(GCC_VERSION VERSION_LESS 4.6)
@@ -46,7 +47,7 @@ add_definitions(-DGUI_TYPE_${GUI_TYPE})
 
 
 #include directories
-include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} .)
+include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${OPENLIBRARY_INCLUDES} .)
 
 
 #set path for modules
@@ -177,7 +178,7 @@ qt4_add_translation(builder_QM ${builder_TR})
 
 add_executable(builder ${WIN_GUI_TYPE} ${builder_SRCS} ${builder_MOCFILES} ${builder_UIFILES} ${builder_QM})
 
-set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden"
+set_target_properties(builder PROPERTIES COMPILE_FLAGS "-std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden"
                                          COMPILE_FLAGS_DEBUG "-Weffc++")
 
 target_link_libraries(builder
@@ -187,8 +188,8 @@ target_link_libraries(builder
       ${QT_QTSVG_LIBRARY}
       ${EXTRA_LIBS}               #gui specific stuff
       ${LUA_LIBRARIES}
-      htmlParser
-      QtExt)
+      ${OPENLIBRARY_LIBRARIES}
+      )
 
 #templates
 install(FILES data_files/spec_template DESTINATION ${BUILDER_DATADIR})
