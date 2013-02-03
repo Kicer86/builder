@@ -2,7 +2,7 @@ project(buildin_plugins)
 cmake_minimum_required(VERSION 2.6)
 
 #some definitions
-include(plugins)
+include(${CMAKE_SOURCE_DIR}/src/plugins)
 
 #RPM BUILD
 if(UNIX)  #available only on Linux

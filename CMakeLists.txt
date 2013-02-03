@@ -47,7 +47,7 @@ add_definitions(-DGUI_TYPE_${GUI_TYPE})
 
 
 #include directories
-include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${OPENLIBRARY_INCLUDES} .)
+include_directories(${QT_INCLUDES} ${LUA_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${OPENLIBRARY_INCLUDES} src)
 
 
 #set path for modules
@@ -70,18 +70,18 @@ if(NOT BUILDER_BINDIR)
 endif(NOT BUILDER_BINDIR)
 
 #include plugins
-include(plugins/plugins.cmake)
+include(src/plugins/plugins.cmake)
 
 #pozostałe katalogi po powyższym, ponieważ używają ścieżek
 add_subdirectory(images)
 add_subdirectory(tr)
-add_subdirectory(plugins/buildin)
+add_subdirectory(src/plugins/buildin)
 
 configure_file(${CMAKE_SOURCE_DIR}/builder-config.h.cmake ${CMAKE_BINARY_DIR}/builder-config.h)
 
 
 #load system dependent files
-include(dialogs/GUIs/system.cmake)
+include(src/dialogs/GUIs/system.cmake)
 set(GuiFiles "")
 set(EXTRA_LIBS "")             #additional libs - depens on used gui
 GuiFiles(GuiFiles)
@@ -89,75 +89,75 @@ GuiFiles(GuiFiles)
 message(STATUS ${GuiFiles})
 
 set(builder_SRCS
-  builder.cpp
-  main.cpp
-  data_containers/editorsmanager.cpp
-  data_containers/imagesmanager.cpp
-  data_containers/projectinfo.cpp
-  data_containers/projectsmanager.cpp
-  data_containers/projectversion.cpp
-  data_containers/releaseinfo.cpp
-  dialogs/configdialog.cpp
-  dialogs/newprojectwizard.cpp
-  dialogs/releasecopydialog.cpp
-  dialogs/progressdialog.cpp
-  dialogs/setup.cpp
-  dialogs/specconstantsdialog.cpp
-  dialogs/systemdialogs.cpp
-  misc/broadcast.cpp
-  misc/downloader.cpp
-  misc/editfile.cpp
-  misc/estimator.cpp
-  misc/functions.cpp
-  misc/sandboxprocess.cpp
-  misc/settings.cpp
-  misc/wgetwrapper.cpp
-  plugins/buildplugin.cpp
-  widgets/imagewidget.cpp
-  widgets/projectinfowidget.cpp
-  widgets/widgetlist/widgetdelegate.cpp
-  widgets/widgetlist/widgetlistitem.cpp
-  widgets/widgetlist/widgetlistproxymodel.cpp
-  widgets/widgetlist/widgetlistview.cpp
-  widgets/widgetlist/items/projectinfoitem.cpp
-  widgets/widgetlist/items/releaseinfoitem.cpp
+  src/builder.cpp
+  src/main.cpp
+  src/data_containers/editorsmanager.cpp
+  src/data_containers/imagesmanager.cpp
+  src/data_containers/projectinfo.cpp
+  src/data_containers/projectsmanager.cpp
+  src/data_containers/projectversion.cpp
+  src/data_containers/releaseinfo.cpp
+  src/dialogs/configdialog.cpp
+  src/dialogs/newprojectwizard.cpp
+  src/dialogs/releasecopydialog.cpp
+  src/dialogs/progressdialog.cpp
+  src/dialogs/setup.cpp
+  src/dialogs/specconstantsdialog.cpp
+  src/dialogs/systemdialogs.cpp
+  src/misc/broadcast.cpp
+  src/misc/downloader.cpp
+  src/misc/editfile.cpp
+  src/misc/estimator.cpp
+  src/misc/functions.cpp
+  src/misc/sandboxprocess.cpp
+  src/misc/settings.cpp
+  src/misc/wgetwrapper.cpp
+  src/plugins/buildplugin.cpp
+  src/widgets/imagewidget.cpp
+  src/widgets/projectinfowidget.cpp
+  src/widgets/widgetlist/widgetdelegate.cpp
+  src/widgets/widgetlist/widgetlistitem.cpp
+  src/widgets/widgetlist/widgetlistproxymodel.cpp
+  src/widgets/widgetlist/widgetlistview.cpp
+  src/widgets/widgetlist/items/projectinfoitem.cpp
+  src/widgets/widgetlist/items/releaseinfoitem.cpp
   ${GuiFiles}
 )
 
 
 set(builder_MOC
-  builder.hpp
-  data_containers/editorsmanager.hpp
-  data_containers/projectinfo.hpp
-  data_containers/releaseinfo.hpp
-  dialogs/configdialog.hpp
-  dialogs/newprojectwizard.hpp
-  dialogs/releasecopydialog.hpp
-  dialogs/progressdialog.hpp
-  dialogs/setup.hpp
-  dialogs/specconstantsdialog.hpp
-  misc/broadcast.hpp
-  misc/downloader.hpp
-  misc/editfile.hpp
-  misc/estimator.hpp
-  misc/wgetwrapper.hpp
-  plugins/buildplugin.hpp
-  widgets/imagewidget.hpp
-  widgets/projectinfowidget.hpp
-  widgets/widgetlist/widgetlistitem.hpp
-  widgets/widgetlist/widgetlistview.hpp
-  widgets/widgetlist/items/projectinfoitem.hpp
-  widgets/widgetlist/items/releaseinfoitem.hpp
+  src/builder.hpp
+  src/data_containers/editorsmanager.hpp
+  src/data_containers/projectinfo.hpp
+  src/data_containers/releaseinfo.hpp
+  src/dialogs/configdialog.hpp
+  src/dialogs/newprojectwizard.hpp
+  src/dialogs/releasecopydialog.hpp
+  src/dialogs/progressdialog.hpp
+  src/dialogs/setup.hpp
+  src/dialogs/specconstantsdialog.hpp
+  src/misc/broadcast.hpp
+  src/misc/downloader.hpp
+  src/misc/editfile.hpp
+  src/misc/estimator.hpp
+  src/misc/wgetwrapper.hpp
+  src/plugins/buildplugin.hpp
+  src/widgets/imagewidget.hpp
+  src/widgets/projectinfowidget.hpp
+  src/widgets/widgetlist/widgetlistitem.hpp
+  src/widgets/widgetlist/widgetlistview.hpp
+  src/widgets/widgetlist/items/projectinfoitem.hpp
+  src/widgets/widgetlist/items/releaseinfoitem.hpp
 )
 
 set(builder_UIS
-  dialogs/configdialog.ui
-  dialogs/newprojectwizard.ui
-  dialogs/releasecopydialog.ui
-  dialogs/progressdialog.ui
-  dialogs/setup.ui
-  dialogs/specconstantsdialog.ui
-  widgets/projectinfowidget.ui
+  src/dialogs/configdialog.ui
+  src/dialogs/newprojectwizard.ui
+  src/dialogs/releasecopydialog.ui
+  src/dialogs/progressdialog.ui
+  src/dialogs/setup.ui
+  src/dialogs/specconstantsdialog.ui
+  src/widgets/projectinfowidget.ui
 )
 
 set(builder_IMGS
